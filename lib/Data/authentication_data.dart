@@ -1,13 +1,23 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthApi {
   var dio = Dio();
 
-  signup(String name, String email, String phone, String password,
-      String passwordConfirmation, int type, int category) async {
-    Map<String, dynamic> body = {
+  signup(
+      String name,
+      String email,
+      String phone,
+      String password,
+      String passwordConfirmation,
+      int type,
+      int category,
+      File image,
+      String description) async {
+    String fileName = image.path.split('/').last;
+    FormData formData = FormData.fromMap({
       "name": name,
       "email": email,
       "password": password,
@@ -15,8 +25,9 @@ class AuthApi {
       "phone": phone,
       "type": type,
       "category_id": category,
-    };
-    FormData formData = FormData.fromMap(body);
+      "description": description,
+      "image": await MultipartFile.fromFile(image.path, filename: fileName),
+    });
     try {
       var res = await dio
           .post("http://164.160.104.125:9090/fntat/api/register",
@@ -55,6 +66,11 @@ class AuthApi {
   signout() async {
     var deletePrefs = await SharedPreferences.getInstance();
     deletePrefs.remove("TOKEN");
+    deletePrefs.remove("USERNAME");
+    deletePrefs.remove("EMAIL");
+    deletePrefs.remove("USERID");
+    deletePrefs.remove("USERTYPE");
+    deletePrefs.remove("USERSTATUS");
   }
 
   resetpassword(String password, String confirmPassword) async {

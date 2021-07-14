@@ -1,11 +1,9 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fntat/Blocs/authentication_bloc.dart';
-import 'package:fntat/Blocs/authentication_events.dart';
-import 'package:fntat/Blocs/authentication_states.dart';
 import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Components/flushbar.dart';
+
+import 'continueSignUp_screen.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -39,32 +37,6 @@ class _SignUpState extends State<SignUp> {
   int type = 0;
   int category = 0;
 
-  late AuthBloc authBloc;
-
-  @override
-  void initState() {
-    authBloc = BlocProvider.of<AuthBloc>(context);
-    super.initState();
-  }
-
-  final error = BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-    if (state is AuthenticationErrorState) {
-      return Text(
-        state.message,
-        style: KErrorStyle,
-      );
-    } else if (state is LodingState) {
-      return Center(
-        child: CircularProgressIndicator(
-          backgroundColor: KSubSecondryFontsColor,
-          color: KPrimaryColor,
-        ),
-      );
-    } else {
-      return Container();
-    }
-  });
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,172 +59,163 @@ class _SignUpState extends State<SignUp> {
         ),
         centerTitle: true,
       ),
-      body: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) => {
-          if (state is SignUpsuccessState)
-            {
-              Navigator.pushNamed(context, '/Home'),
-            }
-        },
-        child: ListView(
-          children: [
-            Container(
-              padding: EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    child: Text(
-                      "Create your account",
-                      style: KPrimaryFontStyleLarge,
+      body: ListView(
+        children: [
+          Container(
+            padding: EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  child: Text(
+                    "Create your account",
+                    style: KPrimaryFontStyleLarge,
+                  ),
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Container(
+                  child: basicTextField(_name, "Name"),
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Container(
+                  child: basicTextField(_email, "Email"),
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Container(
+                  child: basicTextField(_phone, "Phone"),
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Container(
+                  child: passwordTextField(
+                    _password,
+                    "Password",
+                    _obsecurePassword,
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _obsecurePassword = !_obsecurePassword;
+                        });
+                      },
+                      icon: Icon(_obsecurePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off),
                     ),
                   ),
-                  SizedBox(
-                    height: 5.0,
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Container(
+                  child: passwordTextField(
+                    _confirmPassword,
+                    "confirm Password",
+                    _obsecureConfirmPassword,
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _obsecureConfirmPassword = !_obsecureConfirmPassword;
+                        });
+                      },
+                      icon: Icon(_obsecureConfirmPassword
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                    ),
                   ),
-                  Container(
-                    child: basicTextField(_name, "Name"),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Container(
-                    child: basicTextField(_email, "Email"),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Container(
-                    child: basicTextField(_phone, "Phone"),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Container(
-                    child: passwordTextField(
-                      _password,
-                      "Password",
-                      _obsecurePassword,
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _obsecurePassword = !_obsecurePassword;
-                          });
-                        },
-                        icon: Icon(_obsecurePassword
-                            ? Icons.visibility
-                            : Icons.visibility_off),
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DropdownButton(
+                      style: KDropdownButtonStyle,
+                      underline: Container(
+                        width: 0.0,
                       ),
+                      isExpanded: false,
+                      hint: Text('Type'),
+                      value: _selectedType,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _selectedType = newValue.toString();
+                        });
+                      },
+                      items: _types.map((type) {
+                        return DropdownMenuItem(
+                          child: Text(type),
+                          value: type,
+                        );
+                      }).toList(),
                     ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Container(
-                    child: passwordTextField(
-                      _confirmPassword,
-                      "confirm Password",
-                      _obsecureConfirmPassword,
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _obsecureConfirmPassword =
-                                !_obsecureConfirmPassword;
-                          });
-                        },
-                        icon: Icon(_obsecureConfirmPassword
-                            ? Icons.visibility
-                            : Icons.visibility_off),
+                    SizedBox(
+                      width: 40.0,
+                    ),
+                    DropdownButton(
+                      style: KDropdownButtonStyle,
+                      underline: Container(
+                        width: 0.0,
                       ),
+                      isExpanded: false,
+                      hint: Text('Category'),
+                      value: _selectedCategory,
+                      onChanged: (newValuex) {
+                        setState(() {
+                          _selectedCategory = newValuex.toString();
+                        });
+                      },
+                      items: _category.map((category) {
+                        return DropdownMenuItem(
+                          child: Text(category),
+                          value: category,
+                        );
+                      }).toList(),
                     ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      DropdownButton(
-                        style: KDropdownButtonStyle,
-                        underline: Container(
-                          width: 0.0,
+                  ],
+                ),
+                SizedBox(height: 50.0),
+                Container(
+                  width: 150.0,
+                  child: ButtonTheme(
+                    minWidth: double.infinity,
+                    height: 70.0,
+                    buttonColor: KPrimaryColor,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        elevation: MaterialStateProperty.all(
+                          1.0,
                         ),
-                        isExpanded: false,
-                        hint: Text('Type'),
-                        value: _selectedType,
-                        onChanged: (newValue) {
-                          setState(() {
-                            _selectedType = newValue.toString();
-                          });
-                        },
-                        items: _types.map((type) {
-                          return DropdownMenuItem(
-                            child: Text(type),
-                            value: type,
-                          );
-                        }).toList(),
-                      ),
-                      SizedBox(
-                        width: 40.0,
-                      ),
-                      DropdownButton(
-                        style: KDropdownButtonStyle,
-                        underline: Container(
-                          width: 0.0,
-                        ),
-                        isExpanded: false,
-                        hint: Text('Category'),
-                        value: _selectedCategory,
-                        onChanged: (newValuex) {
-                          setState(() {
-                            _selectedCategory = newValuex.toString();
-                          });
-                        },
-                        items: _category.map((category) {
-                          return DropdownMenuItem(
-                            child: Text(category),
-                            value: category,
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 50.0),
-                  Container(
-                    width: 150.0,
-                    child: ButtonTheme(
-                      minWidth: double.infinity,
-                      height: 70.0,
-                      buttonColor: KPrimaryColor,
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          elevation: MaterialStateProperty.all(
-                            1.0,
-                          ),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
                           ),
                         ),
-                        child: Text(
-                          "Next",
-                          style: KPrimaryButtonsFontStyle,
-                        ),
-                        onPressed: next,
                       ),
+                      child: Text(
+                        "Next",
+                        style: KPrimaryButtonsFontStyle,
+                      ),
+                      onPressed: next,
                     ),
                   ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  error
-                ],
-              ),
-            )
-          ],
-        ),
+                ),
+                // SizedBox(
+                //   height: 5.0,
+                // ),
+                // error
+              ],
+            ),
+          )
+        ],
       ),
       resizeToAvoidBottomInset: true,
     );
@@ -372,15 +335,18 @@ class _SignUpState extends State<SignUp> {
           category = 1;
         });
       }
-
-      authBloc.add(SignUpButtonPressed(
-          name: _name.text,
-          email: _email.text,
-          phone: _phone.text,
-          password: _password.text,
-          passwordConfirmation: _confirmPassword.text,
-          type: type,
-          category: category));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ContinueSignUp(
+                    name: _name.text,
+                    email: _email.text,
+                    phone: _phone.text,
+                    password: _password.text,
+                    passwordConfirmation: _confirmPassword.text,
+                    type: type,
+                    category: category,
+                  )));
     }
   }
 }

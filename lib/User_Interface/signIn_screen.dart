@@ -2,8 +2,8 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fntat/Blocs/authentication_bloc.dart';
-import 'package:fntat/Blocs/authentication_events.dart';
-import 'package:fntat/Blocs/authentication_states.dart';
+import 'package:fntat/Blocs/Events/authentication_events.dart';
+import 'package:fntat/Blocs/States/authentication_states.dart';
 import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Components/flushbar.dart';
 
@@ -80,7 +80,8 @@ class _SignInState extends State<SignIn> {
         listener: (context, state) => {
           if (state is SignInSuccessState)
             {
-              Navigator.pushNamed(context, '/Home'),
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/Home', (route) => false),
             }
         },
         child: Padding(

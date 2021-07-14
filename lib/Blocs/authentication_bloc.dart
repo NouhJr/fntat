@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fntat/Blocs/authentication_events.dart';
-import 'package:fntat/Blocs/authentication_states.dart';
+import 'package:fntat/Blocs/Events/authentication_events.dart';
+import 'package:fntat/Blocs/States/authentication_states.dart';
 import 'package:fntat/Data/authentication_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,7 +15,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield InitialState();
     } else if (event is SignUpButtonPressed) {
       yield LodingState();
-      print("befor calling signup");
       var data = await api.signup(
         event.name,
         event.email,
@@ -24,14 +23,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         event.passwordConfirmation,
         event.type,
         event.category,
+        event.image,
+        event.description,
       );
       if (data == 400 || data['success'] == false) {
-        print(data['success']);
         yield AuthenticationErrorState("Registration failed");
       } else if (data['message'] == "transaction success") {
-        print("before message");
-        print(data['message']);
         prefs.setString("TOKEN", data['data']['token']);
+        prefs.setString("USERNAME", data['data']['user']['name']);
+        prefs.setString("EMAIL", data['data']['user']['email']);
         prefs.setInt("USERID", data['data']['user']['id']);
         prefs.setInt("USERTYPE", event.type);
         prefs.setInt("USERSTATUS", data['data']['user']['status']);
@@ -46,6 +46,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         yield AuthenticationErrorState("Authentication failed");
       } else if (data['message'] == "login sucess") {
         prefs.setString("TOKEN", data['token']);
+        prefs.setString("USERNAME", "mmmc"); //data['data']['user']['name']);
+        prefs.setString(
+            "EMAIL", "mmgg@gmail.com"); //data['data']['user']['email']);
         prefs.setInt("USERID", data['user']);
         prefs.setInt("USERTYPE", data['type']);
         prefs.setInt("USERSTATUS", data['status']);

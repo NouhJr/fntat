@@ -13,7 +13,7 @@ class Warning {
       icon: Icon(
         icons,
         size: 28,
-        color: KPrimaryColor,
+        color: KWarningColor,
       ),
       borderWidth: 5,
       duration: Duration(seconds: 3),
