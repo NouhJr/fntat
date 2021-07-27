@@ -117,6 +117,7 @@ class _SignInState extends State<SignIn> {
                     },
                     icon: Icon(
                         _obsecure ? Icons.visibility : Icons.visibility_off),
+                    color: KPrimaryColor,
                   ),
                 ),
               ),
@@ -151,6 +152,7 @@ class _SignInState extends State<SignIn> {
           "Sign in",
           style: KPrimaryButtonsFontStyle,
         ),
+        backgroundColor: KPrimaryColor,
         isExtended: true,
         onPressed: signIn,
       ),

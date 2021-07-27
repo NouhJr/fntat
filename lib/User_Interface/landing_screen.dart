@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fntat/Components/constants.dart';
 
 class Landing extends StatefulWidget {
@@ -36,9 +35,10 @@ class _LandingState extends State<Landing> {
                   child: ButtonTheme(
                     minWidth: double.infinity,
                     height: 70.0,
-                    buttonColor: KPrimaryColor,
                     child: ElevatedButton(
                       style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(KPrimaryColor),
                         elevation: MaterialStateProperty.all(
                           1.0,
                         ),
@@ -55,8 +55,8 @@ class _LandingState extends State<Landing> {
                       ),
                       onPressed: () => {
                         Navigator.pushNamed(context, '/SignUp'),
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, '/SignUp', (route) => false),
+                        // Navigator.pushNamedAndRemoveUntil(
+                        //     context, '/SignUp', (route) => false),
                       },
                     ),
                   ),
@@ -79,8 +79,9 @@ class _LandingState extends State<Landing> {
                     ),
                     TextButton(
                       onPressed: () => {
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, '/SignIn', (route) => false),
+                        Navigator.pushNamed(context, '/SignIn'),
+                        // Navigator.pushNamedAndRemoveUntil(
+                        //     context, '/SignIn', (route) => false),
                       },
                       child: Text(
                         "Sign in",

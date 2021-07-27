@@ -67,6 +67,40 @@ class _EditPhoneState extends State<EditPhone> {
             Navigator.pop(context),
           },
         ),
+        actions: [
+          Row(
+            children: [
+              Container(
+                width: 100.0,
+                child: ButtonTheme(
+                  minWidth: double.infinity,
+                  height: 10.0,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(KPrimaryColor),
+                      elevation: MaterialStateProperty.all(
+                        1.0,
+                      ),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40.0),
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      "Save",
+                      style: KPrimaryButtonsFontStyle,
+                    ),
+                    onPressed: updatePhone,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 10.0,
+              ),
+            ],
+          ),
+        ],
       ),
       body: BlocListener<UserProfileBloc, UserProfileState>(
         listener: (context, state) => {},
@@ -95,14 +129,15 @@ class _EditPhoneState extends State<EditPhone> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text(
-          "Update phone",
-          style: KPrimaryButtonsFontStyle,
-        ),
-        isExtended: true,
-        onPressed: updatePhone,
-      ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   label: Text(
+      //     "Update phone",
+      //     style: KPrimaryButtonsFontStyle,
+      //   ),
+      //   backgroundColor: KPrimaryColor,
+      //   isExtended: true,
+      //   onPressed: updatePhone,
+      // ),
     );
   }
 

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthApi {
@@ -43,18 +45,16 @@ class AuthApi {
   }
 
   signin(String phone, String password) async {
-    Map<String, dynamic> body = {
-      "phone": phone,
-      "password": password,
-    };
-    FormData formData = FormData.fromMap(body);
     try {
-      var res = await dio
-          .post(
-              "http://164.160.104.125:9090/fntat/api/login?phone=$phone&password=$password",
-              data: formData)
-          .timeout(const Duration(seconds: 10));
-      final data = res.data;
+      var res = await http.post(
+        Uri.parse(
+            "http://164.160.104.125:9090/fntat/api/login?phone=$phone&password=$password"),
+        body: {
+          "phone": phone,
+          "password": password,
+        },
+      ).timeout(const Duration(seconds: 10));
+      final data = json.decode(res.body);
       return data;
     } on TimeoutException catch (_) {
       return 400;
@@ -63,11 +63,38 @@ class AuthApi {
     }
   }
 
+  getUserData() async {
+    var prefs = await SharedPreferences.getInstance();
+    var id = prefs.getInt("USERID");
+    var token = prefs.getString("TOKEN");
+    FormData formData = FormData.fromMap({
+      "user_id": id,
+    });
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      final res = await dio
+          .post(
+            "http://164.160.104.125:9090/fntat/api/profile",
+            data: formData,
+          )
+          .timeout(const Duration(seconds: 10));
+      final data = res.data;
+      return data;
+    } on TimeoutException catch (err) {
+      print(err.toString());
+      return 400;
+    } on Exception catch (error) {
+      print(error.toString());
+      return 400;
+    }
+  }
+
   signout() async {
     var deletePrefs = await SharedPreferences.getInstance();
     deletePrefs.remove("TOKEN");
-    deletePrefs.remove("USERNAME");
+    deletePrefs.remove("NAME");
     deletePrefs.remove("EMAIL");
+    deletePrefs.remove("IMAGE");
     deletePrefs.remove("USERID");
     deletePrefs.remove("USERTYPE");
     deletePrefs.remove("USERSTATUS");

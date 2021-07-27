@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fntat/Blocs/userProfile_bloc.dart';
+import 'package:fntat/Blocs/Events/userProfile_events.dart';
+import 'package:fntat/Blocs/States/userProfile_states.dart';
 import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Components/flushbar.dart';
 
@@ -10,6 +14,39 @@ class EditName extends StatefulWidget {
 
 class _EditNameState extends State<EditName> {
   TextEditingController _newName = new TextEditingController();
+
+  late UserProfileBloc userbloc;
+
+  @override
+  void initState() {
+    userbloc = BlocProvider.of<UserProfileBloc>(context);
+    super.initState();
+  }
+
+  final stateWidget =
+      BlocBuilder<UserProfileBloc, UserProfileState>(builder: (context, state) {
+    if (state is UpdateNameSuccessState) {
+      return Text(
+        state.message,
+        style: KErrorStyle,
+      );
+    } else if (state is UpdateNameErrorState) {
+      return Text(
+        state.message,
+        style: KErrorStyle,
+      );
+    } else if (state is UserProfileLoadingState) {
+      return Center(
+        child: CircularProgressIndicator(
+          backgroundColor: KSubSecondryFontsColor,
+          color: KPrimaryColor,
+        ),
+      );
+    } else {
+      return Container();
+    }
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,39 +67,77 @@ class _EditNameState extends State<EditName> {
             Navigator.pop(context),
           },
         ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              child: Text(
-                "Update your name",
-                style: KPrimaryFontStyle,
+        actions: [
+          Row(
+            children: [
+              Container(
+                width: 100.0,
+                child: ButtonTheme(
+                  minWidth: double.infinity,
+                  height: 10.0,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(KPrimaryColor),
+                      elevation: MaterialStateProperty.all(
+                        1.0,
+                      ),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40.0),
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      "Save",
+                      style: KPrimaryButtonsFontStyle,
+                    ),
+                    onPressed: updateName,
+                  ),
+                ),
               ),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Container(
-              child: basicTextField(_newName, "Update Name"),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            //stateWidget,
-          ],
+              SizedBox(
+                width: 10.0,
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: BlocListener<UserProfileBloc, UserProfileState>(
+        listener: (context, state) {},
+        child: Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                child: Text(
+                  "Update your name",
+                  style: KPrimaryFontStyle,
+                ),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                child: basicTextField(_newName, "Update Name"),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              stateWidget,
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text(
-          "Update Name",
-          style: KPrimaryButtonsFontStyle,
-        ),
-        isExtended: true,
-        onPressed: updateName,
-      ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   label: Text(
+      //     "Update Name",
+      //     style: KPrimaryButtonsFontStyle,
+      //   ),
+      //   backgroundColor: KPrimaryColor,
+      //   isExtended: true,
+      //   onPressed: updateName,
+      // ),
     );
   }
 
@@ -83,6 +158,8 @@ class _EditNameState extends State<EditName> {
         message: 'Please enter your name.',
         icons: Icons.warning,
       );
+    } else {
+      userbloc.add(EditNameButtonPressed(newName: _newName.text));
     }
   }
 }

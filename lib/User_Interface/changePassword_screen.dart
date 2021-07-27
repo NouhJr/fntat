@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fntat/Blocs/userProfile_bloc.dart';
+import 'package:fntat/Blocs/Events/userProfile_events.dart';
+import 'package:fntat/Blocs/States/userProfile_states.dart';
 import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Components/flushbar.dart';
 
@@ -16,6 +20,38 @@ class _ChangePasswordState extends State<ChangePassword> {
   bool _obsecureOldPassword = true;
   bool _obsecureNewPassword = true;
   bool _obsecureConfirmNewPassword = true;
+
+  late UserProfileBloc userbloc;
+
+  @override
+  void initState() {
+    userbloc = BlocProvider.of<UserProfileBloc>(context);
+    super.initState();
+  }
+
+  final stateWidget =
+      BlocBuilder<UserProfileBloc, UserProfileState>(builder: (context, state) {
+    if (state is ChangePasswordSuccessState) {
+      return Text(
+        state.message,
+        style: KErrorStyle,
+      );
+    } else if (state is ChangePasswordErrorState) {
+      return Text(
+        state.message,
+        style: KErrorStyle,
+      );
+    } else if (state is UserProfileLoadingState) {
+      return Center(
+        child: CircularProgressIndicator(
+          backgroundColor: KSubSecondryFontsColor,
+          color: KPrimaryColor,
+        ),
+      );
+    } else {
+      return Container();
+    }
+  });
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,83 +73,89 @@ class _ChangePasswordState extends State<ChangePassword> {
           },
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              child: Text(
-                "Change your password",
-                style: KPrimaryFontStyle,
-              ),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Container(
-              child: passwordTextField(
-                _oldPassword,
-                "Old Password",
-                _obsecureOldPassword,
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _obsecureOldPassword = !_obsecureOldPassword;
-                    });
-                  },
-                  icon: Icon(_obsecureOldPassword
-                      ? Icons.visibility
-                      : Icons.visibility_off),
+      body: BlocListener<UserProfileBloc, UserProfileState>(
+        listener: (context, state) {},
+        child: Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                child: Text(
+                  "Change your password",
+                  style: KPrimaryFontStyle,
                 ),
               ),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Container(
-              child: passwordTextField(
-                _newPassword,
-                "New Password",
-                _obsecureNewPassword,
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _obsecureNewPassword = !_obsecureNewPassword;
-                    });
-                  },
-                  icon: Icon(_obsecureNewPassword
-                      ? Icons.visibility
-                      : Icons.visibility_off),
+              SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                child: passwordTextField(
+                  _oldPassword,
+                  "Old Password",
+                  _obsecureOldPassword,
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _obsecureOldPassword = !_obsecureOldPassword;
+                      });
+                    },
+                    icon: Icon(_obsecureOldPassword
+                        ? Icons.visibility
+                        : Icons.visibility_off),
+                    color: KPrimaryColor,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Container(
-              child: passwordTextField(
-                _confirmNewPassword,
-                "Confirm Password",
-                _obsecureConfirmNewPassword,
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _obsecureConfirmNewPassword =
-                          !_obsecureConfirmNewPassword;
-                    });
-                  },
-                  icon: Icon(_obsecureConfirmNewPassword
-                      ? Icons.visibility
-                      : Icons.visibility_off),
+              SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                child: passwordTextField(
+                  _newPassword,
+                  "New Password",
+                  _obsecureNewPassword,
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _obsecureNewPassword = !_obsecureNewPassword;
+                      });
+                    },
+                    icon: Icon(_obsecureNewPassword
+                        ? Icons.visibility
+                        : Icons.visibility_off),
+                    color: KPrimaryColor,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            //stateWidget,
-          ],
+              SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                child: passwordTextField(
+                  _confirmNewPassword,
+                  "Confirm Password",
+                  _obsecureConfirmNewPassword,
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _obsecureConfirmNewPassword =
+                            !_obsecureConfirmNewPassword;
+                      });
+                    },
+                    icon: Icon(_obsecureConfirmNewPassword
+                        ? Icons.visibility
+                        : Icons.visibility_off),
+                    color: KPrimaryColor,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              stateWidget,
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -121,6 +163,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           "Update Password",
           style: KPrimaryButtonsFontStyle,
         ),
+        backgroundColor: KPrimaryColor,
         isExtended: true,
         onPressed: updatePassword,
       ),
@@ -165,6 +208,12 @@ class _ChangePasswordState extends State<ChangePassword> {
         message: 'Please confirm your new password.',
         icons: Icons.warning,
       );
+    } else {
+      userbloc.add(ChangePasswordButtonPressed(
+        oldPassword: _oldPassword.text,
+        newPassword: _newPassword.text,
+        confirmNewPassword: _confirmNewPassword.text,
+      ));
     }
   }
 }

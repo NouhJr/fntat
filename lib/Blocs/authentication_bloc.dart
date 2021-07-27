@@ -30,7 +30,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         yield AuthenticationErrorState("Registration failed");
       } else if (data['message'] == "transaction success") {
         prefs.setString("TOKEN", data['data']['token']);
-        prefs.setString("USERNAME", data['data']['user']['name']);
+        prefs.setString("NAME", data['data']['user']['name']);
         prefs.setString("EMAIL", data['data']['user']['email']);
         prefs.setInt("USERID", data['data']['user']['id']);
         prefs.setInt("USERTYPE", event.type);
@@ -46,9 +46,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         yield AuthenticationErrorState("Authentication failed");
       } else if (data['message'] == "login sucess") {
         prefs.setString("TOKEN", data['token']);
-        prefs.setString("USERNAME", "mmmc"); //data['data']['user']['name']);
-        prefs.setString(
-            "EMAIL", "mmgg@gmail.com"); //data['data']['user']['email']);
         prefs.setInt("USERID", data['user']);
         prefs.setInt("USERTYPE", data['type']);
         prefs.setInt("USERSTATUS", data['status']);

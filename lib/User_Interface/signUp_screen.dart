@@ -107,6 +107,7 @@ class _SignUpState extends State<SignUp> {
                       icon: Icon(_obsecurePassword
                           ? Icons.visibility
                           : Icons.visibility_off),
+                      color: KPrimaryColor,
                     ),
                   ),
                 ),
@@ -127,6 +128,7 @@ class _SignUpState extends State<SignUp> {
                       icon: Icon(_obsecureConfirmPassword
                           ? Icons.visibility
                           : Icons.visibility_off),
+                      color: KPrimaryColor,
                     ),
                   ),
                 ),
@@ -187,9 +189,10 @@ class _SignUpState extends State<SignUp> {
                   child: ButtonTheme(
                     minWidth: double.infinity,
                     height: 70.0,
-                    buttonColor: KPrimaryColor,
                     child: ElevatedButton(
                       style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(KPrimaryColor),
                         elevation: MaterialStateProperty.all(
                           1.0,
                         ),

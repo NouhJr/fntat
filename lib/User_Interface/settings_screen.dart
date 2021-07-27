@@ -108,6 +108,21 @@ class _SettingsState extends State<Settings> {
               SizedBox(
                 height: 5.0,
               ),
+              TextButton(
+                onPressed: () => {
+                  Navigator.pushNamed(context, '/EditPicture'),
+                },
+                child: Text(
+                  "Edit Picture",
+                  style: KEditButtonsStyle,
+                ),
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(Colors.transparent),
+                ),
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
               Divider(
                 color: KSubSecondryFontsColor,
                 thickness: 1.0,

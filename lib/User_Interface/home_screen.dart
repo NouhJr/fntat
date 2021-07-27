@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fntat/Data/userProfile_data.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fntat/Blocs/authentication_bloc.dart';
 import 'package:fntat/Blocs/userProfile_bloc.dart';
+import 'package:fntat/Blocs/postsFeed_bloc.dart';
 import 'package:fntat/Blocs/States/userProfile_states.dart';
 import 'package:fntat/Blocs/States/authentication_states.dart';
-import 'package:fntat/Components/constants.dart';
+import 'package:fntat/Blocs/States/postsFeed_states.dart';
+import 'package:fntat/Blocs/Events/userProfile_events.dart';
+import 'package:fntat/Data/userProfile_data.dart';
 import 'package:fntat/Data/authentication_data.dart';
 import 'package:fntat/Data/search_data.dart';
+import 'package:fntat/Data/postsFeed_data.dart';
+import 'package:fntat/Components/constants.dart';
 import 'package:fntat/User_Interface/account_screen.dart';
 import 'package:fntat/User_Interface/settings_screen.dart';
 import 'package:fntat/User_Interface/search_screen.dart';
@@ -19,7 +22,12 @@ import 'package:fntat/User_Interface/newsFeed_screen.dart';
 import 'package:fntat/User_Interface/editPhone_screen.dart';
 import 'package:fntat/User_Interface/editName_screen.dart';
 import 'package:fntat/User_Interface/editEmail_screen.dart';
+import 'package:fntat/User_Interface/editProfilePicture_screen.dart';
 import 'package:fntat/User_Interface/changePassword_screen.dart';
+import 'package:fntat/User_Interface/otherUsersProfile_screen.dart';
+import 'package:fntat/User_Interface/addPost_screen.dart';
+import 'package:fntat/User_Interface/userOwnedPosts_screen.dart';
+import 'package:fntat/User_Interface/followers_screen.dart';
 import 'package:fntat/main.dart';
 
 class Home extends StatelessWidget {
@@ -31,6 +39,9 @@ class Home extends StatelessWidget {
         BlocProvider(
             create: (context) =>
                 UserProfileBloc(UserProfileInitialState(), UserProfileApi())),
+        BlocProvider(
+            create: (context) =>
+                PostsFeedBloc(PostsFeedInitialState(), PostsData())),
       ],
       child: MaterialApp(
         routes: {
@@ -44,7 +55,12 @@ class Home extends StatelessWidget {
           '/EditPhone': (context) => EditPhone(),
           '/EditName': (context) => EditName(),
           '/EditEmail': (context) => EditEmail(),
+          '/EditPicture': (context) => EditProfilePicture(),
           '/ChangePassword': (context) => ChangePassword(),
+          '/Others': (context) => OtherUsersProfile(),
+          '/AddPost': (context) => AddPost(),
+          '/MyPosts': (context) => UserOwnedPosts(),
+          '/MyFollowers': (context) => FollowersScreen(),
         },
         home: HomeScreen(),
       ),
@@ -92,21 +108,18 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  late UserProfileBloc userProfileBloc;
   @override
   void initState() {
-    getUserData();
+    userProfileBloc = BlocProvider.of<UserProfileBloc>(context);
+    userProfileBloc.add(GettingUserProfileData());
     super.initState();
   }
 
-  var userName = '';
-  var userEmail = '';
-  getUserData() async {
-    var prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userName = prefs.getString("USERNAME")!;
-      userEmail = prefs.getString("EMAIL")!;
-    });
-  }
+  var userName = 'User Name';
+  var userEmail = 'user@email.com';
+  var userImage =
+      "https://www.uclg-planning.org/sites/default/files/styles/featured_home_left/public/no-user-image-square.jpg?itok=PANMBJF-";
 
   @override
   Widget build(BuildContext context) {
@@ -211,9 +224,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   textAlign: TextAlign.center,
                 ),
                 currentAccountPicture: GestureDetector(
-                  child: new CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        "https://www.uclg-planning.org/sites/default/files/styles/featured_home_left/public/no-user-image-square.jpg?itok=PANMBJF-"),
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(userImage),
                   ),
                 ),
 
@@ -242,7 +254,17 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body: pages[_selectedIndex],
+      body: BlocListener<UserProfileBloc, UserProfileState>(
+          listener: (context, state) {
+            if (state is GettingUserProfileDataSuccessState) {
+              setState(() {
+                userName = state.name ?? "user name";
+                userEmail = state.email ?? "user@email.com";
+                userImage = 'http://164.160.104.125:9090/fntat/${state.image}';
+              });
+            }
+          },
+          child: pages[_selectedIndex]),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(

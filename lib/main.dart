@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Blocs/authentication_bloc.dart';
 import 'package:fntat/Blocs/States/authentication_states.dart';
 import 'package:fntat/Data/authentication_data.dart';
@@ -12,14 +14,21 @@ import 'User_Interface/signIn_screen.dart';
 import 'User_Interface/signUp_screen.dart';
 
 void main() async {
-  // runApp(Auth());
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var token = prefs.getString("TOKEN");
   runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
     title: "Fntat",
-    home: token == null ? Initial() : Home(),
+    theme: ThemeData(
+      primaryColor: KPrimaryColor,
+      primarySwatch: Colors.green,
+    ),
+    home: AnimatedSplashScreen(
+        duration: 3000,
+        splash: Container(child: Image.asset("assets/images/fntat.png")),
+        nextScreen: token == null ? Initial() : Home(),
+        splashTransition: SplashTransition.sizeTransition,
+        backgroundColor: KSubPrimaryColor),
   ));
 }
 

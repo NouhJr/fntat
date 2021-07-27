@@ -149,9 +149,10 @@ class _ContinueSignUpState extends State<ContinueSignUp> {
                         child: ButtonTheme(
                           minWidth: double.infinity,
                           height: 30.0,
-                          buttonColor: KPrimaryColor,
                           child: ElevatedButton(
                             style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(KPrimaryColor),
                               elevation: MaterialStateProperty.all(
                                 1.0,
                               ),
@@ -180,9 +181,10 @@ class _ContinueSignUpState extends State<ContinueSignUp> {
                     child: ButtonTheme(
                       minWidth: double.infinity,
                       height: 70.0,
-                      buttonColor: KPrimaryColor,
                       child: ElevatedButton(
                         style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(KPrimaryColor),
                           elevation: MaterialStateProperty.all(
                             1.0,
                           ),
@@ -217,14 +219,10 @@ class _ContinueSignUpState extends State<ContinueSignUp> {
 
   Future chooseFile() async {
     final source = ImageSource.gallery;
-    final pickedFile = await ImagePicker().getImage(source: source);
-    if (pickedFile == null) {
-      return null;
-    } else {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
-    }
+    final pickedFile = await ImagePicker.pickImage(source: source);
+    setState(() {
+      _image = File(pickedFile.path);
+    });
   }
 
   void signUp() {

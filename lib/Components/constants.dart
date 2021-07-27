@@ -5,11 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 ///*************************COLORS**************************/
-const KPrimaryColor = Color(0xFF4379e6);
+const KPrimaryColor = Color(0xFF2c9448); //Color(0xFF4379e6);
 const KSubPrimaryColor = Color(0xFFffffff);
 const KPrimaryFontsColor = Color(0xFFffffff);
 const KSubPrimaryFontsColor = Color(0xFF000000);
-const KSubSecondryFontsColor = Color(0xFF8a8584);
+const KSubSecondryFontsColor = Colors.grey; //Color(0xFF8a8584);
+const KSubFontsColor = Color(0xFFB2B1B9);
 const KWarningColor = Color(0xFFe01709);
 
 ///*************************APPNAME**************************/
@@ -23,7 +24,8 @@ const AppNameStyle = TextStyle(
 );
 
 ///*************************FONTS**************************/
-const KPrimaryFontFamily = "Segoe UI";
+// const KPrimaryFontFamily = "Segoe UI";
+const KPrimaryFontFamily = "Janna LT";
 
 ///*************************FONTSTYLES**************************/
 const KPrimaryFontStyle = TextStyle(
@@ -77,21 +79,42 @@ const KUserNameStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
   fontSize: 25.0,
   fontWeight: FontWeight.bold,
+  color: KSubPrimaryFontsColor,
+);
+
+const KReceiverNameStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontSize: 22.0,
+  fontWeight: FontWeight.w700,
   color: KPrimaryFontsColor,
+);
+
+const KLastSeenStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontSize: 19.0,
+  fontWeight: FontWeight.w600,
+  color: KSubFontsColor,
 );
 
 const KUserEmailStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
+  fontSize: 20.0,
+  fontWeight: FontWeight.bold,
+  color: Colors.grey,
+);
+
+const KPostTimeStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
   fontSize: 19.0,
   fontWeight: FontWeight.bold,
-  color: KSubSecondryFontsColor,
+  color: Colors.grey,
 );
 
 const KFollowing_FollowersStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
   fontSize: 19.0,
   fontWeight: FontWeight.w700,
-  color: KPrimaryFontsColor,
+  color: KSubPrimaryFontsColor,
 );
 
 const KScreenTitlesStyle = TextStyle(
@@ -115,6 +138,69 @@ const KSignOutButtonStyle = TextStyle(
   color: KWarningColor,
 );
 
+const KSplashStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontSize: 30.0,
+  fontWeight: FontWeight.bold,
+  fontStyle: FontStyle.italic,
+  color: KPrimaryColor,
+  letterSpacing: 1.0,
+);
+
+const KWriteCommentAndSendMessageStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontWeight: FontWeight.w600,
+  fontSize: 19.0,
+);
+
+const KAddPostButtonStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontWeight: FontWeight.bold,
+  fontSize: 18.0,
+  color: KPrimaryFontsColor,
+);
+
+const KAddPostButtonInAppBarStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontWeight: FontWeight.bold,
+  fontSize: 22.0,
+  color: KPrimaryColor,
+);
+
+const KNameStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontSize: 23.0,
+  fontWeight: FontWeight.bold,
+  color: KSubPrimaryFontsColor,
+);
+
+const KFlushBarTitleStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontWeight: FontWeight.bold,
+  fontSize: 18.0,
+  color: KPrimaryFontsColor,
+);
+
+const KFlushBarMessageStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontWeight: FontWeight.bold,
+  fontSize: 16.0,
+  color: KPrimaryFontsColor,
+);
+
+const KPostStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontWeight: FontWeight.w700,
+  fontSize: 20.0,
+  color: KSubPrimaryFontsColor,
+);
+
+const KLikesCommentsAndSharesCount = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontSize: 18.0,
+  fontWeight: FontWeight.w600,
+);
+
 ///*************************TEXTFIELDS**************************/
 TextField basicTextField(TextEditingController controller, String label) {
   return TextField(
@@ -124,11 +210,81 @@ TextField basicTextField(TextEditingController controller, String label) {
       labelText: label,
       labelStyle: TextStyle(
         fontFamily: KPrimaryFontFamily,
+        color: KPrimaryColor,
         fontWeight: FontWeight.w700,
         fontSize: 25.0,
       ),
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: KPrimaryColor),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: KPrimaryColor),
+      ),
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(color: KPrimaryColor),
+      ),
       floatingLabelBehavior: FloatingLabelBehavior.always,
     ),
+    cursorColor: KPrimaryColor,
+  );
+}
+
+TextField messageTextField(TextEditingController controller) {
+  return TextField(
+    style: KTextFieldStyle,
+    controller: controller,
+    decoration: InputDecoration(
+      fillColor: KPrimaryColor,
+      hintText: "Start a message",
+      hintStyle: KWriteCommentAndSendMessageStyle,
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: KPrimaryColor),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: KPrimaryColor),
+      ),
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(color: KPrimaryColor),
+      ),
+    ),
+    cursorColor: KPrimaryColor,
+  );
+}
+
+TextField commentTextField(TextEditingController controller) {
+  return TextField(
+    style: KTextFieldStyle,
+    controller: controller,
+    decoration: InputDecoration(
+      fillColor: KPrimaryColor,
+      hintText: "Write a comment",
+      hintStyle: KWriteCommentAndSendMessageStyle,
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: Colors.transparent),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: Colors.transparent),
+      ),
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(color: Colors.transparent),
+      ),
+    ),
+    cursorColor: KPrimaryColor,
+  );
+}
+
+TextField postTextField(TextEditingController controller) {
+  return TextField(
+    style: KTextFieldStyle,
+    controller: controller,
+    decoration: InputDecoration(
+      fillColor: KPrimaryColor,
+      hintText: "Write a new post...",
+      hintStyle: KWriteCommentAndSendMessageStyle,
+      border: InputBorder.none,
+    ),
+    cursorColor: KPrimaryColor,
+    cursorWidth: 5.0,
   );
 }
 
@@ -141,13 +297,24 @@ TextField passwordTextField(TextEditingController controller, String label,
       labelText: label,
       labelStyle: TextStyle(
         fontFamily: KPrimaryFontFamily,
+        color: KPrimaryColor,
         fontWeight: FontWeight.w700,
         fontSize: 25.0,
+      ),
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: KPrimaryColor),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: KPrimaryColor),
+      ),
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(color: KPrimaryColor),
       ),
       floatingLabelBehavior: FloatingLabelBehavior.always,
       suffixIcon: showPassword,
     ),
     obscureText: obscure,
+    cursorColor: KPrimaryColor,
   );
 }
 
@@ -160,11 +327,22 @@ TextField descriptionTextField(TextEditingController controller) {
       labelText: "Description",
       labelStyle: TextStyle(
         fontFamily: KPrimaryFontFamily,
+        color: KPrimaryColor,
         fontWeight: FontWeight.w700,
         fontSize: 25.0,
       ),
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: KPrimaryColor),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: KPrimaryColor),
+      ),
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(color: KPrimaryColor),
+      ),
       floatingLabelBehavior: FloatingLabelBehavior.always,
     ),
+    cursorColor: KPrimaryColor,
   );
 }
 
