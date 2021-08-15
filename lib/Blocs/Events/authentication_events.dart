@@ -26,7 +26,6 @@ class SignUpButtonPressed extends AuthEvent {
   final int type;
   final int category;
   final File image;
-  final String description;
 
   SignUpButtonPressed({
     required this.name,
@@ -37,14 +36,21 @@ class SignUpButtonPressed extends AuthEvent {
     required this.type,
     required this.category,
     required this.image,
-    required this.description,
   });
 }
 
 class ResetPasswordButtonPressed extends AuthEvent {
   final String newPassword;
   final String confirmPassword;
+  final int userID;
 
   ResetPasswordButtonPressed(
-      {required this.newPassword, required this.confirmPassword});
+      {required this.newPassword,
+      required this.confirmPassword,
+      required this.userID});
+}
+
+class FindByPhoneButtonPressed extends AuthEvent {
+  final String phone;
+  FindByPhoneButtonPressed({required this.phone});
 }

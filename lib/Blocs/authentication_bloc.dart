@@ -24,31 +24,41 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         event.type,
         event.category,
         event.image,
-        event.description,
       );
-      if (data == 400 || data['success'] == false) {
+      if (data == 400) {
         yield AuthenticationErrorState("Registration failed");
-      } else if (data['message'] == "transaction success") {
+      } else if (data['response_code'] == 400 &&
+          data['message']['email']?[0] == "The email has already been taken.") {
+        yield AuthenticationErrorState("The email has already been taken.");
+      } else if (data['response_code'] == 400 &&
+          data['message']['phone']?[0] == "The phone has already been taken.") {
+        yield AuthenticationErrorState("The phone has already been taken.");
+      } else {
         prefs.setString("TOKEN", data['data']['token']);
         prefs.setString("NAME", data['data']['user']['name']);
         prefs.setString("EMAIL", data['data']['user']['email']);
         prefs.setInt("USERID", data['data']['user']['id']);
         prefs.setInt("USERTYPE", event.type);
         prefs.setInt("USERSTATUS", data['data']['user']['status']);
+        await api.getFirebaseToken(data['data']['user']['id']);
         yield SignUpsuccessState();
       }
     } else if (event is SignInButtonPressed) {
       yield LodingState();
       var data = await api.signin(event.phone, event.password);
-      if (data == 400 ||
-          data['message'] == "User not exist" ||
-          data['message'] == "wrong password") {
+      if (data == 400) {
         yield AuthenticationErrorState("Authentication failed");
+      } else if (data['message'] == "User not exist" ||
+          data['message'] == "wrong password") {
+        yield AuthenticationErrorState(
+            "Your phone number or password is incorrect");
       } else if (data['message'] == "login sucess") {
         prefs.setString("TOKEN", data['token']);
         prefs.setInt("USERID", data['user']);
         prefs.setInt("USERTYPE", data['type']);
         prefs.setInt("USERSTATUS", data['status']);
+        await api.gettingUserFollowingIDs();
+        await api.getFirebaseToken(data['user']);
         yield SignInSuccessState();
       }
     } else if (event is SignOutButtonPressed) {
@@ -57,13 +67,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield SignOutSuccessState();
     } else if (event is ResetPasswordButtonPressed) {
       yield LodingState();
-      var data =
-          await api.resetpassword(event.newPassword, event.confirmPassword);
+      var data = await api.resetpassword(
+          event.newPassword, event.confirmPassword, event.userID);
       if (data == 400 || data['message'] == "validation error") {
         yield ResetPasswordErrorState(data['message']);
       } else if (data['message'] == "password updated successfully") {
         yield ResetPasswordSuccessState(data['message']);
       }
+    } else if (event is FindByPhoneButtonPressed) {
+      yield LodingState();
+      var userData = await api.findUserByPhone(event.phone);
+      yield FindByPhoneSucessState(
+          userID: userData['data'][0]['id'],
+          userName: userData['data'][0]['name']);
     }
   }
 }

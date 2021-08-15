@@ -122,3 +122,56 @@ class UpdatePictureErrorState extends UserProfileState {
 class AddPostSuccessState extends UserProfileState {}
 
 class AddPostErrorState extends UserProfileState {}
+
+class FollowUserSuccessState extends UserProfileState {}
+
+class FollowUserErrorState extends UserProfileState {
+  final msg;
+  FollowUserErrorState({this.msg});
+}
+
+class UnFollowUserSuccessState extends UserProfileState {}
+
+class UnFollowUserErrorState extends UserProfileState {}
+
+class DeletePostSuccessState extends UserProfileState {}
+
+class DeletePostErrorState extends UserProfileState {}
+
+class EditPostSuccessState extends UserProfileState {}
+
+class EditPostErrorState extends UserProfileState {}
+
+class SharePostSuccessState extends UserProfileState {}
+
+class SharePostErrorState extends UserProfileState {}
+
+class AddCommentSuccessState extends UserProfileState {}
+
+class AddCommentErrorState extends UserProfileState {}
+
+class DeleteCommentSuccessState extends UserProfileState {}
+
+class DeleteCommentErrorState extends UserProfileState {}
+
+class EditCommentSuccessState extends UserProfileState {}
+
+class EditCommentErrorState extends UserProfileState {}
+
+class AddReplySuccessState extends UserProfileState {}
+
+class AddReplyErrorState extends UserProfileState {}
+
+class GettingHomePagePostsSuccessState extends UserProfileState {
+  final List<dynamic> posts;
+  GettingHomePagePostsSuccessState({required this.posts});
+}
+
+class GettingHomePagePostsErrorState extends UserProfileState {
+  final String error;
+  GettingHomePagePostsErrorState({required this.error});
+}
+
+class DeleteMessageSuccessState extends UserProfileState {}
+
+class DeleteMessageErrorState extends UserProfileState {}

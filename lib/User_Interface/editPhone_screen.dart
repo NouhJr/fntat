@@ -25,12 +25,7 @@ class _EditPhoneState extends State<EditPhone> {
 
   final stateWidget =
       BlocBuilder<UserProfileBloc, UserProfileState>(builder: (context, state) {
-    if (state is UpdatePhoneSuccessState) {
-      return Text(
-        state.message,
-        style: KErrorStyle,
-      );
-    } else if (state is UpdatePhoneErrorState) {
+    if (state is UpdatePhoneErrorState) {
       return Text(
         state.message,
         style: KErrorStyle,
@@ -38,8 +33,9 @@ class _EditPhoneState extends State<EditPhone> {
     } else if (state is UserProfileLoadingState) {
       return Center(
         child: CircularProgressIndicator(
-          backgroundColor: KSubSecondryFontsColor,
+          backgroundColor: KSubPrimaryColor,
           color: KPrimaryColor,
+          strokeWidth: 3.0,
         ),
       );
     } else {
@@ -71,39 +67,38 @@ class _EditPhoneState extends State<EditPhone> {
           Row(
             children: [
               Container(
-                width: 100.0,
-                child: ButtonTheme(
-                  minWidth: double.infinity,
-                  height: 10.0,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(KPrimaryColor),
-                      elevation: MaterialStateProperty.all(
-                        1.0,
-                      ),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40.0),
-                        ),
-                      ),
-                    ),
+                width: 90.0,
+                height: 30.0,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 2.0,
+                    color: KPrimaryColor,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
+                ),
+                child: Center(
+                  child: InkWell(
+                    onTap: updatePhone,
                     child: Text(
                       "Save",
-                      style: KPrimaryButtonsFontStyle,
+                      style: KSubPrimaryButtonsFontStyle,
                     ),
-                    onPressed: updatePhone,
                   ),
                 ),
               ),
               SizedBox(
-                width: 10.0,
+                width: 15.0,
               ),
             ],
           ),
         ],
       ),
       body: BlocListener<UserProfileBloc, UserProfileState>(
-        listener: (context, state) => {},
+        listener: (context, state) {
+          if (state is UpdatePhoneSuccessState) {
+            Navigator.pop(context);
+          }
+        },
         child: Padding(
           padding: EdgeInsets.all(10.0),
           child: Column(
@@ -122,22 +117,13 @@ class _EditPhoneState extends State<EditPhone> {
                 child: basicTextField(_newPhone, "Update Phone"),
               ),
               SizedBox(
-                height: 10.0,
+                height: 20.0,
               ),
               stateWidget,
             ],
           ),
         ),
       ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   label: Text(
-      //     "Update phone",
-      //     style: KPrimaryButtonsFontStyle,
-      //   ),
-      //   backgroundColor: KPrimaryColor,
-      //   isExtended: true,
-      //   onPressed: updatePhone,
-      // ),
     );
   }
 

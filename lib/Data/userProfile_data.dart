@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -277,6 +279,266 @@ class UserProfileApi {
     } on TimeoutException catch (err) {
       print(err.toString());
       return 400;
+    } on Exception catch (error) {
+      print(error.toString());
+      return 400;
+    }
+  }
+
+  followUser(int id) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    FormData formData = FormData.fromMap({
+      "following_id": id,
+    });
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      final res = await dio.post(
+        "http://164.160.104.125:9090/fntat/api/follow-user",
+        data: formData,
+      );
+      final data = res.data;
+      return data;
+    } on Exception catch (error) {
+      print(error.toString());
+      return 400;
+    }
+  }
+
+  unFollowUser(int id) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    FormData formData = FormData.fromMap({
+      "following_id": id,
+    });
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      final res = await dio.post(
+        "http://164.160.104.125:9090/fntat/api/unfollow-user",
+        data: formData,
+      );
+      final data = res.data;
+      return data;
+    } on Exception catch (error) {
+      print(error.toString());
+      return 400;
+    }
+  }
+
+  deletePost(int postID) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      final res = await dio.post(
+        "http://164.160.104.125:9090/fntat/api/delete-post/$postID",
+      );
+      final data = res.data;
+      return data;
+    } on Exception catch (error) {
+      print(error.toString());
+      return 400;
+    }
+  }
+
+  editPost(String post, int postID) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    FormData formData = FormData.fromMap({
+      "post": post,
+      "post_id": postID,
+    });
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      final res = await dio.post(
+        "http://164.160.104.125:9090/fntat/api/edit-post",
+        data: formData,
+      );
+      final data = res.data;
+      return data;
+    } on Exception catch (error) {
+      print(error.toString());
+      return 400;
+    }
+  }
+
+  editPostWithImage(String post, File? postImage, int postID) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    String fileName = postImage!.path.split('/').last;
+    FormData formData = FormData.fromMap({
+      "post": post,
+      "image": await MultipartFile.fromFile(postImage.path, filename: fileName),
+      "post_id": postID,
+    });
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      final res = await dio.post(
+        "http://164.160.104.125:9090/fntat/api/edit-post",
+        data: formData,
+      );
+      final data = res.data;
+      return data;
+    } on Exception catch (error) {
+      print(error.toString());
+      return 400;
+    }
+  }
+
+  sharePost(String post, int postID) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    FormData formData = FormData.fromMap({
+      "post": post,
+      "post_shared_id": postID,
+    });
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      final res = await dio.post(
+        "http://164.160.104.125:9090/fntat/api/share-post",
+        data: formData,
+      );
+      final data = res.data;
+      return data;
+    } on Exception catch (error) {
+      print(error.toString());
+      return 400;
+    }
+  }
+
+  addComment(int postID, String comment) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    FormData formData = FormData.fromMap({
+      "post_id": postID,
+      "comment": comment,
+    });
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      final res = await dio.post(
+        "http://164.160.104.125:9090/fntat/api/add-comment",
+        data: formData,
+      );
+      final data = res.data;
+      return data;
+    } on Exception catch (error) {
+      print(error.toString());
+      return 400;
+    }
+  }
+
+  deleteComment(int postID, int commentID) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    FormData formData = FormData.fromMap({
+      "comment_id": commentID,
+      "post_id": postID,
+    });
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      final res = await dio.post(
+        "http://164.160.104.125:9090/fntat/api/delete-comment",
+        data: formData,
+      );
+      final data = res.data;
+      return data;
+    } on Exception catch (error) {
+      print(error.toString());
+      return 400;
+    }
+  }
+
+  editComment(String comment, int commentID) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    FormData formData = FormData.fromMap({
+      "comment": comment,
+      "comment_id": commentID,
+    });
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      final res = await dio.post(
+        "http://164.160.104.125:9090/fntat/api/edit-comment",
+        data: formData,
+      );
+      final data = res.data;
+      return data;
+    } on Exception catch (error) {
+      print(error.toString());
+      return 400;
+    }
+  }
+
+  addReply(int postID, int commentID, String reply) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    FormData formData = FormData.fromMap({
+      "post_id": postID,
+      "comment_id": commentID,
+      "replay_comment": reply,
+    });
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      final res = await dio.post(
+        "http://164.160.104.125:9090/fntat/api/add-replay-comment",
+        data: formData,
+      );
+      final data = res.data;
+      return data;
+    } on Exception catch (error) {
+      print(error.toString());
+      return 400;
+    }
+  }
+
+  gettingHomePagePosts() async {
+    var prefs = await SharedPreferences.getInstance();
+    var id = prefs.getInt("USERID");
+    var token = prefs.getString("TOKEN");
+
+    try {
+      final res = await http.post(
+        Uri.parse("http://164.160.104.125:9090/fntat/api/home-page-posts"),
+        body: {"user_id": id},
+        headers: {"Authorization": "Bearer $token"},
+      );
+      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      print(data);
+      return data;
+    } on Exception catch (error) {
+      print(error.toString());
+      return 400;
+    }
+    // FormData formData = FormData.fromMap({
+    //   "user_id": id,
+    // });
+    // dio.options.headers["authorization"] = "Bearer $token";
+    // // dio.options.followRedirects = false;
+    // try {
+    //   final res = await dio.post(
+    //       "http://164.160.104.125:9090/fntat/api/home-page-posts",
+    //       data: formData);
+    //   final data = res.data;
+    //   return data;
+    // } on Exception catch (error) {
+    //   print(error.toString());
+    //   return 400;
+    // }
+  }
+
+  deleteMessage(var msgID) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    dio.options.headers["authorization"] = "Bearer $token";
+    FormData formData = FormData.fromMap({
+      "message_id": msgID,
+    });
+    try {
+      final res = await dio.post(
+          "http://164.160.104.125:9090/fntat/api/delete-send-message",
+          data: formData);
+      final data = res.data;
+      return data;
     } on Exception catch (error) {
       print(error.toString());
       return 400;

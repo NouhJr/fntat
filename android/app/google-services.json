@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "832867614186",
+    "project_id": "fntat-deeb5",
+    "storage_bucket": "fntat-deeb5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:832867614186:android:aa51840002e8cb74a28693",
+        "android_client_info": {
+          "package_name": "com.example.fntat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "832867614186-75qugvaf93kbg32v4int9mjb51lcqle0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fntat",
+            "certificate_hash": "9a8cdae6f81b8db139e94de531bb14e94d81a2d2"
+          }
+        },
+        {
+          "client_id": "832867614186-dg5t3r7mv4gg4s9utckt2fau7a1ufmr3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqMOERroQ4bQsEAnSfR1afPu89YGLL6UI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "832867614186-dg5t3r7mv4gg4s9utckt2fau7a1ufmr3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

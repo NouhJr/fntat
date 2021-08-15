@@ -32,35 +32,59 @@ class _LandingState extends State<Landing> {
                 ),
                 Container(
                   width: 220.0,
-                  child: ButtonTheme(
-                    minWidth: double.infinity,
-                    height: 70.0,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(KPrimaryColor),
-                        elevation: MaterialStateProperty.all(
-                          1.0,
-                        ),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                        ),
-                      ),
+                  height: 30.0,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 2.0,
+                      color: KPrimaryColor,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(35.0)),
+                  ),
+                  child: Center(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/SignUp');
+                        // Navigator.pushNamedAndRemoveUntil(
+                        //     context, '/SignUp', (route) => false);
+                      },
                       child: Text(
                         "Create account",
                         style: KPrimaryButtonsFontStyle,
                       ),
-                      onPressed: () => {
-                        Navigator.pushNamed(context, '/SignUp'),
-                        // Navigator.pushNamedAndRemoveUntil(
-                        //     context, '/SignUp', (route) => false),
-                      },
                     ),
                   ),
                 ),
+                // Container(
+                //   width: 220.0,
+                //   child: ButtonTheme(
+                //     minWidth: double.infinity,
+                //     height: 70.0,
+                //     child: ElevatedButton(
+                //       style: ButtonStyle(
+                //         backgroundColor:
+                //             MaterialStateProperty.all(KPrimaryColor),
+                //         elevation: MaterialStateProperty.all(
+                //           1.0,
+                //         ),
+                //         shape:
+                //             MaterialStateProperty.all<RoundedRectangleBorder>(
+                //           RoundedRectangleBorder(
+                //             borderRadius: BorderRadius.circular(20.0),
+                //           ),
+                //         ),
+                //       ),
+                //       child: Text(
+                //         "Create account",
+                //         style: KPrimaryButtonsFontStyle,
+                //       ),
+                //       onPressed: () => {
+                //         // Navigator.pushNamed(context, '/SignUp'),
+                //         Navigator.pushNamedAndRemoveUntil(
+                //             context, '/SignUp', (route) => false),
+                //       },
+                //     ),
+                //   ),
+                // ),
                 SizedBox(
                   height: 100.0,
                 ),
@@ -78,10 +102,10 @@ class _LandingState extends State<Landing> {
                       width: 5.0,
                     ),
                     TextButton(
-                      onPressed: () => {
-                        Navigator.pushNamed(context, '/SignIn'),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/SignIn');
                         // Navigator.pushNamedAndRemoveUntil(
-                        //     context, '/SignIn', (route) => false),
+                        //     context, '/SignIn', (route) => false);
                       },
                       child: Text(
                         "Sign in",

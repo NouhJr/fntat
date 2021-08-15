@@ -29,3 +29,14 @@ class ResetPasswordErrorState extends AuthState {
   final String message;
   ResetPasswordErrorState(this.message);
 }
+
+class FindByPhoneSucessState extends AuthState {
+  final int userID;
+  final String userName;
+  FindByPhoneSucessState({required this.userID, required this.userName});
+}
+
+class FindByPhoneErrorState extends AuthState {
+  final String msg;
+  FindByPhoneErrorState({required this.msg});
+}

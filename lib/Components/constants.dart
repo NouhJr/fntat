@@ -9,7 +9,7 @@ const KPrimaryColor = Color(0xFF2c9448); //Color(0xFF4379e6);
 const KSubPrimaryColor = Color(0xFFffffff);
 const KPrimaryFontsColor = Color(0xFFffffff);
 const KSubPrimaryFontsColor = Color(0xFF000000);
-const KSubSecondryFontsColor = Colors.grey; //Color(0xFF8a8584);
+const KSubSecondryFontsColor = Color(0xFF66696e);
 const KSubFontsColor = Color(0xFFB2B1B9);
 const KWarningColor = Color(0xFFe01709);
 
@@ -33,13 +33,40 @@ const KPrimaryFontStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 22.0,
   color: KSubPrimaryFontsColor,
+  height: 1.3,
 );
 
 const KPrimaryButtonsFontStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
   fontWeight: FontWeight.bold,
   fontSize: 20.0,
+  color: KPrimaryColor,
+  // color: KPrimaryFontsColor,
+  height: 1.3,
+);
+
+const KSubSubPrimaryButtonsFontStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontWeight: FontWeight.bold,
+  fontSize: 20.0,
   color: KPrimaryFontsColor,
+  height: 1.3,
+);
+
+const KSubPrimaryButtonsFontStyle2 = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontWeight: FontWeight.bold,
+  fontSize: 20.0,
+  color: KPrimaryFontsColor,
+  height: 1.3,
+);
+
+const KSubPrimaryButtonsFontStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontWeight: FontWeight.bold,
+  fontSize: 19.0,
+  color: KPrimaryColor,
+  height: 1.3,
 );
 
 const KSignUpButtonInAppBarStyle = TextStyle(
@@ -47,6 +74,7 @@ const KSignUpButtonInAppBarStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 18.0,
   color: KPrimaryColor,
+  height: 1.3,
 );
 
 const KErrorStyle = TextStyle(
@@ -54,6 +82,15 @@ const KErrorStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 20.0,
   color: KSubPrimaryFontsColor,
+  height: 1.3,
+);
+
+const KSubErrorStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontWeight: FontWeight.bold,
+  fontSize: 20.0,
+  color: KPrimaryFontsColor,
+  height: 1.3,
 );
 
 const KPrimaryFontStyleLarge = TextStyle(
@@ -61,6 +98,15 @@ const KPrimaryFontStyleLarge = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 28.0,
   color: KSubPrimaryFontsColor,
+  height: 1.3,
+);
+
+const KSubPrimaryFontStyleLarge = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontWeight: FontWeight.bold,
+  fontSize: 28.0,
+  color: KPrimaryFontsColor,
+  height: 1.3,
 );
 
 const KDropdownButtonStyle = TextStyle(
@@ -68,11 +114,13 @@ const KDropdownButtonStyle = TextStyle(
   fontSize: 20.0,
   fontWeight: FontWeight.bold,
   color: KSubSecondryFontsColor,
+  height: 1.3,
 );
 
 const KTextFieldStyle = TextStyle(
   fontSize: 20.0,
   fontWeight: FontWeight.w500,
+  height: 1.3,
 );
 
 const KUserNameStyle = TextStyle(
@@ -80,6 +128,7 @@ const KUserNameStyle = TextStyle(
   fontSize: 25.0,
   fontWeight: FontWeight.bold,
   color: KSubPrimaryFontsColor,
+  height: 1.3,
 );
 
 const KReceiverNameStyle = TextStyle(
@@ -87,6 +136,7 @@ const KReceiverNameStyle = TextStyle(
   fontSize: 22.0,
   fontWeight: FontWeight.w700,
   color: KPrimaryFontsColor,
+  height: 1.3,
 );
 
 const KLastSeenStyle = TextStyle(
@@ -94,20 +144,31 @@ const KLastSeenStyle = TextStyle(
   fontSize: 19.0,
   fontWeight: FontWeight.w600,
   color: KSubFontsColor,
+  height: 1.3,
 );
 
 const KUserEmailStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
   fontSize: 20.0,
   fontWeight: FontWeight.bold,
-  color: Colors.grey,
+  color: KSubSecondryFontsColor,
+  height: 1.3,
 );
 
 const KPostTimeStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
   fontSize: 19.0,
   fontWeight: FontWeight.bold,
-  color: Colors.grey,
+  color: KSubSecondryFontsColor,
+  height: 1.3,
+);
+
+const KPostTimeInSubPostStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontSize: 16.0,
+  fontWeight: FontWeight.bold,
+  color: KSubSecondryFontsColor,
+  height: 1.3,
 );
 
 const KFollowing_FollowersStyle = TextStyle(
@@ -115,6 +176,7 @@ const KFollowing_FollowersStyle = TextStyle(
   fontSize: 19.0,
   fontWeight: FontWeight.w700,
   color: KSubPrimaryFontsColor,
+  height: 1.3,
 );
 
 const KScreenTitlesStyle = TextStyle(
@@ -122,6 +184,7 @@ const KScreenTitlesStyle = TextStyle(
   fontSize: 25.0,
   fontWeight: FontWeight.bold,
   color: KPrimaryColor,
+  height: 1.3,
 );
 
 const KEditButtonsStyle = TextStyle(
@@ -129,6 +192,7 @@ const KEditButtonsStyle = TextStyle(
   fontSize: 19.0,
   fontWeight: FontWeight.w600,
   color: KSubPrimaryFontsColor,
+  height: 1.3,
 );
 
 const KSignOutButtonStyle = TextStyle(
@@ -136,6 +200,7 @@ const KSignOutButtonStyle = TextStyle(
   fontSize: 19.0,
   fontWeight: FontWeight.w600,
   color: KWarningColor,
+  height: 1.3,
 );
 
 const KSplashStyle = TextStyle(
@@ -145,12 +210,14 @@ const KSplashStyle = TextStyle(
   fontStyle: FontStyle.italic,
   color: KPrimaryColor,
   letterSpacing: 1.0,
+  height: 1.3,
 );
 
 const KWriteCommentAndSendMessageStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
   fontWeight: FontWeight.w600,
   fontSize: 19.0,
+  height: 1.3,
 );
 
 const KAddPostButtonStyle = TextStyle(
@@ -158,6 +225,7 @@ const KAddPostButtonStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 18.0,
   color: KPrimaryFontsColor,
+  height: 1.3,
 );
 
 const KAddPostButtonInAppBarStyle = TextStyle(
@@ -165,6 +233,7 @@ const KAddPostButtonInAppBarStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 22.0,
   color: KPrimaryColor,
+  height: 1.3,
 );
 
 const KNameStyle = TextStyle(
@@ -172,6 +241,15 @@ const KNameStyle = TextStyle(
   fontSize: 23.0,
   fontWeight: FontWeight.bold,
   color: KSubPrimaryFontsColor,
+  height: 1.3,
+);
+
+const KNameInSubPostStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontSize: 20.0,
+  fontWeight: FontWeight.bold,
+  color: KSubPrimaryFontsColor,
+  height: 1.3,
 );
 
 const KFlushBarTitleStyle = TextStyle(
@@ -179,6 +257,7 @@ const KFlushBarTitleStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 18.0,
   color: KPrimaryFontsColor,
+  height: 1.3,
 );
 
 const KFlushBarMessageStyle = TextStyle(
@@ -186,6 +265,7 @@ const KFlushBarMessageStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 16.0,
   color: KPrimaryFontsColor,
+  height: 1.3,
 );
 
 const KPostStyle = TextStyle(
@@ -193,37 +273,78 @@ const KPostStyle = TextStyle(
   fontWeight: FontWeight.w700,
   fontSize: 20.0,
   color: KSubPrimaryFontsColor,
+  height: 1.3,
+);
+
+const KSubPostStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontWeight: FontWeight.w700,
+  fontSize: 17.0,
+  color: KSubPrimaryFontsColor,
+  height: 1.3,
 );
 
 const KLikesCommentsAndSharesCount = TextStyle(
   fontFamily: KPrimaryFontFamily,
-  fontSize: 18.0,
+  fontSize: 16.0,
   fontWeight: FontWeight.w600,
+  height: 1.3,
+  color: KSubSecondryFontsColor,
+);
+
+const KSnackBarContentStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontWeight: FontWeight.bold,
+  fontSize: 18.0,
+  color: KPrimaryFontsColor,
+  height: 1.3,
+);
+
+const KPostOptionsStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontWeight: FontWeight.w600,
+  fontSize: 17.0,
+  color: KSubPrimaryFontsColor,
+  height: 1.3,
+);
+
+const KCategoryButtonStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontSize: 19,
+  color: KSubPrimaryFontsColor,
 );
 
 ///*************************TEXTFIELDS**************************/
-TextField basicTextField(TextEditingController controller, String label) {
+TextField basicTextField(TextEditingController controller, String hint) {
   return TextField(
     style: KTextFieldStyle,
     controller: controller,
     decoration: InputDecoration(
-      labelText: label,
-      labelStyle: TextStyle(
-        fontFamily: KPrimaryFontFamily,
-        color: KPrimaryColor,
-        fontWeight: FontWeight.w700,
-        fontSize: 25.0,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(40.0),
       ),
-      enabledBorder: UnderlineInputBorder(
+      enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(color: KPrimaryColor),
+        borderRadius: BorderRadius.circular(40.0),
       ),
-      focusedBorder: UnderlineInputBorder(
+      focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: KPrimaryColor),
+        borderRadius: BorderRadius.circular(40.0),
       ),
-      border: UnderlineInputBorder(
-        borderSide: BorderSide(color: KPrimaryColor),
-      ),
-      floatingLabelBehavior: FloatingLabelBehavior.always,
+      filled: true,
+      fillColor: KSubPrimaryColor,
+      hintText: hint,
+      hintStyle: KWriteCommentAndSendMessageStyle,
+      // TextStyle(
+      //   fontFamily: KPrimaryFontFamily,
+      //   color: KPrimaryColor,
+      //   fontWeight: FontWeight.w600,
+      //   fontSize: 20.0,
+      // ),
+      // border: UnderlineInputBorder(
+      //   borderSide: BorderSide(color: KPrimaryColor),
+      // ),
+      // floatingLabelBehavior: FloatingLabelBehavior.always,
     ),
     cursorColor: KPrimaryColor,
   );
@@ -256,7 +377,6 @@ TextField commentTextField(TextEditingController controller) {
     style: KTextFieldStyle,
     controller: controller,
     decoration: InputDecoration(
-      fillColor: KPrimaryColor,
       hintText: "Write a comment",
       hintStyle: KWriteCommentAndSendMessageStyle,
       enabledBorder: UnderlineInputBorder(
@@ -273,13 +393,13 @@ TextField commentTextField(TextEditingController controller) {
   );
 }
 
-TextField postTextField(TextEditingController controller) {
+TextField postTextField(TextEditingController controller, String hint) {
   return TextField(
     style: KTextFieldStyle,
     controller: controller,
     decoration: InputDecoration(
       fillColor: KPrimaryColor,
-      hintText: "Write a new post...",
+      hintText: hint,
       hintStyle: KWriteCommentAndSendMessageStyle,
       border: InputBorder.none,
     ),
@@ -288,29 +408,43 @@ TextField postTextField(TextEditingController controller) {
   );
 }
 
-TextField passwordTextField(TextEditingController controller, String label,
+TextField passwordTextField(TextEditingController controller, String hint,
     bool obscure, IconButton showPassword) {
   return TextField(
     style: KTextFieldStyle,
     controller: controller,
     decoration: InputDecoration(
-      labelText: label,
-      labelStyle: TextStyle(
-        fontFamily: KPrimaryFontFamily,
-        color: KPrimaryColor,
-        fontWeight: FontWeight.w700,
-        fontSize: 25.0,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(40.0),
       ),
-      enabledBorder: UnderlineInputBorder(
+      enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(color: KPrimaryColor),
+        borderRadius: BorderRadius.circular(40.0),
       ),
-      focusedBorder: UnderlineInputBorder(
+      focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: KPrimaryColor),
+        borderRadius: BorderRadius.circular(40.0),
       ),
-      border: UnderlineInputBorder(
-        borderSide: BorderSide(color: KPrimaryColor),
-      ),
-      floatingLabelBehavior: FloatingLabelBehavior.always,
+      filled: true,
+      fillColor: KSubPrimaryColor,
+      hintText: hint,
+      hintStyle: KWriteCommentAndSendMessageStyle,
+      // TextStyle(
+      //   fontFamily: KPrimaryFontFamily,
+      //   color: KPrimaryColor,
+      //   fontWeight: FontWeight.w700,
+      //   fontSize: 25.0,
+      // ),
+      // enabledBorder: UnderlineInputBorder(
+      //   borderSide: BorderSide(color: KPrimaryColor),
+      // ),
+      // focusedBorder: UnderlineInputBorder(
+      //   borderSide: BorderSide(color: KPrimaryColor),
+      // ),
+      // border: UnderlineInputBorder(
+      //   borderSide: BorderSide(color: KPrimaryColor),
+      // ),
+      // floatingLabelBehavior: FloatingLabelBehavior.always,
       suffixIcon: showPassword,
     ),
     obscureText: obscure,
@@ -322,7 +456,6 @@ TextField descriptionTextField(TextEditingController controller) {
   return TextField(
     style: KTextFieldStyle,
     controller: controller,
-    maxLines: 3,
     decoration: InputDecoration(
       labelText: "Description",
       labelStyle: TextStyle(
@@ -366,7 +499,7 @@ var drawerBoxDecoration = BoxDecoration(
 class ReuseableInkwell extends StatelessWidget {
   ReuseableInkwell(
       {required this.inkTitle,
-      required this.onPress,
+      this.onPress,
       required this.icon,
       required this.iconColor});
 

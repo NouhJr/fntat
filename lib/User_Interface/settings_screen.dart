@@ -3,14 +3,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fntat/Blocs/authentication_bloc.dart';
 import 'package:fntat/Blocs/Events/authentication_events.dart';
 import 'package:fntat/Blocs/States/authentication_states.dart';
+import 'package:fntat/User_Interface/account_screen.dart';
+import 'package:fntat/User_Interface/home_screen.dart';
 import 'package:fntat/Components/constants.dart';
 
 class Settings extends StatefulWidget {
+  final bool fromAccount;
+  Settings({required this.fromAccount});
   @override
-  _SettingsState createState() => _SettingsState();
+  _SettingsState createState() => _SettingsState(fromAcc: fromAccount);
 }
 
 class _SettingsState extends State<Settings> {
+  final bool fromAcc;
+  _SettingsState({required this.fromAcc});
+
   late AuthBloc authBloc;
 
   @override
@@ -35,8 +42,18 @@ class _SettingsState extends State<Settings> {
             Icons.arrow_back_ios_new,
             color: KPrimaryColor,
           ),
-          onPressed: () => {
-            Navigator.pop(context),
+          onPressed: () {
+            if (fromAcc == true) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => Account()),
+                  (route) => false);
+            } else {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                  (route) => false);
+            }
           },
         ),
       ),
@@ -182,6 +199,45 @@ class _SettingsState extends State<Settings> {
     );
   }
 
+  // showAds() {
+  //   return showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //           contentPadding: EdgeInsets.all(
+  //             8.0,
+  //           ),
+  //           content: Stack(
+  //             alignment: Alignment.center,
+  //             children: [
+  //               Image.asset(
+  //                 "assets/images/demo_ad_vertical.jpg",
+  //                 fit: BoxFit.cover,
+  //               ),
+  //             ],
+  //           ),
+  //           actions: [
+  //             TextButton(
+  //               child: Text(
+  //                 'Skip',
+  //                 style: TextStyle(
+  //                   color: KSubPrimaryFontsColor,
+  //                   fontFamily: KPrimaryFontFamily,
+  //                   fontWeight: FontWeight.w600,
+  //                   fontSize: 18.0,
+  //                   height: 1.3,
+  //                 ),
+  //               ),
+  //               onPressed: () {
+  //                 authBloc.add(SignOutButtonPressed());
+  //                 Navigator.pop(context);
+  //               },
+  //             ),
+  //           ],
+  //         );
+  //       });
+  // }
+
   signOut() {
     showDialog(
         context: context,
@@ -197,6 +253,7 @@ class _SettingsState extends State<Settings> {
                 fontFamily: KPrimaryFontFamily,
                 fontWeight: FontWeight.bold,
                 fontSize: 21.0,
+                height: 1.3,
               ),
             ),
             content: Text(
@@ -208,6 +265,7 @@ class _SettingsState extends State<Settings> {
                 fontFamily: KPrimaryFontFamily,
                 fontWeight: FontWeight.w400,
                 fontSize: 18.0,
+                height: 1.3,
               ),
             ),
             actions: [
@@ -219,6 +277,7 @@ class _SettingsState extends State<Settings> {
                     fontFamily: KPrimaryFontFamily,
                     fontWeight: FontWeight.w600,
                     fontSize: 18.0,
+                    height: 1.3,
                   ),
                 ),
                 onPressed: () {
@@ -233,10 +292,12 @@ class _SettingsState extends State<Settings> {
                     fontFamily: KPrimaryFontFamily,
                     fontWeight: FontWeight.w600,
                     fontSize: 18.0,
+                    height: 1.3,
                   ),
                 ),
                 onPressed: () {
                   authBloc.add(SignOutButtonPressed());
+                  // showAds();
                   Navigator.pop(context);
                 },
               ),

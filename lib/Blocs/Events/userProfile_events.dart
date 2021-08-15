@@ -65,3 +65,71 @@ class AddNewPostWithImageFired extends UserProfileEvent {
   final File? image;
   AddNewPostWithImageFired({required this.post, required this.image});
 }
+
+class FollowButtonPressed extends UserProfileEvent {
+  final userID;
+  FollowButtonPressed({this.userID});
+}
+
+class UnFollowButtonPressed extends UserProfileEvent {
+  final userID;
+  UnFollowButtonPressed({this.userID});
+}
+
+class EditPostWithImageButtonPressed extends UserProfileEvent {
+  final String post;
+  final int postID;
+  final File? postImage;
+  EditPostWithImageButtonPressed(
+      {required this.post, required this.postID, required this.postImage});
+}
+
+class EditPostButtonPressed extends UserProfileEvent {
+  final String post;
+  final int postID;
+  EditPostButtonPressed({required this.post, required this.postID});
+}
+
+class DeletePostButtonPressed extends UserProfileEvent {
+  final postID;
+  DeletePostButtonPressed({this.postID});
+}
+
+class SharePostButtonPressed extends UserProfileEvent {
+  final String post;
+  final int postID;
+  SharePostButtonPressed({required this.post, required this.postID});
+}
+
+class AddCommentButtonPressed extends UserProfileEvent {
+  final int postID;
+  final String comment;
+  AddCommentButtonPressed({required this.postID, required this.comment});
+}
+
+class DeleteCommentButtonPressed extends UserProfileEvent {
+  final int commentID;
+  final int postID;
+  DeleteCommentButtonPressed({required this.postID, required this.commentID});
+}
+
+class EditCommentButtonPressed extends UserProfileEvent {
+  final String comment;
+  final int commentID;
+  EditCommentButtonPressed({required this.comment, required this.commentID});
+}
+
+class AddReplyButtonPressed extends UserProfileEvent {
+  final int postID;
+  final int commentID;
+  final String reply;
+  AddReplyButtonPressed(
+      {required this.postID, required this.commentID, required this.reply});
+}
+
+class GettingHomePagePostsEvent extends UserProfileEvent {}
+
+class DeleteMessageButtonPressed extends UserProfileEvent {
+  final messageID;
+  DeleteMessageButtonPressed({required this.messageID});
+}

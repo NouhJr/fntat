@@ -6,6 +6,7 @@ import 'package:fntat/User_Interface/otherUsersProfile_screen.dart';
 
 class SearchBar extends SearchDelegate<SearchedUsers> {
   var dio = Dio();
+  var id;
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -39,43 +40,42 @@ class SearchBar extends SearchDelegate<SearchedUsers> {
       future: search(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return ListView.builder(
+          return ListView.separated(
+            separatorBuilder: (context, index) => Divider(
+              thickness: 1.0,
+            ),
             itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  Container(
-                    height: 100.0,
-                    child: Card(
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      elevation: 5.0,
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage: NetworkImage(image),
-                          radius: 25.0,
-                        ),
-                        title: Text(
-                          snapshot.data?[index].name ?? "",
-                          style: KNameStyle,
-                        ),
-                        subtitle: Text(
-                          snapshot.data?[index].email ?? "",
-                          style: KUserEmailStyle,
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => OtherUsersProfile(
-                                        userID:
-                                            snapshot.data?[index].userID ?? 0,
-                                      )));
-                        },
+              return ListTile(
+                leading: snapshot.data?[index].image == null
+                    ? CircleAvatar(
+                        backgroundImage: NetworkImage(image),
+                        radius: 25.0,
+                      )
+                    : CircleAvatar(
+                        backgroundImage: NetworkImage(
+                            'http://164.160.104.125:9090/fntat/${snapshot.data?[index].image}'),
+                        radius: 25.0,
                       ),
-                    ),
-                  ),
-                ],
+                title: Text(
+                  snapshot.data?[index].name ?? "",
+                  style: KNameStyle,
+                ),
+                subtitle: Text(
+                  snapshot.data?[index].email ?? "",
+                  style: KUserEmailStyle,
+                ),
+                onTap: () {
+                  id != snapshot.data?[index].userID
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OtherUsersProfile(
+                              userID: snapshot.data?[index].userID ?? 0,
+                            ),
+                          ),
+                        )
+                      : Navigator.pushNamed(context, '/Profile');
+                },
               );
             },
             itemCount: snapshot.data?.length ?? 0,
@@ -100,6 +100,7 @@ class SearchBar extends SearchDelegate<SearchedUsers> {
 
   Future<List<SearchedUsers>> search() async {
     var prefs = await SharedPreferences.getInstance();
+    id = prefs.getInt("USERID");
     var token = prefs.getString("TOKEN");
     dio.options.headers["authorization"] = "Bearer $token";
     FormData formData = FormData.fromMap({

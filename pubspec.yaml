@@ -33,17 +33,28 @@ dependencies:
   equatable:
   connectivity:
   another_flushbar:
-  image_picker:
+  image_picker: ^0.8.2
   http:
   dio:
   font_awesome_flutter:
   animated_splash_screen:
-  pusher_client:
-  photo_view:    
+  carousel_pro: 
+  firebase_core:
+  firebase_auth:
+  cloud_firestore:
+  firebase_storage:
+  firebase_messaging:
+  firebase_analytics:           
         
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons:
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/fntatcopy.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -61,6 +72,13 @@ flutter:
     - assets/images/fntat.png
     - assets/images/nopostimagehandler.jpg
     - assets/images/nouserimagehandler.jpg
+    - assets/images/fntatcopy.png
+    - assets/images/10839772.jpg
+    - assets/images/Internet-Access-Error.jpg
+    - assets/images/demo_ad_vertical.jpg
+    - assets/images/demo_ad.png
+    - assets/images/ad_image_horizontal.png
+    - assets/images/ad_image_1.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

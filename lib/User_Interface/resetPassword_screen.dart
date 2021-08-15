@@ -1,5 +1,5 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fntat/Blocs/authentication_bloc.dart';
 import 'package:fntat/Blocs/Events/authentication_events.dart';
@@ -8,11 +8,16 @@ import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Components/flushbar.dart';
 
 class ResetPassword extends StatefulWidget {
+  final userID;
+  ResetPassword({this.userID});
   @override
-  _ResetPasswordState createState() => _ResetPasswordState();
+  _ResetPasswordState createState() => _ResetPasswordState(id: userID);
 }
 
 class _ResetPasswordState extends State<ResetPassword> {
+  final id;
+  _ResetPasswordState({required this.id});
+
   TextEditingController _newPassword = new TextEditingController();
   TextEditingController _confirmNewPassword = new TextEditingController();
 
@@ -20,26 +25,26 @@ class _ResetPasswordState extends State<ResetPassword> {
   bool _obsecureConfirmNewPassword = true;
 
   late AuthBloc authBloc;
-
   @override
   void initState() {
-    authBloc = BlocProvider.of<AuthBloc>(context);
     super.initState();
+    authBloc = BlocProvider.of<AuthBloc>(context);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _newPassword.dispose();
+    _confirmNewPassword.dispose();
   }
 
   final error = BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-    if (state is ResetPasswordSuccessState) {
-      return Center(
-        child: Text(
-          state.message,
-          style: KErrorStyle,
-        ),
-      );
-    } else if (state is LodingState) {
+    if (state is LodingState) {
       return Center(
         child: CircularProgressIndicator(
-          backgroundColor: KSubSecondryFontsColor,
+          backgroundColor: KSubPrimaryColor,
           color: KPrimaryColor,
+          strokeWidth: 3.0,
         ),
       );
     } else if (state is ResetPasswordErrorState) {
@@ -53,6 +58,17 @@ class _ResetPasswordState extends State<ResetPassword> {
       return Container();
     }
   });
+
+  final resetPasswordSuccessSnackBar = SnackBar(
+    content: Text(
+      "Password reset successfully",
+      style: KSnackBarContentStyle,
+    ),
+    duration: const Duration(seconds: 3),
+    behavior: SnackBarBehavior.floating,
+    backgroundColor: KPrimaryColor,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +81,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             color: KPrimaryColor,
           ),
           onPressed: () => {
-            Navigator.pop(context),
+            Navigator.pushNamed(context, '/SignIn'),
           },
         ),
         backgroundColor: KSubPrimaryColor,
@@ -74,9 +90,43 @@ class _ResetPasswordState extends State<ResetPassword> {
           style: AppNameStyle,
         ),
         centerTitle: true,
+        actions: [
+          Row(
+            children: [
+              Container(
+                width: 90.0,
+                height: 30.0,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 2.0,
+                    color: KPrimaryColor,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
+                ),
+                child: Center(
+                  child: InkWell(
+                    onTap: resetPassword,
+                    child: Text(
+                      "Reset",
+                      style: KSubPrimaryButtonsFontStyle,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 15.0,
+              ),
+            ],
+          ),
+        ],
       ),
       body: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) => {},
+        listener: (context, state) {
+          if (state is ResetPasswordSuccessState) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(resetPasswordSuccessSnackBar);
+          }
+        },
         child: Padding(
           padding: EdgeInsets.all(10.0),
           child: Column(
@@ -102,9 +152,12 @@ class _ResetPasswordState extends State<ResetPassword> {
                         _obsecureNewPassword = !_obsecureNewPassword;
                       });
                     },
-                    icon: Icon(_obsecureNewPassword
-                        ? Icons.visibility
-                        : Icons.visibility_off),
+                    icon: Icon(
+                      _obsecureNewPassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: KPrimaryColor,
+                    ),
                   ),
                 ),
               ),
@@ -123,9 +176,12 @@ class _ResetPasswordState extends State<ResetPassword> {
                             !_obsecureConfirmNewPassword;
                       });
                     },
-                    icon: Icon(_obsecureConfirmNewPassword
-                        ? Icons.visibility
-                        : Icons.visibility_off),
+                    icon: Icon(
+                      _obsecureConfirmNewPassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: KPrimaryColor,
+                    ),
                   ),
                 ),
               ),
@@ -136,14 +192,6 @@ class _ResetPasswordState extends State<ResetPassword> {
             ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text(
-          "Reset password",
-          style: KPrimaryButtonsFontStyle,
-        ),
-        isExtended: true,
-        onPressed: resetPassword,
       ),
     );
   }
@@ -183,7 +231,8 @@ class _ResetPasswordState extends State<ResetPassword> {
       authBloc.add(
         ResetPasswordButtonPressed(
             newPassword: _newPassword.text,
-            confirmPassword: _confirmNewPassword.text),
+            confirmPassword: _confirmNewPassword.text,
+            userID: id),
       );
     }
   }

@@ -31,12 +31,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   final stateWidget =
       BlocBuilder<UserProfileBloc, UserProfileState>(builder: (context, state) {
-    if (state is ChangePasswordSuccessState) {
-      return Text(
-        state.message,
-        style: KErrorStyle,
-      );
-    } else if (state is ChangePasswordErrorState) {
+    if (state is ChangePasswordErrorState) {
       return Text(
         state.message,
         style: KErrorStyle,
@@ -44,14 +39,25 @@ class _ChangePasswordState extends State<ChangePassword> {
     } else if (state is UserProfileLoadingState) {
       return Center(
         child: CircularProgressIndicator(
-          backgroundColor: KSubSecondryFontsColor,
+          backgroundColor: KSubPrimaryColor,
           color: KPrimaryColor,
+          strokeWidth: 3.0,
         ),
       );
     } else {
       return Container();
     }
   });
+
+  final changePasswordSuccessSnackBar = SnackBar(
+    content: Text(
+      "Password updated successfully",
+      style: KSnackBarContentStyle,
+    ),
+    duration: const Duration(seconds: 3),
+    behavior: SnackBarBehavior.floating,
+    backgroundColor: KPrimaryColor,
+  );
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,9 +78,43 @@ class _ChangePasswordState extends State<ChangePassword> {
             Navigator.pop(context),
           },
         ),
+        actions: [
+          Row(
+            children: [
+              Container(
+                width: 90.0,
+                height: 30.0,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 2.0,
+                    color: KPrimaryColor,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
+                ),
+                child: Center(
+                  child: InkWell(
+                    onTap: updatePassword,
+                    child: Text(
+                      "Save",
+                      style: KSubPrimaryButtonsFontStyle,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 15.0,
+              ),
+            ],
+          ),
+        ],
       ),
       body: BlocListener<UserProfileBloc, UserProfileState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is ChangePasswordSuccessState) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(changePasswordSuccessSnackBar);
+          }
+        },
         child: Padding(
           padding: EdgeInsets.all(10.0),
           child: Column(
@@ -151,21 +191,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                 ),
               ),
               SizedBox(
-                height: 10.0,
+                height: 20.0,
               ),
               stateWidget,
             ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text(
-          "Update Password",
-          style: KPrimaryButtonsFontStyle,
-        ),
-        backgroundColor: KPrimaryColor,
-        isExtended: true,
-        onPressed: updatePassword,
       ),
     );
   }

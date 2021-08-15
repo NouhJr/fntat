@@ -26,8 +26,9 @@ import 'package:fntat/User_Interface/editProfilePicture_screen.dart';
 import 'package:fntat/User_Interface/changePassword_screen.dart';
 import 'package:fntat/User_Interface/otherUsersProfile_screen.dart';
 import 'package:fntat/User_Interface/addPost_screen.dart';
-import 'package:fntat/User_Interface/userOwnedPosts_screen.dart';
 import 'package:fntat/User_Interface/followers_screen.dart';
+import 'package:fntat/User_Interface/following_screen.dart';
+import 'package:fntat/User_Interface/category_screen.dart';
 import 'package:fntat/main.dart';
 
 class Home extends StatelessWidget {
@@ -47,7 +48,6 @@ class Home extends StatelessWidget {
         routes: {
           '/HomeScreen': (context) => HomeScreen(),
           '/Profile': (context) => Account(),
-          '/Settings': (context) => Settings(),
           '/Initial': (context) => Initial(),
           '/Search': (context) => Search(),
           '/Notifications': (context) => Notifications(),
@@ -59,8 +59,8 @@ class Home extends StatelessWidget {
           '/ChangePassword': (context) => ChangePassword(),
           '/Others': (context) => OtherUsersProfile(),
           '/AddPost': (context) => AddPost(),
-          '/MyPosts': (context) => UserOwnedPosts(),
           '/MyFollowers': (context) => FollowersScreen(),
+          '/MyFollowing': (context) => FollowingScreen(),
         },
         home: HomeScreen(),
       ),
@@ -78,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   var pages = [
     UserFeed(),
-    Search(),
     Notifications(),
     Messages(),
   ];
@@ -94,18 +93,24 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         isHome = true;
       });
-    } else if (_selectedIndex == 1) {
-      setState(() {
-        isHome = false;
-        isSearch = true;
-      });
-      showSearch(context: context, delegate: SearchBar());
-    } else {
-      setState(() {
-        isHome = false;
-        isSearch = false;
-      });
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+          (route) => false);
     }
+    // else if (_selectedIndex == 1) {
+    //   setState(() {
+    //     isHome = false;
+    //     isSearch = true;
+    //   });
+    //   showSearch(context: context, delegate: SearchBar());
+    // }
+    // else {
+    //   setState(() {
+    //     isHome = false;
+    //     isSearch = false;
+    //   });
+    // }
   }
 
   late UserProfileBloc userProfileBloc;
@@ -147,6 +152,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
               ),
+              actions: [
+                Builder(
+                  builder: (BuildContext context) {
+                    return IconButton(
+                      onPressed: () {
+                        showSearch(context: context, delegate: SearchBar());
+                      },
+                      icon: Icon(
+                        FontAwesomeIcons.search,
+                        color: KPrimaryColor,
+                        size: 25.0,
+                      ),
+                    );
+                  },
+                ),
+              ],
             )
           : isSearch
               ? AppBar(
@@ -241,14 +262,102 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.pushNamed(context, '/Profile');
                 },
               ),
+              Column(
+                children: [
+                  ReuseableInkwell(
+                    inkTitle: "Categories",
+                    icon: Icons.category_rounded,
+                    iconColor: KPrimaryColor,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 65.0,
+                          ),
+                          Icon(
+                            Icons.sports_soccer,
+                            color: KPrimaryColor,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Category(
+                                    categoryID: 1,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              "Football",
+                              style: KCategoryButtonStyle,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 65.0,
+                          ),
+                          Icon(
+                            Icons.sports_baseball,
+                            color: KPrimaryColor,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Category(
+                                    categoryID: 2,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              "Basketball",
+                              style: KCategoryButtonStyle,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
               ReuseableInkwell(
                 inkTitle: "Settings",
-                icon: Icons.settings,
+                icon: Icons.manage_accounts_rounded,
                 iconColor: KPrimaryColor,
                 onPress: () {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, '/Settings');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Settings(fromAccount: false),
+                    ),
+                  );
                 },
+              ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset(
+                      "assets/images/demo_ad_vertical.jpg",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -272,11 +381,11 @@ class _HomeScreenState extends State<HomeScreen> {
             label: "",
             backgroundColor: KSubSecondryFontsColor,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.search),
-            label: "",
-            backgroundColor: KSubSecondryFontsColor,
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(FontAwesomeIcons.search),
+          //   label: "",
+          //   backgroundColor: KSubSecondryFontsColor,
+          // ),
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.bell),
             label: "",

@@ -25,12 +25,7 @@ class _EditNameState extends State<EditName> {
 
   final stateWidget =
       BlocBuilder<UserProfileBloc, UserProfileState>(builder: (context, state) {
-    if (state is UpdateNameSuccessState) {
-      return Text(
-        state.message,
-        style: KErrorStyle,
-      );
-    } else if (state is UpdateNameErrorState) {
+    if (state is UpdateNameErrorState) {
       return Text(
         state.message,
         style: KErrorStyle,
@@ -38,8 +33,9 @@ class _EditNameState extends State<EditName> {
     } else if (state is UserProfileLoadingState) {
       return Center(
         child: CircularProgressIndicator(
-          backgroundColor: KSubSecondryFontsColor,
+          backgroundColor: KSubPrimaryColor,
           color: KPrimaryColor,
+          strokeWidth: 3.0,
         ),
       );
     } else {
@@ -71,39 +67,38 @@ class _EditNameState extends State<EditName> {
           Row(
             children: [
               Container(
-                width: 100.0,
-                child: ButtonTheme(
-                  minWidth: double.infinity,
-                  height: 10.0,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(KPrimaryColor),
-                      elevation: MaterialStateProperty.all(
-                        1.0,
-                      ),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40.0),
-                        ),
-                      ),
-                    ),
+                width: 90.0,
+                height: 30.0,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 2.0,
+                    color: KPrimaryColor,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
+                ),
+                child: Center(
+                  child: InkWell(
+                    onTap: updateName,
                     child: Text(
                       "Save",
-                      style: KPrimaryButtonsFontStyle,
+                      style: KSubPrimaryButtonsFontStyle,
                     ),
-                    onPressed: updateName,
                   ),
                 ),
               ),
               SizedBox(
-                width: 10.0,
+                width: 15.0,
               ),
             ],
           ),
         ],
       ),
       body: BlocListener<UserProfileBloc, UserProfileState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is UpdateNameSuccessState) {
+            Navigator.pop(context);
+          }
+        },
         child: Padding(
           padding: EdgeInsets.all(10.0),
           child: Column(
@@ -122,22 +117,13 @@ class _EditNameState extends State<EditName> {
                 child: basicTextField(_newName, "Update Name"),
               ),
               SizedBox(
-                height: 10.0,
+                height: 20.0,
               ),
               stateWidget,
             ],
           ),
         ),
       ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   label: Text(
-      //     "Update Name",
-      //     style: KPrimaryButtonsFontStyle,
-      //   ),
-      //   backgroundColor: KPrimaryColor,
-      //   isExtended: true,
-      //   onPressed: updateName,
-      // ),
     );
   }
 

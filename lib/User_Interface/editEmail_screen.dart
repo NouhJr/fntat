@@ -25,12 +25,7 @@ class _EditEmailState extends State<EditEmail> {
 
   final stateWidget =
       BlocBuilder<UserProfileBloc, UserProfileState>(builder: (context, state) {
-    if (state is UpdateEmailSuccessState) {
-      return Text(
-        state.message,
-        style: KErrorStyle,
-      );
-    } else if (state is UpdateEmailErrorState) {
+    if (state is UpdateEmailErrorState) {
       return Text(
         state.message,
         style: KErrorStyle,
@@ -38,8 +33,9 @@ class _EditEmailState extends State<EditEmail> {
     } else if (state is UserProfileLoadingState) {
       return Center(
         child: CircularProgressIndicator(
-          backgroundColor: KSubSecondryFontsColor,
+          backgroundColor: KSubPrimaryColor,
           color: KPrimaryColor,
+          strokeWidth: 3.0,
         ),
       );
     } else {
@@ -71,39 +67,38 @@ class _EditEmailState extends State<EditEmail> {
           Row(
             children: [
               Container(
-                width: 100.0,
-                child: ButtonTheme(
-                  minWidth: double.infinity,
-                  height: 10.0,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(KPrimaryColor),
-                      elevation: MaterialStateProperty.all(
-                        1.0,
-                      ),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40.0),
-                        ),
-                      ),
-                    ),
+                width: 90.0,
+                height: 30.0,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 2.0,
+                    color: KPrimaryColor,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
+                ),
+                child: Center(
+                  child: InkWell(
+                    onTap: updateEmail,
                     child: Text(
                       "Save",
-                      style: KPrimaryButtonsFontStyle,
+                      style: KSubPrimaryButtonsFontStyle,
                     ),
-                    onPressed: updateEmail,
                   ),
                 ),
               ),
               SizedBox(
-                width: 10.0,
+                width: 15.0,
               ),
             ],
           ),
         ],
       ),
       body: BlocListener<UserProfileBloc, UserProfileState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is UpdateEmailSuccessState) {
+            Navigator.pop(context);
+          }
+        },
         child: Padding(
           padding: EdgeInsets.all(10.0),
           child: Column(
@@ -122,22 +117,13 @@ class _EditEmailState extends State<EditEmail> {
                 child: basicTextField(_newEmail, "Update Email"),
               ),
               SizedBox(
-                height: 10.0,
+                height: 20.0,
               ),
               stateWidget,
             ],
           ),
         ),
       ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   label: Text(
-      //     "Update Email",
-      //     style: KPrimaryButtonsFontStyle,
-      //   ),
-      //   backgroundColor: KPrimaryColor,
-      //   isExtended: true,
-      //   onPressed: updateEmail,
-      // ),
     );
   }
 

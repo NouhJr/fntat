@@ -15,6 +15,7 @@ class EditProfilePicture extends StatefulWidget {
 }
 
 class _EditProfilePictureState extends State<EditProfilePicture> {
+  bool hasImage = false;
   late File _image;
 
   late UserProfileBloc userbloc;
@@ -27,12 +28,7 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
 
   final stateWidget =
       BlocBuilder<UserProfileBloc, UserProfileState>(builder: (context, state) {
-    if (state is UpdatePictureSuccessState) {
-      return Text(
-        state.message,
-        style: KErrorStyle,
-      );
-    } else if (state is UpdatePictureErrorState) {
+    if (state is UpdatePictureErrorState) {
       return Text(
         state.message,
         style: KErrorStyle,
@@ -40,14 +36,16 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
     } else if (state is UserProfileLoadingState) {
       return Center(
         child: CircularProgressIndicator(
-          backgroundColor: KSubSecondryFontsColor,
+          backgroundColor: KSubPrimaryColor,
           color: KPrimaryColor,
+          strokeWidth: 3.0,
         ),
       );
     } else {
       return Container();
     }
   });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,39 +70,38 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
           Row(
             children: [
               Container(
-                width: 100.0,
-                child: ButtonTheme(
-                  minWidth: double.infinity,
-                  height: 10.0,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(KPrimaryColor),
-                      elevation: MaterialStateProperty.all(
-                        1.0,
-                      ),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40.0),
-                        ),
-                      ),
-                    ),
+                width: 90.0,
+                height: 30.0,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 2.0,
+                    color: KPrimaryColor,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
+                ),
+                child: Center(
+                  child: InkWell(
+                    onTap: updatePicture,
                     child: Text(
                       "Save",
-                      style: KPrimaryButtonsFontStyle,
+                      style: KSubPrimaryButtonsFontStyle,
                     ),
-                    onPressed: updatePicture,
                   ),
                 ),
               ),
               SizedBox(
-                width: 10.0,
+                width: 15.0,
               ),
             ],
           ),
         ],
       ),
       body: BlocListener<UserProfileBloc, UserProfileState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is UpdatePictureSuccessState) {
+            Navigator.pop(context);
+          }
+        },
         child: Padding(
           padding: EdgeInsets.all(10.0),
           child: Column(
@@ -130,62 +127,136 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
                     style: KTextFieldStyle,
                   ),
                   SizedBox(
-                    width: 20.0,
+                    width: 15.0,
                   ),
-                  Container(
-                    width: 150.0,
-                    child: ButtonTheme(
-                      minWidth: double.infinity,
-                      height: 20.0,
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(KPrimaryColor),
-                          elevation: MaterialStateProperty.all(
-                            1.0,
-                          ),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          "Pick image",
-                          style: KPrimaryButtonsFontStyle,
-                        ),
-                        onPressed: chooseFile,
-                      ),
+                  PopupMenuButton(
+                    icon: Icon(
+                      Icons.add_a_photo,
+                      color: KPrimaryColor,
                     ),
+                    iconSize: 30.0,
+                    onSelected: imageOptions,
+                    itemBuilder: (context) {
+                      return options.map((choice) {
+                        return PopupMenuItem<String>(
+                          value: choice,
+                          child: Text(
+                            choice,
+                            style: KPostOptionsStyle,
+                          ),
+                        );
+                      }).toList();
+                    },
                   ),
+                  // Container(
+                  //   width: 150.0,
+                  //   child: ButtonTheme(
+                  //     minWidth: double.infinity,
+                  //     height: 20.0,
+                  //     child: ElevatedButton(
+                  //       style: ButtonStyle(
+                  //         backgroundColor:
+                  //             MaterialStateProperty.all(KPrimaryColor),
+                  //         elevation: MaterialStateProperty.all(
+                  //           1.0,
+                  //         ),
+                  //         shape:
+                  //             MaterialStateProperty.all<RoundedRectangleBorder>(
+                  //           RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.circular(30.0),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       child: Text(
+                  //         "Pick image",
+                  //         style: KPrimaryButtonsFontStyle,
+                  //       ),
+                  //       onPressed: chooseFile,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
+              hasImage
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Stack(
+                          children: [
+                            Container(
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              width: 190.0,
+                              height: 190.0,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                image: DecorationImage(
+                                  image: FileImage(_image),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              top: 8.0,
+                              right: 8.0,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    hasImage = false;
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.remove_circle,
+                                  size: 25.0,
+                                  color: KWarningColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(),
+                      ],
+                    ),
               SizedBox(
-                height: 15.0,
+                height: 20.0,
               ),
               stateWidget,
             ],
           ),
         ),
       ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   label: Text(
-      //     "Update picture",
-      //     style: KPrimaryButtonsFontStyle,
-      //   ),
-      //   backgroundColor: KPrimaryColor,
-      //   isExtended: true,
-      //   onPressed: updatePicture,
-      // ),
     );
+  }
+
+  List<String> options = ['Take photo', 'Choose existing photo'];
+  imageOptions(String option) {
+    if (option == options[0]) {
+      takeImage();
+    } else if (option == options[1]) {
+      chooseFile();
+    }
   }
 
   Future chooseFile() async {
     final source = ImageSource.gallery;
-    final pickedFile = await ImagePicker.pickImage(source: source);
+    final pickedFile = await ImagePicker().pickImage(source: source);
     setState(() {
-      _image = File(pickedFile.path);
+      _image = File(pickedFile!.path);
+      hasImage = true;
+    });
+  }
+
+  Future takeImage() async {
+    final source = ImageSource.camera;
+    final pickedFile = await ImagePicker().pickImage(source: source);
+    setState(() {
+      _image = File(pickedFile!.path);
+      hasImage = true;
     });
   }
 
@@ -199,11 +270,11 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
         message: "Pleas turn on wifi or mobile data",
         icons: Icons.signal_wifi_off,
       );
-    } else if (_image == null) {
+    } else if (hasImage == false) {
       Warning().errorMessage(
         context,
-        title: "Picture can't be empty !",
-        message: 'Please choose picture.',
+        title: "No picture is selected !",
+        message: 'Please choose or take a picture.',
         icons: Icons.warning,
       );
     } else {
