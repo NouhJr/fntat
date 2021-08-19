@@ -37,8 +37,11 @@ class _UserFeedState extends State<UserFeed> {
 
   var dio = Dio();
   List<dynamic> posts = [];
+  List<dynamic> comments = [];
+   bool showLoadingComments = true;
   var nextPageUrl;
   var userId = 0;
+
   gettingUserId() async {
     var prefs = await SharedPreferences.getInstance();
     var id = prefs.getInt("USERID");
@@ -74,6 +77,57 @@ class _UserFeedState extends State<UserFeed> {
     gettingLikes();
   }
 
+  getPostComments(var pID) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      final res = await dio
+          .get("http://164.160.104.125:9090/fntat/api/show-post-comments/$pID");
+      final List<dynamic> commentsBody = res.data['data'];
+      setState(() {
+        comments.addAll(commentsBody);
+      });
+    } on Exception catch (error) {
+      print(error.toString());
+    }
+  }
+
+  commentsStateIndicator() {
+    if (showLoadingComments) {
+      Future.delayed(Duration(seconds: 5)).then((value) {
+        if (this.mounted) {
+          setState(() {
+            showLoadingComments = false;
+          });
+        }
+      });
+      return Center(
+        child: CircularProgressIndicator(
+          backgroundColor: KSubPrimaryColor,
+          color: KPrimaryColor,
+          strokeWidth: 5.0,
+        ),
+      );
+    } else {
+      return Center(
+        child: Text(
+          "There's no comments for this post yet",
+          style: KErrorStyle,
+        ),
+      );
+    }
+  }
+
+      checkCommentsLength() {
+    Future.delayed(Duration(seconds: 3));
+    if (comments.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
   Future getMorePosts() async {
     var prefs = await SharedPreferences.getInstance();
     var id = prefs.getInt("USERID");
@@ -1298,10 +1352,50 @@ class _UserFeedState extends State<UserFeed> {
                                                                     MainAxisAlignment
                                                                         .end,
                                                                 children: [
-                                                                  Text(
-                                                                    '${posts[index]['comments_count'] ?? "0"} Comments',
-                                                                    style:
-                                                                        KLikesCommentsAndSharesCount,
+                                                                  InkWell(
+                                                                    onTap: () async {
+                                                        var connectivityResult =
+                                                            await (Connectivity()
+                                                                .checkConnectivity());
+                                                        if (connectivityResult ==
+                                                            ConnectivityResult
+                                                                .none) {
+                                                          Warning()
+                                                              .errorMessage(
+                                                            context,
+                                                            title:
+                                                                "No internet connection !",
+                                                            message:
+                                                                "Pleas turn on wifi or mobile data",
+                                                            icons: Icons
+                                                                .signal_wifi_off,
+                                                          );
+                                                        } else {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  PostDetailsScreen(
+                                                                postID:
+                                                                    posts[index]
+                                                                        ['id'],
+                                                                likeState: userLikes[
+                                                                        index][
+                                                                    'likeState'],
+                                                                likeID: userLikes[
+                                                                        index]
+                                                                    ['likeID'],
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+                                                      },
+                                                                    child:  
+                                                                      Text(
+                                                                        '${posts[index]['comments_count'] ?? "0"} Comments',
+                                                                        style:
+                                                                            KLikesCommentsAndSharesCount,
+                                                                      ),
                                                                   ),
                                                                   Text(
                                                                     ' • ',

@@ -168,7 +168,7 @@ class UserProfileApi {
     });
     dio.options.headers["authorization"] = "Bearer $token";
     try {
-      Future.delayed(Duration(seconds: 3));
+      // Future.delayed(Duration(seconds: 3));
       final res = await dio.post(
         "http://164.160.104.125:9090/fntat/api/profile",
         data: formData,

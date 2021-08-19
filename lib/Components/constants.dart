@@ -23,6 +23,10 @@ const AppNameStyle = TextStyle(
   color: KPrimaryColor,
 );
 
+///*************************SERVERURL**************************/
+const ServerUrl = "http://164.160.104.125:9090/fntat/api/";
+const ImageServerPrefix = "http://164.160.104.125:9090/fntat/";
+
 ///*************************FONTS**************************/
 // const KPrimaryFontFamily = "Segoe UI";
 const KPrimaryFontFamily = "Janna LT";
@@ -372,12 +376,12 @@ TextField messageTextField(TextEditingController controller) {
   );
 }
 
-TextField commentTextField(TextEditingController controller) {
+TextField commentTextField(TextEditingController controller, String hint) {
   return TextField(
     style: KTextFieldStyle,
     controller: controller,
     decoration: InputDecoration(
-      hintText: "Write a comment",
+      hintText: hint,
       hintStyle: KWriteCommentAndSendMessageStyle,
       enabledBorder: UnderlineInputBorder(
         borderSide: BorderSide(color: Colors.transparent),

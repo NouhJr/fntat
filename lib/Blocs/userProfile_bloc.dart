@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fntat/Blocs/States/authentication_states.dart';
 import 'package:fntat/Blocs/States/userProfile_states.dart';
 import 'package:fntat/Blocs/Events/userProfile_events.dart';
 import 'package:fntat/Data/userProfile_data.dart';

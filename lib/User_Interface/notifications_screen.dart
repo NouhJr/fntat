@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/rendering.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:fntat/User_Interface/postDetails_screen.dart';
 import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Components/flushbar.dart';
 import 'package:fntat/Components/carousel.dart';
@@ -268,6 +269,22 @@ class _NotificationsState extends State<Notifications> {
                                     '${notifications[index]['body']}',
                                     style: KPostStyle,
                                   ),
+                                  onTap: notifications[index]['post_id'] != null
+                                      ? () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PostDetailsScreen(
+                                                postID: notifications[index]
+                                                    ['post_id'],
+                                                likeID: null,
+                                                likeState: false,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      : () {},
                                 ),
                             separatorBuilder: (context, index) => Divider(
                                   color: KSubSecondryFontsColor,

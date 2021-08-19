@@ -347,17 +347,60 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
               ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.asset(
-                      "assets/images/demo_ad_vertical.jpg",
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ],
+              Divider(
+                height: 0.5,
+                thickness: 1.0,
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              ReuseableInkwell(
+                inkTitle: "Facebook",
+                icon: FontAwesomeIcons.facebook,
+                iconColor: Colors.blue,
+                onPress: () {
+                  // Navigator.pop(context);
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => Settings(fromAccount: false),
+                  //   ),
+                  // );
+                },
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              ReuseableInkwell(
+                inkTitle: "Twitter",
+                icon: FontAwesomeIcons.twitter,
+                iconColor: Color(0xFF1DA1F2),
+                onPress: () {
+                  // Navigator.pop(context);
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => Settings(fromAccount: false),
+                  //   ),
+                  // );
+                },
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              ReuseableInkwell(
+                inkTitle: "Instagram",
+                icon: FontAwesomeIcons.instagram,
+                iconColor: Color(0xFFfb3958),
+                onPress: () {
+                  // Navigator.pop(context);
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => Settings(fromAccount: false),
+                  //   ),
+                  // );
+                },
               ),
             ],
           ),
