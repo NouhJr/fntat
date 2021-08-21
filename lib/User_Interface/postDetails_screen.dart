@@ -12,10 +12,10 @@ import 'package:fntat/User_Interface/editPost_screen.dart';
 import 'package:fntat/User_Interface/otherUsersProfile_screen.dart';
 import 'package:fntat/User_Interface/sharePost_screen.dart';
 import 'package:fntat/User_Interface/home_screen.dart';
-import 'package:fntat/User_Interface/addComment_screen.dart';
-import 'package:fntat/User_Interface/addReplay_screen.dart';
+// import 'package:fntat/User_Interface/addComment_screen.dart';
+// import 'package:fntat/User_Interface/addReplay_screen.dart';
 import 'package:fntat/User_Interface/editComment_screen.dart';
-import 'package:fntat/User_Interface/commentDetails_screen.dart';
+// import 'package:fntat/User_Interface/commentDetails_screen.dart';
 import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Components/flushbar.dart';
 

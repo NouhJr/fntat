@@ -12,6 +12,7 @@ const KSubPrimaryFontsColor = Color(0xFF000000);
 const KSubSecondryFontsColor = Color(0xFF66696e);
 const KSubFontsColor = Color(0xFFB2B1B9);
 const KWarningColor = Color(0xFFe01709);
+const KHeaderColor = Color(0xFF2a4158);
 
 ///*************************APPNAME**************************/
 const APPNAME = "Fntat";
@@ -24,8 +25,8 @@ const AppNameStyle = TextStyle(
 );
 
 ///*************************SERVERURL**************************/
-const ServerUrl = "http://164.160.104.125:9090/fntat/api/";
-const ImageServerPrefix = "http://164.160.104.125:9090/fntat/";
+const ServerUrl = "http://164.160.104.125:9090/fntat/api";
+const ImageServerPrefix = "http://164.160.104.125:9090/fntat";
 
 ///*************************FONTS**************************/
 // const KPrimaryFontFamily = "Segoe UI";
@@ -244,6 +245,30 @@ const KNameStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
   fontSize: 23.0,
   fontWeight: FontWeight.bold,
+  color: KSubPrimaryFontsColor,
+  height: 1.3,
+);
+
+const KNameInHeaderStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontSize: 23.0,
+  fontWeight: FontWeight.bold,
+  color: KPrimaryFontsColor,
+  height: 1.3,
+);
+
+const KEmailInHeaderStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontSize: 20.0,
+  fontWeight: FontWeight.w700,
+  color: KPrimaryFontsColor,
+  height: 1.3,
+);
+
+const KSearchLabelStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontSize: 20.0,
+  fontWeight: FontWeight.w700,
   color: KSubPrimaryFontsColor,
   height: 1.3,
 );

@@ -44,7 +44,8 @@ dependencies:
   cloud_firestore:
   firebase_storage:
   firebase_messaging:
-  firebase_analytics:           
+  firebase_analytics:
+  backdrop:             
         
 dev_dependencies:
   flutter_test:
