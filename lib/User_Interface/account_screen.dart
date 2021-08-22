@@ -169,8 +169,8 @@ class _AccountState extends State<Account> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          width: 350.0,
-          height: 230.0,
+          width: 280.0,
+          height: 180.0,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
             image: DecorationImage(
@@ -400,7 +400,7 @@ class _AccountState extends State<Account> {
     gettingSharedPostData(postID);
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      elevation: 1.0,
+      elevation: 0.0,
       child: checkIfPostLoaded()
           ? Padding(
               padding: EdgeInsets.all(10.0),
@@ -430,7 +430,7 @@ class _AccountState extends State<Account> {
                               )
                             : CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                  'http://164.160.104.125:9090/fntat/${user['image']}',
+                                  '$ImageServerPrefix/${user['image']}',
                                 ),
                                 radius: 20.0,
                               ),
@@ -445,185 +445,39 @@ class _AccountState extends State<Account> {
                                 '${user['name']}',
                                 style: KNameInSubPostStyle,
                               ),
-                              post[0]['updated_at']
-                                          .toString()
-                                          .substring(11, 13)
-                                          .contains('00') ||
-                                      post[0]['updated_at']
-                                          .toString()
-                                          .substring(11, 13)
-                                          .contains('01') ||
-                                      post[0]['updated_at']
-                                          .toString()
-                                          .substring(11, 13)
-                                          .contains('02') ||
-                                      post[0]['updated_at']
-                                          .toString()
-                                          .substring(11, 13)
-                                          .contains('03') ||
-                                      post[0]['updated_at']
-                                          .toString()
-                                          .substring(11, 13)
-                                          .contains('04') ||
-                                      post[0]['updated_at']
-                                          .toString()
-                                          .substring(11, 13)
-                                          .contains('05') ||
-                                      post[0]['updated_at']
-                                          .toString()
-                                          .substring(11, 13)
-                                          .contains('06') ||
-                                      post[0]['updated_at']
-                                          .toString()
-                                          .substring(11, 13)
-                                          .contains('07') ||
-                                      post[0]['updated_at']
-                                          .toString()
-                                          .substring(11, 13)
-                                          .contains('08') ||
-                                      post[0]['updated_at']
-                                          .toString()
-                                          .substring(11, 13)
-                                          .contains('09') ||
-                                      post[0]['updated_at']
-                                          .toString()
-                                          .substring(11, 13)
-                                          .contains('10') ||
-                                      post[0]['updated_at']
-                                          .toString()
-                                          .substring(11, 13)
-                                          .contains('11')
-                                  ? Text(
-                                      '${post[0]['updated_at'].toString().substring(11, 16)} AM',
-                                      style: KPostTimeStyle,
-                                    )
-                                  : post[0]['updated_at']
-                                          .toString()
-                                          .substring(11, 13)
-                                          .contains('12')
-                                      ? Text(
-                                          '12:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                          style: KPostTimeStyle,
-                                        )
-                                      : post[0]['updated_at']
-                                              .toString()
-                                              .substring(11, 13)
-                                              .contains('13')
-                                          ? Text(
-                                              '1:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                              style: KPostTimeStyle,
-                                            )
-                                          : post[0]['updated_at']
-                                                  .toString()
-                                                  .substring(11, 13)
-                                                  .contains('14')
-                                              ? Text(
-                                                  '2:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                  style: KPostTimeStyle,
-                                                )
-                                              : post[0]['updated_at']
-                                                      .toString()
-                                                      .substring(11, 13)
-                                                      .contains('15')
-                                                  ? Text(
-                                                      '3:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                      style: KPostTimeStyle,
-                                                    )
-                                                  : post[0]['updated_at']
-                                                          .toString()
-                                                          .substring(11, 13)
-                                                          .contains('16')
-                                                      ? Text(
-                                                          '4:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                          style: KPostTimeStyle,
-                                                        )
-                                                      : post[0]['updated_at']
-                                                              .toString()
-                                                              .substring(11, 13)
-                                                              .contains('17')
-                                                          ? Text(
-                                                              '5:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                              style:
-                                                                  KPostTimeStyle,
-                                                            )
-                                                          : post[0]['updated_at'].toString().substring(11, 13).contains('18')
-                                                              ? Text(
-                                                                  '6:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                  style:
-                                                                      KPostTimeStyle,
-                                                                )
-                                                              : post[0]['updated_at'].toString().substring(11, 13).contains('19')
-                                                                  ? Text(
-                                                                      '7:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                      style:
-                                                                          KPostTimeStyle,
-                                                                    )
-                                                                  : post[0]['updated_at'].toString().substring(11, 13).contains('20')
-                                                                      ? Text(
-                                                                          '8:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                          style:
-                                                                              KPostTimeStyle,
-                                                                        )
-                                                                      : post[0]['updated_at'].toString().substring(11, 13).contains('21')
-                                                                          ? Text(
-                                                                              '9:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                              style: KPostTimeStyle,
-                                                                            )
-                                                                          : post[0]['updated_at'].toString().substring(11, 13).contains('22')
-                                                                              ? Text(
-                                                                                  '10:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                                  style: KPostTimeStyle,
-                                                                                )
-                                                                              : post[0]['updated_at'].toString().substring(11, 13).contains('23')
-                                                                                  ? Text(
-                                                                                      '11:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                                      style: KPostTimeStyle,
-                                                                                    )
-                                                                                  : post[0]['updated_at'].toString().substring(11, 13).contains('00')
-                                                                                      ? Text(
-                                                                                          '12:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                                          style: KPostTimeStyle,
-                                                                                        )
-                                                                                      : Text(''),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PostDetailsScreen(
+                                        postID: postID,
+                                        likeState: singlePostLikeState,
+                                        likeID: singlePostLikeID,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        post[0]['post'],
+                                        style: KSubPostStyle,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  Divider(
-                    color: KSubSecondryFontsColor,
-                    thickness: 0.5,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PostDetailsScreen(
-                                postID: postID,
-                                likeState: singlePostLikeState,
-                                likeID: singlePostLikeID,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                post[0]['post'],
-                                style: KSubPostStyle,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
                   ),
                   SizedBox(
                     height: 5.0,
@@ -791,6 +645,7 @@ class _AccountState extends State<Account> {
                     right: 0.0,
                     left: 0.0,
                     child: Container(
+                      padding: EdgeInsets.all(8.0),
                       height: screenSize.height - 200,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
@@ -938,325 +793,57 @@ class _AccountState extends State<Account> {
             ? LayoutBuilder(
                 builder: (context, size) => Stack(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15.0),
-                      child: ListView.separated(
-                        separatorBuilder: (context, index) => Divider(
-                          color: KSubSecondryFontsColor,
-                          thickness: 0.5,
-                        ),
-                        shrinkWrap: true,
-                        physics: ScrollPhysics(),
-                        itemCount: posts.length,
-                        itemBuilder: (context, index) => Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: 15.0,
-                              ),
-                              child: Card(
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                elevation: 0.0,
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: 8.0, vertical: 8.0),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Column(
+                    ListView.separated(
+                      separatorBuilder: (context, index) => Divider(
+                        color: KSubSecondryFontsColor,
+                        indent: 20.0,
+                        endIndent: 20.0,
+                        thickness: 0.5,
+                      ),
+                      shrinkWrap: true,
+                      physics: ScrollPhysics(),
+                      itemCount: posts.length,
+                      itemBuilder: (context, index) => Column(
+                        children: [
+                          Card(
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            elevation: 0.0,
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 8.0),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                children: [
+                                  Row(
                                     children: [
-                                      Row(
-                                        children: [
-                                          useAsset
-                                              ? CircleAvatar(
-                                                  backgroundImage:
-                                                      AssetImage(userImage),
-                                                  radius: 30.0,
-                                                )
-                                              : CircleAvatar(
-                                                  backgroundImage:
-                                                      NetworkImage(userImage),
-                                                  radius: 30.0,
-                                                ),
-                                          SizedBox(
-                                            width: 20.0,
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  userName,
-                                                  style: KNameStyle,
-                                                ),
-                                                posts[index]['updated_at']
-                                                            .toString()
-                                                            .substring(11, 13)
-                                                            .contains('00') ||
-                                                        posts[index]['updated_at']
-                                                            .toString()
-                                                            .substring(11, 13)
-                                                            .contains('01') ||
-                                                        posts[index]['updated_at']
-                                                            .toString()
-                                                            .substring(11, 13)
-                                                            .contains('02') ||
-                                                        posts[index]['updated_at']
-                                                            .toString()
-                                                            .substring(11, 13)
-                                                            .contains('03') ||
-                                                        posts[index]['updated_at']
-                                                            .toString()
-                                                            .substring(11, 13)
-                                                            .contains('04') ||
-                                                        posts[index]['updated_at']
-                                                            .toString()
-                                                            .substring(11, 13)
-                                                            .contains('05') ||
-                                                        posts[index]['updated_at']
-                                                            .toString()
-                                                            .substring(11, 13)
-                                                            .contains('06') ||
-                                                        posts[index]['updated_at']
-                                                            .toString()
-                                                            .substring(11, 13)
-                                                            .contains('07') ||
-                                                        posts[index]['updated_at']
-                                                            .toString()
-                                                            .substring(11, 13)
-                                                            .contains('08') ||
-                                                        posts[index]['updated_at']
-                                                            .toString()
-                                                            .substring(11, 13)
-                                                            .contains('09') ||
-                                                        posts[index]['updated_at']
-                                                            .toString()
-                                                            .substring(11, 13)
-                                                            .contains('10') ||
-                                                        posts[index]
-                                                                ['updated_at']
-                                                            .toString()
-                                                            .substring(11, 13)
-                                                            .contains('11')
-                                                    ? Text(
-                                                        '${posts[index]['updated_at'].toString().substring(11, 16)} AM',
-                                                        style: KPostTimeStyle,
-                                                      )
-                                                    : posts[index]['updated_at']
-                                                            .toString()
-                                                            .substring(11, 13)
-                                                            .contains('12')
-                                                        ? Text(
-                                                            '12:${posts[index]['updated_at'].toString().substring(14, 16)} PM',
-                                                            style:
-                                                                KPostTimeStyle,
-                                                          )
-                                                        : posts[index]
-                                                                    ['updated_at']
-                                                                .toString()
-                                                                .substring(11, 13)
-                                                                .contains('13')
-                                                            ? Text(
-                                                                '1:${posts[index]['updated_at'].toString().substring(14, 16)} PM',
-                                                                style:
-                                                                    KPostTimeStyle,
-                                                              )
-                                                            : posts[index]['updated_at'].toString().substring(11, 13).contains('14')
-                                                                ? Text(
-                                                                    '2:${posts[index]['updated_at'].toString().substring(14, 16)} PM',
-                                                                    style:
-                                                                        KPostTimeStyle,
-                                                                  )
-                                                                : posts[index]['updated_at'].toString().substring(11, 13).contains('15')
-                                                                    ? Text(
-                                                                        '3:${posts[index]['updated_at'].toString().substring(14, 16)} PM',
-                                                                        style:
-                                                                            KPostTimeStyle,
-                                                                      )
-                                                                    : posts[index]['updated_at'].toString().substring(11, 13).contains('16')
-                                                                        ? Text(
-                                                                            '4:${posts[index]['updated_at'].toString().substring(14, 16)} PM',
-                                                                            style:
-                                                                                KPostTimeStyle,
-                                                                          )
-                                                                        : posts[index]['updated_at'].toString().substring(11, 13).contains('17')
-                                                                            ? Text(
-                                                                                '5:${posts[index]['updated_at'].toString().substring(14, 16)} PM',
-                                                                                style: KPostTimeStyle,
-                                                                              )
-                                                                            : posts[index]['updated_at'].toString().substring(11, 13).contains('18')
-                                                                                ? Text(
-                                                                                    '6:${posts[index]['updated_at'].toString().substring(14, 16)} PM',
-                                                                                    style: KPostTimeStyle,
-                                                                                  )
-                                                                                : posts[index]['updated_at'].toString().substring(11, 13).contains('19')
-                                                                                    ? Text(
-                                                                                        '7:${posts[index]['updated_at'].toString().substring(14, 16)} PM',
-                                                                                        style: KPostTimeStyle,
-                                                                                      )
-                                                                                    : posts[index]['updated_at'].toString().substring(11, 13).contains('20')
-                                                                                        ? Text(
-                                                                                            '8:${posts[index]['updated_at'].toString().substring(14, 16)} PM',
-                                                                                            style: KPostTimeStyle,
-                                                                                          )
-                                                                                        : posts[index]['updated_at'].toString().substring(11, 13).contains('21')
-                                                                                            ? Text(
-                                                                                                '9:${posts[index]['updated_at'].toString().substring(14, 16)} PM',
-                                                                                                style: KPostTimeStyle,
-                                                                                              )
-                                                                                            : posts[index]['updated_at'].toString().substring(11, 13).contains('22')
-                                                                                                ? Text(
-                                                                                                    '10:${posts[index]['updated_at'].toString().substring(14, 16)} PM',
-                                                                                                    style: KPostTimeStyle,
-                                                                                                  )
-                                                                                                : posts[index]['updated_at'].toString().substring(11, 13).contains('23')
-                                                                                                    ? Text(
-                                                                                                        '11:${posts[index]['updated_at'].toString().substring(14, 16)} PM',
-                                                                                                        style: KPostTimeStyle,
-                                                                                                      )
-                                                                                                    : posts[index]['updated_at'].toString().substring(11, 13).contains('00')
-                                                                                                        ? Text(
-                                                                                                            '12:${posts[index]['updated_at'].toString().substring(14, 16)} AM',
-                                                                                                            style: KPostTimeStyle,
-                                                                                                          )
-                                                                                                        : Text(''),
-                                              ],
+                                      useAsset
+                                          ? CircleAvatar(
+                                              backgroundImage:
+                                                  AssetImage(userImage),
+                                              radius: 30.0,
+                                            )
+                                          : CircleAvatar(
+                                              backgroundImage:
+                                                  NetworkImage(userImage),
+                                              radius: 30.0,
                                             ),
-                                          ),
-                                          PopupMenuButton(
-                                            icon: Icon(
-                                              Icons.more_vert,
-                                              size: 25.0,
-                                            ),
-                                            onSelected: (e) => {
-                                              postOptions(
-                                                e.toString().substring(0, 9),
-                                                posts[index]['id'],
-                                              ),
-                                            },
-                                            itemBuilder: (context) {
-                                              return options.map((choice) {
-                                                return PopupMenuItem<String>(
-                                                  value: choice,
-                                                  child: Text(
-                                                    choice,
-                                                    style: KPostOptionsStyle,
-                                                  ),
-                                                );
-                                              }).toList();
-                                            },
-                                          ),
-                                        ],
+                                      SizedBox(
+                                        width: 20.0,
                                       ),
-                                      Divider(
-                                        color: KSubSecondryFontsColor,
-                                        thickness: 0.5,
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  PostDetailsScreen(
-                                                postID: posts[index]['id'],
-                                                likeState: userLikes[index]
-                                                    ['likeState'],
-                                                likeID: userLikes[index]
-                                                    ['likeID'],
-                                              ),
-                                            ),
-                                          );
-                                        },
+                                      Expanded(
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Expanded(
-                                                  child: Text(
-                                                    '${posts[index]['post']}',
-                                                    style: KPostStyle,
-                                                  ),
-                                                ),
-                                              ],
+                                            Text(
+                                              userName,
+                                              style: KNameStyle,
                                             ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 5.0,
-                                      ),
-                                      posts[index]['image_flag'] == 1
-                                          ? Container(
-                                              width: double.infinity,
-                                              child: displayPostImage(
-                                                  posts[index]['images'][0]
-                                                      ['image']),
-                                            )
-                                          : SizedBox(
-                                              height: 5.0,
-                                            ),
-                                      SizedBox(
-                                        height: 10.0,
-                                      ),
-                                      posts[index]['post_shared_id'] != null
-                                          ? displayPost(
-                                              posts[index]['post_shared_id'],
-                                            )
-                                          : Container(),
-                                      Container(
-                                        height: 25.0,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            userLikes[index]['likeState']
-                                                ? IconButton(
-                                                    icon: Icon(
-                                                      Icons.favorite,
-                                                      color: KWarningColor,
-                                                    ),
-                                                    iconSize: 17.0,
-                                                    onPressed: () {
-                                                      unLike(
-                                                          posts[index]['id'],
-                                                          userLikes[index]
-                                                              ['likeID']);
-                                                      setState(() {
-                                                        userLikes[index]
-                                                                ['likeState'] =
-                                                            false;
-                                                      });
-                                                    },
-                                                  )
-                                                : IconButton(
-                                                    icon: Icon(
-                                                      FontAwesomeIcons.heart,
-                                                      color:
-                                                          KSubSecondryFontsColor,
-                                                    ),
-                                                    iconSize: 17.0,
-                                                    onPressed: () {
-                                                      like(posts[index]['id']);
-                                                      setState(() {
-                                                        userLikes[index]
-                                                                ['likeState'] =
-                                                            true;
-                                                      });
-                                                    },
-                                                  ),
                                             SizedBox(
-                                              width: 20.0,
+                                              height: 10.0,
                                             ),
-                                            IconButton(
-                                              icon: Icon(
-                                                FontAwesomeIcons.commentAlt,
-                                              ),
-                                              iconSize: 16.0,
-                                              onPressed: () {
+                                            InkWell(
+                                              onTap: () {
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
@@ -1273,40 +860,164 @@ class _AccountState extends State<Account> {
                                                   ),
                                                 );
                                               },
-                                            ),
-                                            SizedBox(
-                                              width: 20.0,
-                                            ),
-                                            IconButton(
-                                              icon: Icon(
-                                                FontAwesomeIcons.shareAlt,
-                                              ),
-                                              iconSize: 16.0,
-                                              onPressed: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SharePost(
-                                                      postID: posts[index]
-                                                          ['id'],
-                                                      userID: posts[index]
-                                                          ['user_id'],
-                                                    ),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          '${posts[index]['post']}',
+                                                          style: KPostStyle,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                );
-                                              },
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
                                       ),
+                                      PopupMenuButton(
+                                        icon: Icon(
+                                          Icons.more_vert,
+                                          size: 25.0,
+                                        ),
+                                        onSelected: (e) => {
+                                          postOptions(
+                                            e.toString().substring(0, 9),
+                                            posts[index]['id'],
+                                          ),
+                                        },
+                                        itemBuilder: (context) {
+                                          return options.map((choice) {
+                                            return PopupMenuItem<String>(
+                                              value: choice,
+                                              child: Text(
+                                                choice,
+                                                style: KPostOptionsStyle,
+                                              ),
+                                            );
+                                          }).toList();
+                                        },
+                                      ),
                                     ],
                                   ),
-                                ),
+                                  SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  posts[index]['image_flag'] == 1
+                                      ? Container(
+                                          width: double.infinity,
+                                          child: displayPostImage(posts[index]
+                                              ['images'][0]['image']),
+                                        )
+                                      : SizedBox(
+                                          height: 5.0,
+                                        ),
+                                  SizedBox(
+                                    height: 10.0,
+                                  ),
+                                  posts[index]['post_shared_id'] != null
+                                      ? displayPost(
+                                          posts[index]['post_shared_id'],
+                                        )
+                                      : Container(),
+                                  Container(
+                                    height: 25.0,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        userLikes[index]['likeState']
+                                            ? IconButton(
+                                                icon: Icon(
+                                                  Icons.favorite,
+                                                  color: KWarningColor,
+                                                ),
+                                                iconSize: 17.0,
+                                                onPressed: () {
+                                                  unLike(
+                                                      posts[index]['id'],
+                                                      userLikes[index]
+                                                          ['likeID']);
+                                                  setState(() {
+                                                    userLikes[index]
+                                                        ['likeState'] = false;
+                                                  });
+                                                },
+                                              )
+                                            : IconButton(
+                                                icon: Icon(
+                                                  FontAwesomeIcons.heart,
+                                                  color: KSubSecondryFontsColor,
+                                                ),
+                                                iconSize: 17.0,
+                                                onPressed: () {
+                                                  like(posts[index]['id']);
+                                                  setState(() {
+                                                    userLikes[index]
+                                                        ['likeState'] = true;
+                                                  });
+                                                },
+                                              ),
+                                        SizedBox(
+                                          width: 15.0,
+                                        ),
+                                        IconButton(
+                                          icon: Icon(
+                                            FontAwesomeIcons.commentAlt,
+                                          ),
+                                          iconSize: 16.0,
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PostDetailsScreen(
+                                                  postID: posts[index]['id'],
+                                                  likeState: userLikes[index]
+                                                      ['likeState'],
+                                                  likeID: userLikes[index]
+                                                      ['likeID'],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        SizedBox(
+                                          width: 15.0,
+                                        ),
+                                        IconButton(
+                                          icon: Icon(
+                                            FontAwesomeIcons.shareAlt,
+                                          ),
+                                          iconSize: 16.0,
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => SharePost(
+                                                  postID: posts[index]['id'],
+                                                  userID: posts[index]
+                                                      ['user_id'],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                     if (loading) ...[

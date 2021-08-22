@@ -243,7 +243,7 @@ const KAddPostButtonInAppBarStyle = TextStyle(
 
 const KNameStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
-  fontSize: 23.0,
+  fontSize: 21.0,
   fontWeight: FontWeight.bold,
   color: KSubPrimaryFontsColor,
   height: 1.3,
@@ -275,7 +275,7 @@ const KSearchLabelStyle = TextStyle(
 
 const KNameInSubPostStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
-  fontSize: 20.0,
+  fontSize: 18.0,
   fontWeight: FontWeight.bold,
   color: KSubPrimaryFontsColor,
   height: 1.3,
@@ -299,16 +299,16 @@ const KFlushBarMessageStyle = TextStyle(
 
 const KPostStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
-  fontWeight: FontWeight.w700,
-  fontSize: 20.0,
+  fontWeight: FontWeight.w600,
+  fontSize: 18.0,
   color: KSubPrimaryFontsColor,
   height: 1.3,
 );
 
 const KSubPostStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
-  fontWeight: FontWeight.w700,
-  fontSize: 17.0,
+  fontWeight: FontWeight.w600,
+  fontSize: 15.0,
   color: KSubPrimaryFontsColor,
   height: 1.3,
 );

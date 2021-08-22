@@ -11,6 +11,9 @@ import 'package:fntat/Blocs/Events/userProfile_events.dart';
 import 'package:fntat/Blocs/States/userProfile_states.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fntat/User_Interface/otherUsersProfile_screen.dart';
+import 'package:fntat/User_Interface/account_screen.dart';
+import 'package:fntat/User_Interface/settings_screen.dart';
+import 'package:fntat/User_Interface/home_screen.dart';
 import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Components/flushbar.dart';
 
@@ -28,17 +31,20 @@ class _ChatScreenState extends State<ChatScreen> {
   _ChatScreenState({required this.id});
 
   TextEditingController _message = TextEditingController();
-  String image = "assets/images/nouserimagehandler.jpg";
+  String userName = 'User Name';
+  String userImage = "assets/images/nouserimagehandler.jpg";
   File? _imageFile;
   List<dynamic> messages = [];
   var nextPageUrl;
   bool withImage = false;
   bool useAsset = true;
+  bool useAssetForOtherUser = true;
   var receiverName = "";
-  var receiverImage;
+  String receiverImage = "assets/images/nouserimagehandler.jpg";
   var receiverID;
   var userId;
   var token;
+  late UserProfileBloc userProfileBloc;
 
   gettingReceiverData() async {
     var prefs = await SharedPreferences.getInstance();
@@ -49,7 +55,7 @@ class _ChatScreenState extends State<ChatScreen> {
     dio.options.headers["authorization"] = "Bearer $token";
     try {
       final res = await dio.post(
-        "http://164.160.104.125:9090/fntat/api/profile",
+        '$ServerUrl/profile',
         data: formData,
       );
       final data = res.data;
@@ -60,7 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
       if (data['data']['image'] != null) {
         setState(() {
           receiverImage = data['data']['image'];
-          useAsset = false;
+          useAssetForOtherUser = false;
         });
       }
     } on Exception catch (error) {
@@ -81,61 +87,213 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    userProfileBloc = BlocProvider.of<UserProfileBloc>(context);
+    userProfileBloc.add(GettingUserProfileData());
     gettingUserId();
     gettingReceiverData();
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: KPrimaryFontsColor,
-      appBar: AppBar(
-        backgroundColor: KPrimaryColor,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            color: KPrimaryFontsColor,
-          ),
-          onPressed: () => {
-            Navigator.pop(context),
-          },
-        ),
-        title: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => OtherUsersProfile(
-                  userID: id,
+      body: BlocListener<UserProfileBloc, UserProfileState>(
+        listener: (context, state) {
+          if (state is GettingUserProfileDataSuccessState) {
+            setState(() {
+              userName = state.name;
+              useAsset = false;
+              userImage = '$ImageServerPrefix/${state.image}';
+            });
+          }
+        },
+        child: Stack(
+          children: [
+            Container(
+              color: KHeaderColor,
+            ),
+            Positioned(
+              top: 20.0,
+              left: 20.0,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Account(),
+                    ),
+                  );
+                },
+                child: Row(
+                  children: [
+                    useAsset
+                        ? CircleAvatar(
+                            backgroundImage: AssetImage(userImage),
+                            radius: 30.0,
+                          )
+                        : CircleAvatar(
+                            backgroundImage: NetworkImage(userImage),
+                            radius: 30.0,
+                          ),
+                    SizedBox(
+                      width: 15.0,
+                    ),
+                    Text(
+                      userName,
+                      style: KNameInHeaderStyle,
+                    ),
+                  ],
                 ),
               ),
-            );
-          },
-          child: Row(
-            children: [
-              useAsset
-                  ? CircleAvatar(
-                      backgroundImage: AssetImage(image),
-                      radius: 25.0,
-                    )
-                  : CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          'http://164.160.104.125:9090/fntat/$receiverImage'),
-                      radius: 25.0,
+            ),
+            Positioned(
+              top: 25.0,
+              right: 10.0,
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomeScreen(
+                              toNotifications: true,
+                            ),
+                          ),
+                          (route) => false);
+                    },
+                    icon: Icon(
+                      Icons.notifications,
+                      color: KSubPrimaryColor,
+                      size: 25.0,
                     ),
-              SizedBox(
-                width: 20.0,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomeScreen(
+                              toMessages: true,
+                            ),
+                          ),
+                          (route) => false);
+                    },
+                    icon: Icon(
+                      Icons.email,
+                      color: KSubPrimaryColor,
+                      size: 25.0,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Settings(fromAccount: false),
+                        ),
+                      );
+                    },
+                    icon: Icon(
+                      Icons.settings,
+                      color: KSubPrimaryColor,
+                      size: 25.0,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                receiverName,
-                style: KReceiverNameStyle,
+            ),
+            Positioned(
+              top: 200.0,
+              right: 0.0,
+              left: 0.0,
+              child: Container(
+                height: screenSize.height - 200,
+                padding: EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25.0),
+                    topRight: Radius.circular(25.0),
+                  ),
+                  color: KSubPrimaryColor,
+                ),
+                child: MessagesStream(
+                  receiverID: id,
+                ),
               ),
-            ],
-          ),
+            ),
+            Positioned(
+              top: 200.0,
+              right: 0.0,
+              left: 0.0,
+              child: Container(
+                height: 70.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25.0),
+                    topRight: Radius.circular(25.0),
+                  ),
+                  color: KSubPrimaryColor,
+                ),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: 30.0,
+                        height: 55.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: KPrimaryColor,
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.arrow_back_ios,
+                            color: KSubPrimaryColor,
+                            size: 20.0,
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              top: 230.0,
+              right: 60.0,
+              left: 150.0,
+              child: Container(
+                child: Text(
+                  receiverName,
+                  style: KUserNameStyle,
+                ),
+              ),
+            ),
+            Positioned(
+              top: 120.0,
+              right: 40.0,
+              left: 150.0,
+              child: Row(
+                children: [
+                  useAssetForOtherUser
+                      ? CircleAvatar(
+                          backgroundImage: AssetImage(receiverImage),
+                          radius: 55.0,
+                        )
+                      : CircleAvatar(
+                          backgroundImage:
+                              NetworkImage('$ImageServerPrefix/$receiverImage'),
+                          radius: 55.0,
+                        ),
+                ],
+              ),
+            ),
+          ],
         ),
-      ),
-      body: MessagesStream(
-        receiverID: id,
       ),
       bottomSheet: Padding(
         padding: EdgeInsets.only(
@@ -144,24 +302,32 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         child: Row(
           children: [
-            PopupMenuButton(
-              icon: Icon(
-                Icons.add_a_photo,
+            Container(
+              width: 40.0,
+              height: 50.0,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
                 color: KPrimaryColor,
               ),
-              iconSize: 30.0,
-              onSelected: imageOptions,
-              itemBuilder: (context) {
-                return options.map((choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(
-                      choice,
-                      style: KPostOptionsStyle,
-                    ),
-                  );
-                }).toList();
-              },
+              child: PopupMenuButton(
+                icon: Icon(
+                  Icons.add_a_photo,
+                  color: KSubPrimaryColor,
+                ),
+                iconSize: 25.0,
+                onSelected: imageOptions,
+                itemBuilder: (context) {
+                  return options.map((choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(
+                        choice,
+                        style: KPostOptionsStyle,
+                      ),
+                    );
+                  }).toList();
+                },
+              ),
             ),
             SizedBox(
               width: 15.0,
@@ -172,7 +338,7 @@ class _ChatScreenState extends State<ChatScreen> {
               child: messageTextField(_message),
             ),
             SizedBox(
-              width: 5.0,
+              width: 15.0,
             ),
             Expanded(
               child: Row(
@@ -183,7 +349,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     },
                     icon: Icon(Icons.send),
                     color: KPrimaryColor,
-                    iconSize: 30.0,
+                    iconSize: 33.0,
                   ),
                   SizedBox(
                     width: 5.0,
@@ -251,21 +417,12 @@ class _ChatScreenState extends State<ChatScreen> {
               filename: fileName),
         });
         try {
-          final res = await dio.post(
-              "http://164.160.104.125:9090/fntat/api/send-message",
-              data: formData);
+          final res = await dio.post('$ServerUrl/send-message', data: formData);
           final data = res.data;
           if (data['success'] == true) {
             setState(() {
               _imageFile = null;
             });
-            // Warning().normalMessage(
-            //   context,
-            //   onTab: () {},
-            //   title: "Sent",
-            //   message: "Message sent successfully",
-            //   icons: Icons.done,
-            // );
           } else {
             Warning().errorMessage(
               context,
@@ -290,19 +447,10 @@ class _ChatScreenState extends State<ChatScreen> {
           "content": _message.text,
         });
         try {
-          final res = await dio.post(
-              "http://164.160.104.125:9090/fntat/api/send-message",
-              data: formData);
+          final res = await dio.post('$ServerUrl/send-message', data: formData);
           final data = res.data;
           if (data['success'] == true) {
             _message.clear();
-            // Warning().normalMessage(
-            //   context,
-            //   onTab: () {},
-            //   title: "Sent",
-            //   message: "Message sent successfully",
-            //   icons: Icons.done,
-            // );
           } else {
             Warning().errorMessage(
               context,
@@ -362,8 +510,7 @@ class _MessagesStreamState extends State<MessagesStream> {
     var token = prefs.getString("TOKEN");
     dio.options.headers["authorization"] = "Bearer $token";
     try {
-      final res = await dio.get(
-          "http://164.160.104.125:9090/fntat/api/specific-chat?user_id=$id");
+      final res = await dio.get('$ServerUrl/specific-chat?user_id=$id');
       final List<dynamic> msgsBody = res.data['data']['data'];
       final nextPage = res.data['data']['next_page_url'];
       setState(() {
@@ -489,40 +636,51 @@ class _MessagesStreamState extends State<MessagesStream> {
               padding: EdgeInsets.symmetric(vertical: 60),
               itemCount: msgs.length,
               itemBuilder: (context, index) => Container(
-                padding: EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: userId == msgs[index]['sender_user_id']
-                      ? CrossAxisAlignment.end
-                      : CrossAxisAlignment.start,
-                  children: [
-                    Material(
-                      borderRadius: userId == msgs[index]['sender_user_id']
-                          ? BorderRadius.all(Radius.circular(15.0))
-                          : BorderRadius.all(Radius.circular(15.0)),
-                      elevation: 1.0,
-                      color: userId == msgs[index]['sender_user_id']
-                          ? Color(0xff163c41)
-                          : Color(0xfff9f9f9),
-                      child: InkWell(
-                        onLongPress: userId == msgs[index]['sender_user_id']
-                            ? () {
-                                messageLongPress(msgs[index]['id']);
-                              }
-                            : () {},
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 9.0, horizontal: 9.0),
+                    padding: EdgeInsets.all(2.0),
+                    child: Column(
+                      crossAxisAlignment:
+                          userId == msgs[index]['sender_user_id']
+                              ? CrossAxisAlignment.end
+                              : CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.all(3.0),
+                          padding: const EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: .5,
+                                spreadRadius: 1.0,
+                                color: Colors.black.withOpacity(.12),
+                              ),
+                            ],
+                            color: userId == msgs[index]['sender_user_id']
+                                ? Colors.greenAccent.shade100
+                                : Colors.white,
+                            borderRadius:
+                                userId == msgs[index]['sender_user_id']
+                                    ? BorderRadius.only(
+                                        topLeft: Radius.circular(5.0),
+                                        bottomLeft: Radius.circular(5.0),
+                                        bottomRight: Radius.circular(10.0),
+                                      )
+                                    : BorderRadius.only(
+                                        topRight: Radius.circular(5.0),
+                                        bottomLeft: Radius.circular(10.0),
+                                        bottomRight: Radius.circular(5.0),
+                                      ),
+                          ),
                           child: msgs[index]['type'] == 2
                               ? Container(
                                   clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  width: 100.0,
-                                  height: 100.0,
+                                  width: 250.0,
+                                  height: 150.0,
                                   decoration: BoxDecoration(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10.0)),
                                     image: DecorationImage(
                                       image: NetworkImage(
-                                          'http://164.160.104.125:9090/fntat/${msgs[index]['attachment']}'),
+                                          '$ImageServerPrefix/${msgs[index]['attachment']}'),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -530,22 +688,74 @@ class _MessagesStreamState extends State<MessagesStream> {
                               : Text(
                                   msgs[index]['content'],
                                   style: TextStyle(
-                                    color:
-                                        userId == msgs[index]['sender_user_id']
-                                            ? Colors.white
-                                            : Colors.black,
+                                    color: Colors.black,
                                     fontSize: 19.0,
                                     fontFamily: KPrimaryFontFamily,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            )
+                  )
+              // Container(
+              //   padding: EdgeInsets.all(15),
+              //   child: Column(
+              //     crossAxisAlignment: userId == msgs[index]['sender_user_id']
+              //         ? CrossAxisAlignment.end
+              //         : CrossAxisAlignment.start,
+              //     children: [
+              //       Material(
+              //         borderRadius: userId == msgs[index]['sender_user_id']
+              //             ? BorderRadius.all(Radius.circular(15.0))
+              //             : BorderRadius.all(Radius.circular(15.0)),
+              //         elevation: 1.0,
+              //         color: userId == msgs[index]['sender_user_id']
+              //             ? Colors.greenAccent.shade100
+              //             : Colors.white,
+              //         child: InkWell(
+              //           onLongPress: userId == msgs[index]['sender_user_id']
+              //               ? () {
+              //                   messageLongPress(msgs[index]['id']);
+              //                 }
+              //               : () {},
+              //           child: Padding(
+              //             padding: EdgeInsets.symmetric(
+              //                 vertical: 9.0, horizontal: 9.0),
+              //             child: msgs[index]['type'] == 2
+              //                 ? Container(
+              //                     clipBehavior: Clip.antiAliasWithSaveLayer,
+              //                     width: 100.0,
+              //                     height: 100.0,
+              //                     decoration: BoxDecoration(
+              //                       borderRadius:
+              //                           BorderRadius.all(Radius.circular(10.0)),
+              //                       image: DecorationImage(
+              //                         image: NetworkImage(
+              //                             '$ImageServerPrefix/${msgs[index]['attachment']}'),
+              //                         fit: BoxFit.cover,
+              //                       ),
+              //                     ),
+              //                   )
+              //                 : Text(
+              //                     msgs[index]['content'],
+              //                     style: TextStyle(
+              //                       color: Colors.black,
+              //                           // userId == msgs[index]['sender_user_id']
+              //                           //     ? Colors.white
+              //                           //     : Colors.black,
+              //                       fontSize: 19.0,
+              //                       fontFamily: KPrimaryFontFamily,
+              //                       fontWeight: FontWeight.w700,
+              //                     ),
+              //                   ),
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              )
           : stateIndicator(),
     );
   }
