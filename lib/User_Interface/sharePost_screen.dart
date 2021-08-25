@@ -60,7 +60,7 @@ class _SharePostState extends State<SharePost> {
     dio.options.headers["authorization"] = "Bearer $token";
     try {
       final res = await dio.post(
-        "http://164.160.104.125:9090/fntat/api/profile",
+        '$ServerUrl/profile',
         data: formData,
       );
       final data = res.data;
@@ -70,7 +70,7 @@ class _SharePostState extends State<SharePost> {
       if (data['data']['image'] != null) {
         setState(() {
           postOwnerImage =
-              'http://164.160.104.125:9090/fntat/${data['data']['image']}';
+              '$ImageServerPrefix/${data['data']['image']}';
           useAsset = false;
         });
       }
@@ -97,7 +97,7 @@ class _SharePostState extends State<SharePost> {
     } else {
       try {
         final res = await dio.post(
-            "http://164.160.104.125:9090/fntat/api/get-post-by-id? post_id=$id",
+            '$ServerUrl/get-post-by-id?post_id=$id',
             data: formData);
         final List<dynamic> postsBody = res.data['data']['data'];
         setState(() {
@@ -123,7 +123,7 @@ class _SharePostState extends State<SharePost> {
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
             image: DecorationImage(
               image:
-                  NetworkImage('http://164.160.104.125:9090/fntat/$postImage'),
+                  NetworkImage('$ImageServerPrefix/$postImage'),
               fit: BoxFit.cover,
             ),
           ),
@@ -212,7 +212,7 @@ class _SharePostState extends State<SharePost> {
               userName = state.name;
               if (state.image != null) {
                 setState(() {
-                  image = 'http://164.160.104.125:9090/fntat/${state.image}';
+                  image = '$ImageServerPrefix/${state.image}';
                   useAsset = false;
                 });
               }

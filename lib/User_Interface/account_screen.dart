@@ -52,8 +52,6 @@ class _AccountState extends State<Account> {
       "user_id": id,
     });
     dio.options.headers["authorization"] = "Bearer $token";
-    dio.options.connectTimeout = 10000;
-    dio.options.receiveTimeout = 10000;
     try {
       final res = await dio.post('$ServerUrl/user-owned-posts', data: formData);
       final List<dynamic> postsBody = res.data['data']['data'];
@@ -64,9 +62,6 @@ class _AccountState extends State<Account> {
       });
     } on Exception catch (error) {
       print(error.toString());
-      setState(() {
-        posts = [];
-      });
     }
     gettingLikes();
   }
@@ -79,8 +74,6 @@ class _AccountState extends State<Account> {
       "user_id": id,
     });
     dio.options.headers["authorization"] = "Bearer $token";
-    dio.options.connectTimeout = 10000;
-    dio.options.receiveTimeout = 10000;
     if (nextPageUrl == null) {
       setState(() {
         loading = false;
@@ -96,9 +89,6 @@ class _AccountState extends State<Account> {
         });
       } on Exception catch (error) {
         print(error.toString());
-        setState(() {
-          posts = [];
-        });
       }
       gettingLikes();
     }
@@ -135,8 +125,6 @@ class _AccountState extends State<Account> {
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("TOKEN");
     dio.options.headers["authorization"] = "Bearer $token";
-    dio.options.connectTimeout = 10000;
-    dio.options.receiveTimeout = 10000;
     FormData formData = FormData.fromMap({
       "post_id": postID,
     });
@@ -151,8 +139,6 @@ class _AccountState extends State<Account> {
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("TOKEN");
     dio.options.headers["authorization"] = "Bearer $token";
-    dio.options.connectTimeout = 10000;
-    dio.options.receiveTimeout = 10000;
     FormData formData = FormData.fromMap({
       "post_id": postID,
       "like_id": likeID,

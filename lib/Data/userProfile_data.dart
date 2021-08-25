@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fntat/Components/constants.dart';
 
 class UserProfileApi {
   var dio = Dio();
@@ -20,7 +21,7 @@ class UserProfileApi {
       Future.delayed(Duration(seconds: 3));
       final res = await dio
           .post(
-            "http://164.160.104.125:9090/fntat/api/number-of-followers",
+            '$ServerUrl/number-of-followers',
             data: formData,
           )
           .timeout(const Duration(seconds: 10));
@@ -45,7 +46,7 @@ class UserProfileApi {
     try {
       var res = await dio
           .post(
-            "http://164.160.104.125:9090/fntat/api/update-phone",
+            '$ServerUrl/update-phone',
             data: formData,
           )
           .timeout(const Duration(seconds: 10));
@@ -70,7 +71,7 @@ class UserProfileApi {
     try {
       var res = await dio
           .post(
-            "http://164.160.104.125:9090/fntat/api/update-profile",
+            '$ServerUrl/update-profile',
             data: formData,
           )
           .timeout(const Duration(seconds: 10));
@@ -95,7 +96,7 @@ class UserProfileApi {
     try {
       var res = await dio
           .post(
-            "http://164.160.104.125:9090/fntat/api/update-profile",
+            '$ServerUrl/update-profile',
             data: formData,
           )
           .timeout(const Duration(seconds: 10));
@@ -120,7 +121,7 @@ class UserProfileApi {
     dio.options.headers["authorization"] = "Bearer $token";
     try {
       var res = await dio.post(
-        "http://164.160.104.125:9090/fntat/api/update-image-profile?image",
+        '$ServerUrl/update-image-profile?image',
         data: formData,
       );
       final data = res.data;
@@ -144,7 +145,7 @@ class UserProfileApi {
     try {
       var res = await dio
           .post(
-            "http://164.160.104.125:9090/fntat/api/change-password",
+            '$ServerUrl/change-password',
             data: formData,
           )
           .timeout(const Duration(seconds: 10));
@@ -170,7 +171,7 @@ class UserProfileApi {
     try {
       // Future.delayed(Duration(seconds: 3));
       final res = await dio.post(
-        "http://164.160.104.125:9090/fntat/api/profile",
+        '$ServerUrl/profile',
         data: formData,
       );
       final data = res.data;
@@ -192,7 +193,7 @@ class UserProfileApi {
       Future.delayed(Duration(seconds: 3));
       final res = await dio
           .post(
-            "http://164.160.104.125:9090/fntat/api/profile",
+            '$ServerUrl/profile',
             data: formData,
           )
           .timeout(const Duration(seconds: 10));
@@ -218,7 +219,7 @@ class UserProfileApi {
       Future.delayed(Duration(seconds: 3));
       final res = await dio
           .post(
-            "http://164.160.104.125:9090/fntat/api/number-of-followers",
+            '$ServerUrl/number-of-followers',
             data: formData,
           )
           .timeout(const Duration(seconds: 10));
@@ -243,7 +244,7 @@ class UserProfileApi {
     try {
       final res = await dio
           .post(
-            "http://164.160.104.125:9090/fntat/api/add-post",
+            '$ServerUrl/add-post',
             data: formData,
           )
           .timeout(const Duration(seconds: 20));
@@ -270,7 +271,7 @@ class UserProfileApi {
     try {
       final res = await dio
           .post(
-            "http://164.160.104.125:9090/fntat/api/add-post",
+            '$ServerUrl/add-post',
             data: formData,
           )
           .timeout(const Duration(seconds: 20));
@@ -294,7 +295,7 @@ class UserProfileApi {
     dio.options.headers["authorization"] = "Bearer $token";
     try {
       final res = await dio.post(
-        "http://164.160.104.125:9090/fntat/api/follow-user",
+        '$ServerUrl/follow-user',
         data: formData,
       );
       final data = res.data;
@@ -314,7 +315,7 @@ class UserProfileApi {
     dio.options.headers["authorization"] = "Bearer $token";
     try {
       final res = await dio.post(
-        "http://164.160.104.125:9090/fntat/api/unfollow-user",
+        '$ServerUrl/unfollow-user',
         data: formData,
       );
       final data = res.data;
@@ -331,7 +332,7 @@ class UserProfileApi {
     dio.options.headers["authorization"] = "Bearer $token";
     try {
       final res = await dio.post(
-        "http://164.160.104.125:9090/fntat/api/delete-post/$postID",
+        '$ServerUrl/delete-post/$postID',
       );
       final data = res.data;
       return data;
@@ -351,7 +352,7 @@ class UserProfileApi {
     dio.options.headers["authorization"] = "Bearer $token";
     try {
       final res = await dio.post(
-        "http://164.160.104.125:9090/fntat/api/edit-post",
+        '$ServerUrl/edit-post',
         data: formData,
       );
       final data = res.data;
@@ -374,7 +375,7 @@ class UserProfileApi {
     dio.options.headers["authorization"] = "Bearer $token";
     try {
       final res = await dio.post(
-        "http://164.160.104.125:9090/fntat/api/edit-post",
+        '$ServerUrl/edit-post',
         data: formData,
       );
       final data = res.data;
@@ -395,7 +396,7 @@ class UserProfileApi {
     dio.options.headers["authorization"] = "Bearer $token";
     try {
       final res = await dio.post(
-        "http://164.160.104.125:9090/fntat/api/share-post",
+        '$ServerUrl/share-post',
         data: formData,
       );
       final data = res.data;
@@ -416,7 +417,7 @@ class UserProfileApi {
     dio.options.headers["authorization"] = "Bearer $token";
     try {
       final res = await dio.post(
-        "http://164.160.104.125:9090/fntat/api/add-comment",
+        '$ServerUrl/add-comment',
         data: formData,
       );
       final data = res.data;
@@ -437,7 +438,7 @@ class UserProfileApi {
     dio.options.headers["authorization"] = "Bearer $token";
     try {
       final res = await dio.post(
-        "http://164.160.104.125:9090/fntat/api/delete-comment",
+        '$ServerUrl/delete-comment',
         data: formData,
       );
       final data = res.data;
@@ -458,7 +459,7 @@ class UserProfileApi {
     dio.options.headers["authorization"] = "Bearer $token";
     try {
       final res = await dio.post(
-        "http://164.160.104.125:9090/fntat/api/edit-comment",
+        '$ServerUrl/edit-comment',
         data: formData,
       );
       final data = res.data;
@@ -480,7 +481,7 @@ class UserProfileApi {
     dio.options.headers["authorization"] = "Bearer $token";
     try {
       final res = await dio.post(
-        "http://164.160.104.125:9090/fntat/api/add-replay-comment",
+        '$ServerUrl/add-replay-comment',
         data: formData,
       );
       final data = res.data;
@@ -498,7 +499,7 @@ class UserProfileApi {
 
     try {
       final res = await http.post(
-        Uri.parse("http://164.160.104.125:9090/fntat/api/home-page-posts"),
+        Uri.parse('$ServerUrl/home-page-posts'),
         body: {"user_id": id},
         headers: {"Authorization": "Bearer $token"},
       );
@@ -509,21 +510,6 @@ class UserProfileApi {
       print(error.toString());
       return 400;
     }
-    // FormData formData = FormData.fromMap({
-    //   "user_id": id,
-    // });
-    // dio.options.headers["authorization"] = "Bearer $token";
-    // // dio.options.followRedirects = false;
-    // try {
-    //   final res = await dio.post(
-    //       "http://164.160.104.125:9090/fntat/api/home-page-posts",
-    //       data: formData);
-    //   final data = res.data;
-    //   return data;
-    // } on Exception catch (error) {
-    //   print(error.toString());
-    //   return 400;
-    // }
   }
 
   deleteMessage(var msgID) async {
@@ -534,9 +520,8 @@ class UserProfileApi {
       "message_id": msgID,
     });
     try {
-      final res = await dio.post(
-          "http://164.160.104.125:9090/fntat/api/delete-send-message",
-          data: formData);
+      final res =
+          await dio.post('$ServerUrl/delete-send-message', data: formData);
       final data = res.data;
       return data;
     } on Exception catch (error) {

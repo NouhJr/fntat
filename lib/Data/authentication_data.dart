@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fntat/Components/constants.dart';
 
 class AuthApi {
   var dio = Dio();
@@ -16,8 +17,7 @@ class AuthApi {
         "user_id": uID,
         "token": value,
       });
-      await dio.post("http://164.160.104.125:9090/fntat/api/update-token",
-          data: formData);
+      await dio.post('$ServerUrl/update-token', data: formData);
     });
   }
 
@@ -43,8 +43,7 @@ class AuthApi {
       "image": await MultipartFile.fromFile(image.path, filename: fileName),
     });
     try {
-      var res = await dio.post("http://164.160.104.125:9090/fntat/api/register",
-          data: formData);
+      var res = await dio.post('$ServerUrl/register', data: formData);
       final data = res.data;
       return data;
     } on Exception catch (_) {
@@ -55,8 +54,7 @@ class AuthApi {
   signin(String phone, String password) async {
     try {
       var res = await http.post(
-        Uri.parse(
-            "http://164.160.104.125:9090/fntat/api/login?phone=$phone&password=$password"),
+        Uri.parse('$ServerUrl/login?phone=$phone&password=$password'),
         body: {
           "phone": phone,
           "password": password,
@@ -82,7 +80,7 @@ class AuthApi {
     try {
       final res = await dio
           .post(
-            "http://164.160.104.125:9090/fntat/api/profile",
+            '$ServerUrl/profile',
             data: formData,
           )
           .timeout(const Duration(seconds: 10));
@@ -115,9 +113,8 @@ class AuthApi {
       "password_confirmation": confirmPassword,
     });
     try {
-      var res = await dio.post(
-          "http://164.160.104.125:9090/fntat/api/reset-password/$userID",
-          data: formData);
+      var res =
+          await dio.post('$ServerUrl/reset-password/$userID', data: formData);
       final data = res.data;
       return data;
     } on Exception catch (_) {
@@ -130,9 +127,7 @@ class AuthApi {
       "phone": phone,
     });
     try {
-      var res = await dio.post(
-          "http://164.160.104.125:9090/fntat/api/search-user-phone",
-          data: formData);
+      var res = await dio.post('$ServerUrl/search-user-phone', data: formData);
       final data = res.data;
       return data;
     } on Exception catch (e) {
@@ -153,9 +148,8 @@ class AuthApi {
     });
     dio.options.headers["authorization"] = "Bearer $token";
     try {
-      final res = await dio.post(
-          "http://164.160.104.125:9090/fntat/api/all-followers-followings",
-          data: formData);
+      final res =
+          await dio.post('$ServerUrl/all-followers-followings', data: formData);
       final List<dynamic> body = res.data['user_following'];
       for (var i = 0; i < body.length; i++) {
         tempFollowingIds.add(body[i]['following_id'].toString());

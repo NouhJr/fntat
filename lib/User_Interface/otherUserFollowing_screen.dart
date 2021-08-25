@@ -50,12 +50,9 @@ class _OtherUserFollowingScreenState extends State<OtherUserFollowingScreen> {
       "user_id": id,
     });
     dio.options.headers["authorization"] = "Bearer $token";
-    dio.options.connectTimeout = 10000;
-    dio.options.receiveTimeout = 10000;
     try {
-      final res = await dio.post(
-          "http://164.160.104.125:9090/fntat/api/all-followers-followings",
-          data: formData);
+      final res =
+          await dio.post('$ServerUrl/all-followers-followings', data: formData);
       final List<dynamic> body = res.data['user_following'];
       setState(() {
         following = body;
@@ -73,17 +70,13 @@ class _OtherUserFollowingScreenState extends State<OtherUserFollowingScreen> {
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("TOKEN");
     dio.options.headers["authorization"] = "Bearer $token";
-    dio.options.connectTimeout = 10000;
-    dio.options.receiveTimeout = 10000;
     if (followings.isNotEmpty) {
       for (var i = 0; i < followings.length; i++) {
         FormData formData = FormData.fromMap({
           "user_id": followings[i]['following_id'],
         });
         try {
-          var res = await dio.post(
-              "http://164.160.104.125:9090/fntat/api/profile",
-              data: formData);
+          var res = await dio.post('$ServerUrl/profile', data: formData);
           final body = res.data['data'];
           setState(() {
             tempUsers.add(body);
@@ -270,7 +263,7 @@ class _OtherUserFollowingScreenState extends State<OtherUserFollowingScreen> {
                   leading: finalUsers[index]['image'] != null
                       ? CircleAvatar(
                           backgroundImage: NetworkImage(
-                              'http://164.160.104.125:9090/fntat/${finalUsers[index]['image']}'),
+                              '$ImageServerPrefix/${finalUsers[index]['image']}'),
                           radius: 25.0,
                         )
                       : CircleAvatar(

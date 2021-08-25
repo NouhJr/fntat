@@ -25,8 +25,8 @@ const AppNameStyle = TextStyle(
 );
 
 ///*************************SERVERURL**************************/
-const ServerUrl = "http://164.160.104.125:9090/fntat/api";
-const ImageServerPrefix = "http://164.160.104.125:9090/fntat";
+const ServerUrl = "http://164.160.104.133:9090/fntat/api";
+const ImageServerPrefix = "http://164.160.104.133:9090/fntat";
 
 ///*************************FONTS**************************/
 // const KPrimaryFontFamily = "Segoe UI";

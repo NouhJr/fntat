@@ -8,21 +8,17 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fntat/Blocs/authentication_bloc.dart';
 import 'package:fntat/Blocs/userProfile_bloc.dart';
-import 'package:fntat/Blocs/postsFeed_bloc.dart';
 import 'package:fntat/Blocs/States/userProfile_states.dart';
 import 'package:fntat/Blocs/States/authentication_states.dart';
-import 'package:fntat/Blocs/States/postsFeed_states.dart';
 import 'package:fntat/Blocs/Events/userProfile_events.dart';
 import 'package:fntat/Data/userProfile_data.dart';
 import 'package:fntat/Data/authentication_data.dart';
 import 'package:fntat/Data/search_data.dart';
-import 'package:fntat/Data/postsFeed_data.dart';
 import 'package:fntat/User_Interface/account_screen.dart';
 import 'package:fntat/User_Interface/settings_screen.dart';
 import 'package:fntat/User_Interface/search_screen.dart';
 import 'package:fntat/User_Interface/notifications_screen.dart';
 import 'package:fntat/User_Interface/messages_screen.dart';
-// import 'package:fntat/User_Interface/newsFeed_screen.dart';
 import 'package:fntat/User_Interface/editPhone_screen.dart';
 import 'package:fntat/User_Interface/editName_screen.dart';
 import 'package:fntat/User_Interface/editEmail_screen.dart';
@@ -30,14 +26,12 @@ import 'package:fntat/User_Interface/editProfilePicture_screen.dart';
 import 'package:fntat/User_Interface/changePassword_screen.dart';
 import 'package:fntat/User_Interface/otherUsersProfile_screen.dart';
 import 'package:fntat/User_Interface/addPost_screen.dart';
-import 'package:fntat/User_Interface/addComment_screen.dart';
 import 'package:fntat/User_Interface/followers_screen.dart';
 import 'package:fntat/User_Interface/following_screen.dart';
 import 'package:fntat/User_Interface/postDetails_screen.dart';
 import 'package:fntat/User_Interface/chat_screen.dart';
 import 'package:fntat/User_Interface/editPost_screen.dart';
 import 'package:fntat/User_Interface/sharePost_screen.dart';
-// import 'package:fntat/User_Interface/category_screen.dart';
 import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Components/flushbar.dart';
 import 'package:fntat/main.dart';
@@ -51,9 +45,6 @@ class Home extends StatelessWidget {
         BlocProvider(
             create: (context) =>
                 UserProfileBloc(UserProfileInitialState(), UserProfileApi())),
-        BlocProvider(
-            create: (context) =>
-                PostsFeedBloc(PostsFeedInitialState(), PostsData())),
       ],
       child: MaterialApp(
         routes: {

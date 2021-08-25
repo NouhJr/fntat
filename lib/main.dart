@@ -9,7 +9,6 @@ import 'package:fntat/Blocs/States/authentication_states.dart';
 import 'package:fntat/Data/authentication_data.dart';
 import 'package:fntat/User_Interface/suggestions_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'User_Interface/messages_screen.dart';
 import 'User_Interface/home_screen.dart';
 import 'User_Interface/landing_screen.dart';
 import 'User_Interface/findAccountByPhone_screen.dart';
@@ -29,7 +28,7 @@ void main() async {
   runApp(MaterialApp(
     title: "Fntat",
     theme: ThemeData(
-      primaryColor: KPrimaryColor,
+      primaryColor: Colors.green,
       primarySwatch: Colors.green,
     ),
     home: AnimatedSplashScreen(

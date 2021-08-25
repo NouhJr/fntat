@@ -57,7 +57,7 @@ class _EditPostState extends State<EditPost> {
     } else {
       try {
         final res = await dio.post(
-            "http://164.160.104.125:9090/fntat/api/get-post-by-id? post_id=$id",
+            '$ServerUrl/get-post-by-id? post_id=$id',
             data: formData);
         final List<dynamic> postsBody = res.data['data']['data'];
         setState(() {
@@ -83,7 +83,7 @@ class _EditPostState extends State<EditPost> {
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
             image: DecorationImage(
               image:
-                  NetworkImage('http://164.160.104.125:9090/fntat/$postImage'),
+                  NetworkImage('$ImageServerPrefix/$postImage'),
               fit: BoxFit.cover,
             ),
           ),
@@ -171,7 +171,7 @@ class _EditPostState extends State<EditPost> {
               userName = state.name;
               if (state.image != null) {
                 setState(() {
-                  image = 'http://164.160.104.125:9090/fntat/${state.image}';
+                  image = '$ImageServerPrefix/${state.image}';
                   useAsset = false;
                 });
               }
@@ -216,54 +216,6 @@ class _EditPostState extends State<EditPost> {
                         SizedBox(
                           height: 25.0,
                         ),
-                        // hasImage
-                        //     ? Row(
-                        //         mainAxisAlignment: MainAxisAlignment.start,
-                        //         children: [
-                        //           Stack(
-                        //             children: [
-                        //               Container(
-                        //                 clipBehavior: Clip.antiAliasWithSaveLayer,
-                        //                 width: 190.0,
-                        //                 height: 190.0,
-                        //                 decoration: BoxDecoration(
-                        //                   borderRadius:
-                        //                       BorderRadius.all(Radius.circular(10.0)),
-                        //                   image: DecorationImage(
-                        //                     image: FileImage(_image!),
-                        //                     fit: BoxFit.cover,
-                        //                   ),
-                        //                 ),
-                        //               ),
-                        //               Positioned(
-                        //                 top: 8.0,
-                        //                 right: 8.0,
-                        //                 child: GestureDetector(
-                        //                   onTap: () {
-                        //                     setState(() {
-                        //                       hasImage = false;
-                        //                     });
-                        //                   },
-                        //                   child: Icon(
-                        //                     Icons.remove_circle,
-                        //                     size: 25.0,
-                        //                     color: KWarningColor,
-                        //                   ),
-                        //                 ),
-                        //               ),
-                        //             ],
-                        //           ),
-                        //         ],
-                        //       )
-                        //     : Row(
-                        //         mainAxisAlignment: MainAxisAlignment.start,
-                        //         children: [
-                        //           Container(),
-                        //         ],
-                        //       ),
-                        // SizedBox(
-                        //   height: 10.0,
-                        // ),
                         Card(
                           clipBehavior: Clip.antiAliasWithSaveLayer,
                           elevation: 1.0,
@@ -485,69 +437,8 @@ class _EditPostState extends State<EditPost> {
               ),
       ),
       resizeToAvoidBottomInset: true,
-      // bottomSheet: Row(
-      //   mainAxisAlignment: MainAxisAlignment.start,
-      //   children: [
-      //     SizedBox(
-      //       width: 10.0,
-      //     ),
-      //     Container(
-      //       width: 100.0,
-      //       height: 100.0,
-      //       child: Card(
-      //         elevation: 1.0,
-      //         clipBehavior: Clip.antiAliasWithSaveLayer,
-      //         child: IconButton(
-      //           icon: Icon(
-      //             Icons.add_a_photo,
-      //             color: KPrimaryColor,
-      //             size: 40.0,
-      //           ),
-      //           onPressed: takeImage,
-      //         ),
-      //       ),
-      //     ),
-      //     SizedBox(
-      //       width: 15.0,
-      //     ),
-      //     Container(
-      //       width: 100.0,
-      //       height: 100.0,
-      //       child: Card(
-      //         elevation: 1.0,
-      //         clipBehavior: Clip.antiAliasWithSaveLayer,
-      //         child: IconButton(
-      //           icon: Icon(
-      //             Icons.add_photo_alternate,
-      //             color: KPrimaryColor,
-      //             size: 40.0,
-      //           ),
-      //           onPressed: chooseImage,
-      //         ),
-      //       ),
-      //     ),
-      //   ],
-      // ),
     );
   }
-
-  // Future chooseImage() async {
-  //   final source = ImageSource.gallery;
-  //   final pickedFile = await ImagePicker.pickImage(source: source);
-  //   setState(() {
-  //     _image = File(pickedFile.path);
-  //     hasImage = true;
-  //   });
-  // }
-
-  // Future takeImage() async {
-  //   final source = ImageSource.camera;
-  //   final pickedFile = await ImagePicker.pickImage(source: source);
-  //   setState(() {
-  //     _image = File(pickedFile.path);
-  //     hasImage = true;
-  //   });
-  // }
 
   editPost() async {
     //Check if there is internet connection or not and display message error if not.
@@ -567,10 +458,6 @@ class _EditPostState extends State<EditPost> {
         icons: Icons.warning,
       );
     }
-    // else if (_image != null) {
-    //   userProfileBloc.add(EditPostWithImageButtonPressed(
-    //       post: _post.text, postID: id, postImage: _image));
-    // }
     else {
       userProfileBloc.add(EditPostButtonPressed(post: _post.text, postID: id));
     }

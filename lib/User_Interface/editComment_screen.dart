@@ -116,7 +116,7 @@ class _EditCommentState extends State<EditComment> {
               userName = state.name ?? "";
               if (state.image != null) {
                 setState(() {
-                  image = 'http://164.160.104.125:9090/fntat/${state.image}';
+                  image = '$ImageServerPrefix/${state.image}';
                   useAsset = false;
                 });
               }

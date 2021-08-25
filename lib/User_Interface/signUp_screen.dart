@@ -11,8 +11,6 @@ import 'package:fntat/Blocs/States/authentication_states.dart';
 import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Components/flushbar.dart';
 
-import 'continueSignUp_screen.dart';
-
 class SignUp extends StatefulWidget {
   @override
   _SignUpState createState() => _SignUpState();

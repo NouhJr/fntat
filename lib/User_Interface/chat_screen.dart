@@ -267,9 +267,21 @@ class _ChatScreenState extends State<ChatScreen> {
               right: 60.0,
               left: 150.0,
               child: Container(
-                child: Text(
-                  receiverName,
-                  style: KUserNameStyle,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OtherUsersProfile(
+                          userID: receiverID,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    receiverName,
+                    style: KUserNameStyle,
+                  ),
                 ),
               ),
             ),
@@ -277,19 +289,31 @@ class _ChatScreenState extends State<ChatScreen> {
               top: 120.0,
               right: 40.0,
               left: 150.0,
-              child: Row(
-                children: [
-                  useAssetForOtherUser
-                      ? CircleAvatar(
-                          backgroundImage: AssetImage(receiverImage),
-                          radius: 55.0,
-                        )
-                      : CircleAvatar(
-                          backgroundImage:
-                              NetworkImage('$ImageServerPrefix/$receiverImage'),
-                          radius: 55.0,
-                        ),
-                ],
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OtherUsersProfile(
+                        userID: receiverID,
+                      ),
+                    ),
+                  );
+                },
+                child: Row(
+                  children: [
+                    useAssetForOtherUser
+                        ? CircleAvatar(
+                            backgroundImage: AssetImage(receiverImage),
+                            radius: 55.0,
+                          )
+                        : CircleAvatar(
+                            backgroundImage: NetworkImage(
+                                '$ImageServerPrefix/$receiverImage'),
+                            radius: 55.0,
+                          ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -536,7 +560,6 @@ class _MessagesStreamState extends State<MessagesStream> {
           msgs.addAll(msgsBody);
           nextPageUrl = nextPage;
         });
-        // return msgs;
       } on Exception catch (error) {
         print(error.toString());
       }
@@ -697,65 +720,7 @@ class _MessagesStreamState extends State<MessagesStream> {
                         ),
                       ],
                     ),
-                  )
-              // Container(
-              //   padding: EdgeInsets.all(15),
-              //   child: Column(
-              //     crossAxisAlignment: userId == msgs[index]['sender_user_id']
-              //         ? CrossAxisAlignment.end
-              //         : CrossAxisAlignment.start,
-              //     children: [
-              //       Material(
-              //         borderRadius: userId == msgs[index]['sender_user_id']
-              //             ? BorderRadius.all(Radius.circular(15.0))
-              //             : BorderRadius.all(Radius.circular(15.0)),
-              //         elevation: 1.0,
-              //         color: userId == msgs[index]['sender_user_id']
-              //             ? Colors.greenAccent.shade100
-              //             : Colors.white,
-              //         child: InkWell(
-              //           onLongPress: userId == msgs[index]['sender_user_id']
-              //               ? () {
-              //                   messageLongPress(msgs[index]['id']);
-              //                 }
-              //               : () {},
-              //           child: Padding(
-              //             padding: EdgeInsets.symmetric(
-              //                 vertical: 9.0, horizontal: 9.0),
-              //             child: msgs[index]['type'] == 2
-              //                 ? Container(
-              //                     clipBehavior: Clip.antiAliasWithSaveLayer,
-              //                     width: 100.0,
-              //                     height: 100.0,
-              //                     decoration: BoxDecoration(
-              //                       borderRadius:
-              //                           BorderRadius.all(Radius.circular(10.0)),
-              //                       image: DecorationImage(
-              //                         image: NetworkImage(
-              //                             '$ImageServerPrefix/${msgs[index]['attachment']}'),
-              //                         fit: BoxFit.cover,
-              //                       ),
-              //                     ),
-              //                   )
-              //                 : Text(
-              //                     msgs[index]['content'],
-              //                     style: TextStyle(
-              //                       color: Colors.black,
-              //                           // userId == msgs[index]['sender_user_id']
-              //                           //     ? Colors.white
-              //                           //     : Colors.black,
-              //                       fontSize: 19.0,
-              //                       fontFamily: KPrimaryFontFamily,
-              //                       fontWeight: FontWeight.w700,
-              //                     ),
-              //                   ),
-              //           ),
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              )
+                  ))
           : stateIndicator(),
     );
   }

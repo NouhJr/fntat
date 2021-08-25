@@ -64,7 +64,7 @@ class _CategoryState extends State<Category> {
                     leading: catUsers[index]['user']['image'] != null
                         ? CircleAvatar(
                             backgroundImage: NetworkImage(
-                                'http://164.160.104.125:9090/fntat/${catUsers[index]['user']['image']}'),
+                                '$ImageServerPrefix/${catUsers[index]['user']['image']}'),
                             radius: 30.0,
                           )
                         : CircleAvatar(
@@ -108,8 +108,8 @@ class _CategoryState extends State<Category> {
     dio.options.connectTimeout = 10000;
     dio.options.receiveTimeout = 10000;
     try {
-      final res = await dio.post(
-          "http://164.160.104.125:9090/fntat/api/users-same-category?category_id=$catID");
+      final res =
+          await dio.post('$ServerUrl/users-same-category?category_id=$catID');
       final List<dynamic> resBody = res.data['data']['data'];
       final nextPage = res.data['data']['next_page_url'];
       setState(() {

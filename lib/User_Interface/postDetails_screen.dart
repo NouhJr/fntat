@@ -809,7 +809,6 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
         ),
       ),
       resizeToAvoidBottomInset: true,
-
       bottomSheet: Container(
         margin: const EdgeInsets.all(5.0),
         child: Row(
@@ -849,47 +848,6 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
           ],
         ),
       ),
-      // floatingActionButton: shrinked
-      //     ? FloatingActionButton(
-      //         onPressed: () {
-      //           Navigator.push(
-      //             context,
-      //             MaterialPageRoute(
-      //               builder: (context) => AddComment(
-      //                 postID: pID,
-      //               ),
-      //             ),
-      //           );
-      //         },
-      //         child: Icon(
-      //           Icons.add,
-      //           color: KPrimaryFontsColor,
-      //           size: 30.0,
-      //         ),
-      //         backgroundColor: KPrimaryColor,
-      //       )
-      //     : FloatingActionButton.extended(
-      //         onPressed: () {
-      //           Navigator.push(
-      //             context,
-      //             MaterialPageRoute(
-      //               builder: (context) => AddComment(
-      //                 postID: pID,
-      //               ),
-      //             ),
-      //           );
-      //         },
-      //         label: Text(
-      //           "Add Comment",
-      //           style: KAddPostButtonStyle,
-      //         ),
-      //         backgroundColor: KPrimaryColor,
-      //         icon: Icon(
-      //           Icons.add,
-      //           color: KPrimaryFontsColor,
-      //           size: 30.0,
-      //         ),
-      //       ),
     );
   }
 
@@ -909,8 +867,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
     dio.options.connectTimeout = 1000;
     dio.options.receiveTimeout = 1000;
     try {
-      final res = await dio.post(
-          "http://164.160.104.125:9090/fntat/api/get-post-by-id?post_id=$pID");
+      final res = await dio.post('$ServerUrl/get-post-by-id?post_id=$pID');
       final List<dynamic> postBody = res.data['data']['data'];
       setState(() {
         posts = postBody;
@@ -931,8 +888,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
       "post_id": postID,
     });
     try {
-      await dio.post("http://164.160.104.125:9090/fntat/api/add-like",
-          data: formData);
+      await dio.post('$ServerUrl/add-like', data: formData);
     } on Exception catch (e) {
       print(e.toString());
     }
@@ -949,8 +905,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
       "like_id": likeID,
     });
     try {
-      await dio.post("http://164.160.104.125:9090/fntat/api/delete-like",
-          data: formData);
+      await dio.post('$ServerUrl/delete-like', data: formData);
     } on Exception catch (e) {
       print(e.toString());
     }
@@ -963,8 +918,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
     dio.options.connectTimeout = 1000;
     dio.options.receiveTimeout = 1000;
     try {
-      final res = await dio
-          .get("http://164.160.104.125:9090/fntat/api/show-post-comments/$pID");
+      final res = await dio.get('$ServerUrl/show-post-comments/$pID');
       final List<dynamic> commentsBody = res.data['data'];
       setState(() {
         comments = commentsBody;
@@ -998,7 +952,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
             image: DecorationImage(
-              image: NetworkImage('http://164.160.104.125:9090/fntat/$image'),
+              image: NetworkImage('$ImageServerPrefix/$image'),
               fit: BoxFit.cover,
             ),
           ),
@@ -1355,7 +1309,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                               )
                             : CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                  'http://164.160.104.125:9090/fntat/${user['image']}',
+                                  '$ImageServerPrefix/${user['image']}',
                                 ),
                                 radius: 20.0,
                               ),

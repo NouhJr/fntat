@@ -213,8 +213,7 @@ class _CommentDetailsState extends State<CommentDetails> {
     var token = prefs.getString("TOKEN");
     dio.options.headers["authorization"] = "Bearer $token";
     try {
-      final res = await dio.get(
-          "http://164.160.104.125:9090/fntat/api/show-post-comments-replays/$pID");
+      final res = await dio.get('$ServerUrl/show-post-comments-replays/$pID');
       final List<dynamic> postBody = res.data['data'];
       Future.delayed(Duration(seconds: 2));
       getOneCommentWithReplays(postBody);

@@ -11,7 +11,6 @@ import 'package:fntat/Blocs/States/userProfile_states.dart';
 import 'package:fntat/User_Interface/otherUserFollowers_screen.dart';
 import 'package:fntat/User_Interface/otherUserFollowing_screen.dart';
 import 'package:fntat/User_Interface/postDetails_screen.dart';
-import 'package:fntat/User_Interface/addComment_screen.dart';
 import 'package:fntat/User_Interface/sharePost_screen.dart';
 import 'package:fntat/User_Interface/chat_screen.dart';
 import 'package:fntat/Components/constants.dart';
@@ -634,6 +633,31 @@ class _OtherUsersProfileState extends State<OtherUsersProfile> {
                           Navigator.pop(context);
                         },
                       ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 25.0,
+                    right: isFriend ? 140.0 : 110.0,
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChatScreen(
+                                  receiverID: id,
+                                ),
+                              ),
+                            );
+                          },
+                          icon: Icon(
+                            Icons.email,
+                            color: KSubPrimaryColor,
+                            size: 25.0,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Positioned(

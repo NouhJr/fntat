@@ -49,12 +49,9 @@ class _OtherUserFollowersScreenState extends State<OtherUserFollowersScreen> {
       "user_id": id,
     });
     dio.options.headers["authorization"] = "Bearer $token";
-    dio.options.connectTimeout = 10000;
-    dio.options.receiveTimeout = 10000;
     try {
-      final res = await dio.post(
-          "http://164.160.104.125:9090/fntat/api/all-followers-followings",
-          data: formData);
+      final res =
+          await dio.post('$ServerUrl/all-followers-followings', data: formData);
       final List<dynamic> followersList = res.data['user_followers'];
       setState(() {
         followers = followersList;
@@ -242,7 +239,7 @@ class _OtherUserFollowersScreenState extends State<OtherUserFollowersScreen> {
                     leading: followers[index]['user']['image'] != null
                         ? CircleAvatar(
                             backgroundImage: NetworkImage(
-                                'http://164.160.104.125:9090/fntat/${followers[index]['user']['image']}'),
+                                '$ImageServerPrefix/${followers[index]['user']['image']}'),
                             radius: 25.0,
                           )
                         : CircleAvatar(

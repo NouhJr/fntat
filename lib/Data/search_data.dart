@@ -31,8 +31,7 @@ class SearchBar extends SearchDelegate<SearchedUsers> {
     );
   }
 
-  var image =
-      "https://www.uclg-planning.org/sites/default/files/styles/featured_home_left/public/no-user-image-square.jpg?itok=PANMBJF-";
+  var image = "assets/images/nouserimagehandler.jpg";
 
   @override
   Widget buildResults(BuildContext context) {
@@ -48,12 +47,12 @@ class SearchBar extends SearchDelegate<SearchedUsers> {
               return ListTile(
                 leading: snapshot.data?[index].image == null
                     ? CircleAvatar(
-                        backgroundImage: NetworkImage(image),
+                        backgroundImage: AssetImage(image),
                         radius: 25.0,
                       )
                     : CircleAvatar(
                         backgroundImage: NetworkImage(
-                            'http://164.160.104.125:9090/fntat/${snapshot.data?[index].image}'),
+                            '$ImageServerPrefix/${snapshot.data?[index].image}'),
                         radius: 25.0,
                       ),
                 title: Text(
@@ -107,9 +106,7 @@ class SearchBar extends SearchDelegate<SearchedUsers> {
       "name": query,
     });
     try {
-      final res = await dio.post(
-          "http://164.160.104.125:9090/fntat/api/search-user",
-          data: formData);
+      final res = await dio.post('$ServerUrl/search-user', data: formData);
       final body = res.data;
       final list = body['data'] as List;
       return list.map((e) => SearchedUsers.fromJson(e)).toList();
