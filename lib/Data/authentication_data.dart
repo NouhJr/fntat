@@ -27,20 +27,23 @@ class AuthApi {
     String phone,
     String password,
     String passwordConfirmation,
-    int type,
-    int category,
-    File image,
+    String birthDate,
+    File profilePicture,
+    File coverPhoto,
   ) async {
-    String fileName = image.path.split('/').last;
+    String profilePictureFileName = profilePicture.path.split('/').last;
+    String coverPhotoFileName = coverPhoto.path.split('/').last;
     FormData formData = FormData.fromMap({
       "name": name,
       "email": email,
       "password": password,
       "password_confirmation": passwordConfirmation,
       "phone": phone,
-      "type": type,
-      "category_id": category,
-      "image": await MultipartFile.fromFile(image.path, filename: fileName),
+      "birth_date": birthDate,
+      "image": await MultipartFile.fromFile(profilePicture.path,
+          filename: profilePictureFileName),
+      "cover_image": await MultipartFile.fromFile(coverPhoto.path,
+          filename: coverPhotoFileName),
     });
     try {
       var res = await dio.post('$ServerUrl/register', data: formData);

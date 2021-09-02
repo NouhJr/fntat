@@ -8,8 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fntat/Blocs/userProfile_bloc.dart';
 import 'package:fntat/Blocs/Events/userProfile_events.dart';
 import 'package:fntat/Blocs/States/userProfile_states.dart';
-import 'package:fntat/User_Interface/otherUserFollowers_screen.dart';
-import 'package:fntat/User_Interface/otherUserFollowing_screen.dart';
 import 'package:fntat/User_Interface/postDetails_screen.dart';
 import 'package:fntat/User_Interface/sharePost_screen.dart';
 import 'package:fntat/User_Interface/chat_screen.dart';
@@ -33,7 +31,17 @@ class _OtherUsersProfileState extends State<OtherUsersProfile> {
   var userName = '';
   var userEmail = '';
   var userPhone = '';
+  var userType;
+  var userCategory;
+  var userCountry;
+  var userLegOrHand;
+  var userAge;
+  var userHeight;
+  var userWeight;
+  var userMainPosition;
+  var userOtherPosition;
   var userImage = "assets/images/nouserimagehandler.jpg";
+  var coverPhoto;
   var noUserImage = "assets/images/nouserimagehandler.jpg";
   bool useAsset = true;
   var followersCount = 0;
@@ -59,7 +67,6 @@ class _OtherUsersProfileState extends State<OtherUsersProfile> {
 
   Future getOtherUserDataOnRefresh() async {
     gettingOtherUsersProfileData();
-    getOtherUsersFollowingFollowersCount();
     gettingOtherUserOwnedPosts();
   }
 
@@ -80,37 +87,27 @@ class _OtherUsersProfileState extends State<OtherUsersProfile> {
         userName = data['data']['name'];
         userEmail = data['data']['email'];
         userPhone = data['data']['phone'];
+        userType = data['data']['type'];
+        userCountry = data['data']['country'];
+        userLegOrHand = data['data']['favorite'];
+        userCategory = data['data']['user_category']['category_id'];
+        userAge = age(data['data']['birth_date'] ?? DateTime.now().toString());
+        userHeight = data['data']['length'];
+        userWeight = data['data']['weight'];
+        userMainPosition = data['data']['main_position'];
+        userOtherPosition = data['data']['other_position'];
       });
       if (data['data']['image'] != null) {
         setState(() {
-          userImage = data['data']['image'];
+          userImage = '$ImageServerPrefix/${data['data']['image']}';
           useAsset = false;
         });
       }
-    } on Exception catch (error) {
-      print(error.toString());
-    }
-  }
-
-  getOtherUsersFollowingFollowersCount() async {
-    var prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString("TOKEN");
-    FormData formData = FormData.fromMap({
-      "user_id": id,
-    });
-    dio.options.headers["authorization"] = "Bearer $token";
-    try {
-      Future.delayed(Duration(seconds: 3));
-      final res = await dio.post(
-        '$ServerUrl/number-of-followers',
-        data: formData,
-      );
-      final data = res.data;
-      setState(() {
-        followersCount = data['user_followers'];
-        followingCount = data['user_following'];
-        postsCount = data['no_of_posts'];
-      });
+      if (data['data']['cover_image'] != null) {
+        setState(() {
+          coverPhoto = '$ImageServerPrefix/${data['data']['cover_image']}';
+        });
+      }
     } on Exception catch (error) {
       print(error.toString());
     }
@@ -559,6 +556,12 @@ class _OtherUsersProfileState extends State<OtherUsersProfile> {
     );
   }
 
+  String age(String date) {
+    var parseToDate = DateTime.parse(date);
+    var age = DateTime.now().year - parseToDate.year;
+    return age.toString();
+  }
+
   late UserProfileBloc userbloc;
   @override
   void initState() {
@@ -568,7 +571,6 @@ class _OtherUsersProfileState extends State<OtherUsersProfile> {
     gettingUserId();
     checkFriend();
     gettingOtherUsersProfileData();
-    getOtherUsersFollowingFollowersCount();
     if (posts.isEmpty) {
       gettingOtherUserOwnedPosts();
     }
@@ -593,6 +595,105 @@ class _OtherUsersProfileState extends State<OtherUsersProfile> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: KPrimaryColor,
+        elevation: 0.0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: KSubPrimaryColor,
+            size: 25.0,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatScreen(
+                    receiverID: id,
+                  ),
+                ),
+              );
+            },
+            icon: Icon(
+              Icons.email,
+              color: KSubPrimaryColor,
+              size: 25.0,
+            ),
+          ),
+          !isFriend
+              ? Row(
+                  children: [
+                    Container(
+                      width: 90.0,
+                      height: 30.0,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 2.0,
+                          color: KSubPrimaryColor,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(35.0)),
+                      ),
+                      child: Center(
+                        child: InkWell(
+                          onTap: () {
+                            userbloc.add(
+                              FollowButtonPressed(userID: id),
+                            );
+                          },
+                          child: Text(
+                            "Follow",
+                            style: KSubPrimaryButtonsFontStyle2,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 15.0,
+                    ),
+                  ],
+                )
+              : Row(
+                  children: [
+                    Container(
+                      width: 115.0,
+                      height: 35.0,
+                      child: ButtonTheme(
+                        minWidth: double.infinity,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(KSubPrimaryColor),
+                            elevation: MaterialStateProperty.all(
+                              1.0,
+                            ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40.0),
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            "Following",
+                            style: KSubPrimaryButtonsFontStyle3,
+                          ),
+                          onPressed: unFollow,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                  ],
+                ),
+        ],
+      ),
       body: hasConnection
           ? BlocListener<UserProfileBloc, UserProfileState>(
               listener: (context, state) {
@@ -610,136 +711,31 @@ class _OtherUsersProfileState extends State<OtherUsersProfile> {
               },
               child: Stack(
                 children: [
-                  Container(
-                    color: KHeaderColor,
-                  ),
-                  Positioned(
-                    top: 20.0,
-                    left: 20.0,
-                    child: Container(
-                      width: 35.0,
-                      height: 60.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: KPrimaryColor,
-                      ),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.arrow_back_ios,
-                          color: KSubPrimaryColor,
-                          size: 25.0,
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 25.0,
-                    right: isFriend ? 140.0 : 110.0,
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ChatScreen(
-                                  receiverID: id,
-                                ),
+                  coverPhoto != null
+                      ? Positioned(
+                          top: 0.0,
+                          child: Container(
+                            width: screenSize.width,
+                            height: 145.0,
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              image: DecorationImage(
+                                image: NetworkImage(coverPhoto),
+                                fit: BoxFit.cover,
                               ),
-                            );
-                          },
-                          icon: Icon(
-                            Icons.email,
-                            color: KSubPrimaryColor,
-                            size: 25.0,
+                            ),
                           ),
+                        )
+                      : Container(
+                          color: KPrimaryColor,
                         ),
-                      ],
-                    ),
-                  ),
                   Positioned(
-                    top: 30.0,
-                    right: 10.0,
-                    child: !isFriend
-                        ? Row(
-                            children: [
-                              Container(
-                                width: 90.0,
-                                height: 30.0,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    width: 2.0,
-                                    color: KPrimaryColor,
-                                  ),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(35.0)),
-                                ),
-                                child: Center(
-                                  child: InkWell(
-                                    onTap: () {
-                                      userbloc.add(
-                                        FollowButtonPressed(userID: id),
-                                      );
-                                    },
-                                    child: Text(
-                                      "Follow",
-                                      style: KSubPrimaryButtonsFontStyle,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 15.0,
-                              ),
-                            ],
-                          )
-                        : Row(
-                            children: [
-                              Container(
-                                width: 125.0,
-                                height: 35.0,
-                                child: ButtonTheme(
-                                  minWidth: double.infinity,
-                                  child: ElevatedButton(
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              KPrimaryColor),
-                                      elevation: MaterialStateProperty.all(
-                                        1.0,
-                                      ),
-                                      shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(40.0),
-                                        ),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      "Following",
-                                      style: KSubPrimaryButtonsFontStyle2,
-                                    ),
-                                    onPressed: unFollow,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10.0,
-                              ),
-                            ],
-                          ),
-                  ),
-                  Positioned(
-                    top: 200.0,
+                    top: 120.0,
                     right: 0.0,
                     left: 0.0,
                     child: Container(
                       padding: EdgeInsets.all(8.0),
-                      height: screenSize.height - 200,
+                      height: screenSize.height - 120,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(25.0),
@@ -751,22 +747,21 @@ class _OtherUsersProfileState extends State<OtherUsersProfile> {
                     ),
                   ),
                   Positioned(
-                    top: 120.0,
-                    right: 40.0,
-                    left: 150.0,
-                    child: Row(
-                      children: [
-                        useAsset
-                            ? CircleAvatar(
-                                backgroundImage: AssetImage(userImage),
-                                radius: 55.0,
-                              )
-                            : CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    '$ImageServerPrefix/$userImage'),
-                                radius: 55.0,
-                              ),
-                      ],
+                    top: 20.0,
+                    left: 0.0,
+                    child: ProfileCard(
+                      image: userImage,
+                      name: userName,
+                      useAsset: useAsset,
+                      category: userCategory ?? 0,
+                      type: userType ?? 0,
+                      countryName: userCountry ?? '',
+                      legOrHand: userLegOrHand ?? '',
+                      age: userAge ?? '0',
+                      height: userHeight ?? '0',
+                      weight: userWeight ?? '0',
+                      mainPosition: userMainPosition ?? '',
+                      otherPosition: userOtherPosition ?? '',
                     ),
                   ),
                 ],
@@ -782,107 +777,8 @@ class _OtherUsersProfileState extends State<OtherUsersProfile> {
       physics: ScrollPhysics(),
       shrinkWrap: true,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            children: [
-              Text(
-                userName,
-                style: KUserNameStyle,
-              ),
-              Text(
-                userEmail,
-                style: KUserEmailStyle,
-              ),
-              Text(
-                userPhone,
-                style: KUserEmailStyle,
-              ),
-              Divider(
-                color: KSubPrimaryFontsColor,
-                thickness: 1.0,
-              ),
-              SizedBox(
-                height: 5.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "Posts",
-                        style: KFollowing_FollowersStyle,
-                      ),
-                      SizedBox(
-                        width: 5.0,
-                      ),
-                      Text(
-                        '$postsCount',
-                        style: KFollowing_FollowersStyle,
-                      ),
-                    ],
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => OtherUserFollowersScreen(
-                            userID: id,
-                            numberOfFollowers: followersCount,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Text("Followers", style: KFollowing_FollowersStyle),
-                        SizedBox(
-                          width: 5.0,
-                        ),
-                        Text(
-                          '$followersCount',
-                          style: KFollowing_FollowersStyle,
-                        ),
-                      ],
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => OtherUserFollowingScreen(
-                            userId: id,
-                            numberOfFollowing: followingCount,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Text(
-                          "Following",
-                          style: KFollowing_FollowersStyle,
-                        ),
-                        SizedBox(
-                          width: 5.0,
-                        ),
-                        Text(
-                          '$followingCount',
-                          style: KFollowing_FollowersStyle,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-            ],
-          ),
+        SizedBox(
+          height: 120.0,
         ),
         posts.isNotEmpty
             ? LayoutBuilder(
@@ -918,8 +814,8 @@ class _OtherUsersProfileState extends State<OtherUsersProfile> {
                                               radius: 30.0,
                                             )
                                           : CircleAvatar(
-                                              backgroundImage: NetworkImage(
-                                                  '$ImageServerPrefix/$userImage'),
+                                              backgroundImage:
+                                                  NetworkImage(userImage),
                                               radius: 30.0,
                                             ),
                                       SizedBox(

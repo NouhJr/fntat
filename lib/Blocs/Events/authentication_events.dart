@@ -23,9 +23,9 @@ class SignUpButtonPressed extends AuthEvent {
   final String phone;
   final String password;
   final String passwordConfirmation;
-  final int type;
-  final int category;
-  final File image;
+  final String birthDate;
+  final File profilePicture;
+  final File coverPhoto;
 
   SignUpButtonPressed({
     required this.name,
@@ -33,9 +33,9 @@ class SignUpButtonPressed extends AuthEvent {
     required this.phone,
     required this.password,
     required this.passwordConfirmation,
-    required this.type,
-    required this.category,
-    required this.image,
+    required this.birthDate,
+    required this.profilePicture,
+    required this.coverPhoto,
   });
 }
 

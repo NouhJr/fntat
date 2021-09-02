@@ -7,15 +7,14 @@ import 'package:fntat/Blocs/States/userProfile_states.dart';
 import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Components/flushbar.dart';
 
-class EditEmail extends StatefulWidget {
+class EditBirthDate extends StatefulWidget {
   @override
-  _EditEmailState createState() => _EditEmailState();
+  _EditBirthDateState createState() => _EditBirthDateState();
 }
 
-class _EditEmailState extends State<EditEmail> {
-  TextEditingController _newEmail = new TextEditingController();
-
+class _EditBirthDateState extends State<EditBirthDate> {
   late UserProfileBloc userbloc;
+  var birthDate;
 
   @override
   void initState() {
@@ -25,7 +24,7 @@ class _EditEmailState extends State<EditEmail> {
 
   final stateWidget =
       BlocBuilder<UserProfileBloc, UserProfileState>(builder: (context, state) {
-    if (state is UpdateEmailErrorState) {
+    if (state is UpdateBirthDateErrorState) {
       return Text(
         state.message,
         style: KErrorStyle,
@@ -78,7 +77,9 @@ class _EditEmailState extends State<EditEmail> {
                 ),
                 child: Center(
                   child: InkWell(
-                    onTap: updateEmail,
+                    onTap: () {
+                      updateBirthDate();
+                    },
                     child: Text(
                       "Save",
                       style: KSubPrimaryButtonsFontStyle,
@@ -95,7 +96,7 @@ class _EditEmailState extends State<EditEmail> {
       ),
       body: BlocListener<UserProfileBloc, UserProfileState>(
         listener: (context, state) {
-          if (state is UpdateEmailSuccessState) {
+          if (state is UpdateBirthDateSuccessState) {
             Navigator.pop(context);
           }
         },
@@ -106,16 +107,48 @@ class _EditEmailState extends State<EditEmail> {
             children: [
               Container(
                 child: Text(
-                  "Update your email",
+                  "Update your Birthdate",
                   style: KPrimaryFontStyle,
                 ),
               ),
               SizedBox(
                 height: 10.0,
               ),
-              Container(
-                child: basicTextField(_newEmail, "Update Email"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "Select Birthdate:",
+                    style: KTextFieldStyle,
+                  ),
+                  SizedBox(
+                    width: 15.0,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      selectDate(context);
+                    },
+                    icon: Icon(
+                      Icons.date_range,
+                      color: KPrimaryColor,
+                      size: 30.0,
+                    ),
+                  ),
+                ],
               ),
+              birthDate != null
+                  ? Column(
+                      children: [
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          'New BirthDate: $birthDate',
+                          style: KTextFieldStyle,
+                        ),
+                      ],
+                    )
+                  : Container(),
               SizedBox(
                 height: 20.0,
               ),
@@ -127,8 +160,21 @@ class _EditEmailState extends State<EditEmail> {
     );
   }
 
-  updateEmail() async {
-    //Check if there is internet connection or not and display message error if not.
+  selectDate(BuildContext context) async {
+    final DateTime? selected = await showDatePicker(
+      context: context,
+      initialDate: DateTime(2021),
+      firstDate: DateTime(1980),
+      lastDate: DateTime(2080),
+      helpText: "Select your birth date",
+    );
+    if (selected != null)
+      setState(() {
+        birthDate = '${selected.year}-${selected.month}-${selected.day}';
+      });
+  }
+
+  updateBirthDate() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
       Warning().errorMessage(
@@ -137,15 +183,15 @@ class _EditEmailState extends State<EditEmail> {
         message: "Pleas turn on wifi or mobile data",
         icons: Icons.signal_wifi_off,
       );
-    } else if (_newEmail.text.isEmpty) {
+    } else if (birthDate == null) {
       Warning().errorMessage(
         context,
-        title: "Email field can't be empty !",
-        message: 'Please enter your email.',
+        title: "Birthdate field can't be empty !",
+        message: 'Please select your birth date.',
         icons: Icons.warning,
       );
     } else {
-      userbloc.add(EditEmailButtonPressed(newEmail: _newEmail.text));
+      userbloc.add(EditBirthDateButtonPressed(birthDate: birthDate));
     }
   }
 }

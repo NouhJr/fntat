@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fntat/Blocs/authentication_bloc.dart';
 import 'package:fntat/Blocs/Events/authentication_events.dart';
 import 'package:fntat/Blocs/States/authentication_states.dart';
-
 import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Components/flushbar.dart';
 
@@ -22,33 +20,27 @@ class _SignUpState extends State<SignUp> {
   TextEditingController _phone = new TextEditingController();
   TextEditingController _password = new TextEditingController();
   TextEditingController _confirmPassword = new TextEditingController();
-
   bool _obsecurePassword = true;
   bool _obsecureConfirmPassword = true;
-  late File _image;
-  bool hasImage = false;
+  late File profilePicture;
+  late File coverPhoto;
+  bool hasProfilePicture = false;
+  bool hasCoverPhoto = false;
   late AuthBloc authBloc;
-
-  List<String> _types = [
-    'Type',
-    'admin',
-    'هاوي',
-    'محترف',
-    'وكيل',
-    'اكاديميه',
-    'نادي'
+  List<String> profilePictureOptions = [
+    'Profile Picture',
+    'Take photo',
+    'Choose existing photo'
   ];
-  String _selectedType = "Type";
-
-  List<String> _category = ['Category', 'كره القدم', 'كره السله'];
-  String _selectedCategory = "Category";
-
-  List<String> options = ['Image', 'Take photo', 'Choose existing photo'];
-  String _selectedOption = "Image";
-
-  int type = 0;
-  int category = 0;
-
+  String _selectedProfilePictureOption = "Profile Picture";
+  List<String> coverPhotoOptions = [
+    'Cover Photo',
+    'Take photo',
+    'Choose existing photo'
+  ];
+  String _selectedCoverPhotoOption = "Cover Photo";
+  String birthDate = 'Select your Birth date';
+  var age;
   @override
   void dispose() {
     super.dispose();
@@ -102,12 +94,8 @@ class _SignUpState extends State<SignUp> {
               child: Image(
                 image: AssetImage("assets/images/10839772.jpg"),
                 fit: BoxFit.cover,
-                width:
-                    // 1080.0,
-                    double.infinity,
-                height:
-                    // 2280.0,
-                    double.infinity,
+                width: double.infinity,
+                height: double.infinity,
               ),
             ),
             ListView(
@@ -120,13 +108,13 @@ class _SignUpState extends State<SignUp> {
                     color: KPrimaryColor.withOpacity(0.5),
                   ),
                   margin: EdgeInsets.all(10.0),
-                  padding: EdgeInsets.all(20.0),
+                  padding: EdgeInsets.all(10.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
                         child: Text(
-                          "Signup now and meet awesome people around the world",
+                          "Register now and meet awesome people around the world",
                           style: KSubPrimaryFontStyleLarge,
                           textAlign: TextAlign.center,
                         ),
@@ -154,6 +142,42 @@ class _SignUpState extends State<SignUp> {
                         width: double.infinity,
                         height: 50.0,
                         child: basicTextField(_phone, "Enter phone"),
+                      ),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      Container(
+                        width: double.infinity,
+                        height: 50.0,
+                        padding: EdgeInsets.all(10.0),
+                        decoration: BoxDecoration(
+                          color: KSubPrimaryColor,
+                          border: Border.all(
+                            width: 1.0,
+                            color: KSubPrimaryColor,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            selectDate(context);
+                          },
+                          child: DropdownButton<dynamic>(
+                            items: [],
+                            icon: Icon(
+                              Icons.date_range,
+                              color: KPrimaryColor,
+                            ),
+                            iconSize: 25.0,
+                            style: KDropdownButtonStyle,
+                            underline: Container(
+                              width: 0.0,
+                            ),
+                            isExpanded: true,
+                            hint: Text(birthDate),
+                            onChanged: (newValuex) {},
+                          ),
+                        ),
                       ),
                       SizedBox(
                         height: 5.0,
@@ -211,172 +235,187 @@ class _SignUpState extends State<SignUp> {
                       SizedBox(
                         height: 5.0,
                       ),
-                      Container(
-                        width: double.infinity,
-                        height: 50.0,
-                        padding: EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          color: KSubPrimaryColor,
-                          border: Border.all(
-                            color: KSubPrimaryColor,
+                      Row(
+                        children: [
+                          Container(
+                            width: 185.0,
+                            height: 45.0,
+                            padding: EdgeInsets.all(10.0),
+                            decoration: BoxDecoration(
+                              color: KSubPrimaryColor,
+                              border: Border.all(
+                                width: 1.0,
+                                color: KSubPrimaryColor,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
+                            ),
+                            child: DropdownButton(
+                              icon: Icon(
+                                Icons.add_a_photo,
+                                color: KPrimaryColor,
+                              ),
+                              iconSize: 25.0,
+                              style: KDropdownButtonStyle,
+                              underline: Container(
+                                width: 0.0,
+                              ),
+                              isExpanded: true,
+                              hint: Text('Profile Picture'),
+                              value: _selectedProfilePictureOption,
+                              onChanged: (newValueOne) {
+                                setState(() {
+                                  _selectedProfilePictureOption =
+                                      newValueOne.toString();
+                                });
+                                checkForProfile();
+                              },
+                              items: profilePictureOptions.map((profileOption) {
+                                return DropdownMenuItem(
+                                  child: Text(profileOption),
+                                  value: profileOption,
+                                );
+                              }).toList(),
+                            ),
                           ),
-                          borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                        ),
-                        child: DropdownButton(
-                          icon: Icon(
-                            Icons.arrow_drop_down,
-                            color: KPrimaryColor,
+                          SizedBox(
+                            width: 10.0,
                           ),
-                          iconSize: 25.0,
-                          style: KDropdownButtonStyle,
-                          underline: Container(
-                            width: 0.0,
+                          Container(
+                            width: 170.0,
+                            height: 45.0,
+                            padding: EdgeInsets.all(10.0),
+                            decoration: BoxDecoration(
+                              color: KSubPrimaryColor,
+                              border: Border.all(
+                                width: 1.0,
+                                color: KSubPrimaryColor,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
+                            ),
+                            child: DropdownButton(
+                              icon: Icon(
+                                Icons.add_a_photo,
+                                color: KPrimaryColor,
+                              ),
+                              iconSize: 25.0,
+                              style: KDropdownButtonStyle,
+                              underline: Container(
+                                width: 0.0,
+                              ),
+                              isExpanded: true,
+                              hint: Text('Cover Photo'),
+                              value: _selectedCoverPhotoOption,
+                              onChanged: (newValueTwo) {
+                                setState(() {
+                                  _selectedCoverPhotoOption =
+                                      newValueTwo.toString();
+                                });
+                                checkForCover();
+                              },
+                              items: coverPhotoOptions.map((coverOption) {
+                                return DropdownMenuItem(
+                                  child: Text(coverOption),
+                                  value: coverOption,
+                                );
+                              }).toList(),
+                            ),
                           ),
-                          isExpanded: true,
-                          hint: Text('Type'),
-                          value: _selectedType,
-                          onChanged: (newValue) {
-                            setState(() {
-                              _selectedType = newValue.toString();
-                            });
-                          },
-                          items: _types.map((type) {
-                            return DropdownMenuItem(
-                              child: Text(type),
-                              value: type,
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5.0,
-                      ),
-                      Container(
-                        width: double.infinity,
-                        height: 50.0,
-                        padding: EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          color: KSubPrimaryColor,
-                          border: Border.all(
-                            color: KSubPrimaryColor,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                        ),
-                        child: DropdownButton(
-                          icon: Icon(
-                            Icons.arrow_drop_down,
-                            color: KPrimaryColor,
-                          ),
-                          iconSize: 25.0,
-                          style: KDropdownButtonStyle,
-                          underline: Container(
-                            width: 0.0,
-                          ),
-                          isExpanded: true,
-                          hint: Text('Category'),
-                          value: _selectedCategory,
-                          onChanged: (newValuex) {
-                            setState(() {
-                              _selectedCategory = newValuex.toString();
-                            });
-                          },
-                          items: _category.map((category) {
-                            return DropdownMenuItem(
-                              child: Text(category),
-                              value: category,
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5.0,
-                      ),
-                      Container(
-                        width: double.infinity,
-                        height: 50.0,
-                        padding: EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          color: KSubPrimaryColor,
-                          border: Border.all(
-                            color: KSubPrimaryColor,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                        ),
-                        child: DropdownButton(
-                          icon: Icon(
-                            Icons.add_a_photo,
-                            color: KPrimaryColor,
-                          ),
-                          iconSize: 25.0,
-                          style: KDropdownButtonStyle,
-                          underline: Container(
-                            width: 0.0,
-                          ),
-                          isExpanded: true,
-                          hint: Text('Image'),
-                          value: _selectedOption,
-                          onChanged: (newValuex) {
-                            setState(() {
-                              _selectedOption = newValuex.toString();
-                            });
-                            check();
-                          },
-                          items: options.map((option) {
-                            return DropdownMenuItem(
-                              child: Text(option),
-                              value: option,
-                            );
-                          }).toList(),
-                        ),
+                        ],
                       ),
                       SizedBox(
                         height: 10.0,
                       ),
-                      hasImage
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Stack(
+                      Row(
+                        children: [
+                          hasProfilePicture
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      width: 190.0,
-                                      height: 190.0,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10.0)),
-                                        image: DecorationImage(
-                                          image: FileImage(_image),
-                                          fit: BoxFit.cover,
+                                    Stack(
+                                      children: [
+                                        Container(
+                                          clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
+                                          width: 170.0,
+                                          height: 170.0,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10.0)),
+                                            image: DecorationImage(
+                                              image: FileImage(profilePicture),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      top: 8.0,
-                                      right: 8.0,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            hasImage = false;
-                                          });
-                                        },
-                                        child: Icon(
-                                          Icons.remove_circle,
-                                          size: 25.0,
-                                          color: KWarningColor,
+                                        Positioned(
+                                          top: 8.0,
+                                          right: 8.0,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                hasProfilePicture = false;
+                                              });
+                                            },
+                                            child: Icon(
+                                              Icons.remove_circle,
+                                              size: 25.0,
+                                              color: KWarningColor,
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     ),
                                   ],
-                                ),
-                              ],
-                            )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(),
-                              ],
-                            ),
+                                )
+                              : Container(),
+                          SizedBox(
+                            width: 20.0,
+                          ),
+                          hasCoverPhoto
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Stack(
+                                      children: [
+                                        Container(
+                                          clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
+                                          width: 170.0,
+                                          height: 170.0,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10.0)),
+                                            image: DecorationImage(
+                                              image: FileImage(coverPhoto),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top: 8.0,
+                                          right: 8.0,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                hasCoverPhoto = false;
+                                              });
+                                            },
+                                            child: Icon(
+                                              Icons.remove_circle,
+                                              size: 25.0,
+                                              color: KWarningColor,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )
+                              : Container()
+                        ],
+                      ),
                       SizedBox(height: 50.0),
                       Container(
                         width: 150.0,
@@ -416,54 +455,94 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  check() {
-    if (_selectedOption == "Choose existing photo") {
-      chooseFile();
-    } else if (_selectedOption == "Take photo") {
-      takeImage();
+  selectDate(BuildContext context) async {
+    final DateTime? selected = await showDatePicker(
+      context: context,
+      initialDate: DateTime(2021),
+      firstDate: DateTime(1980),
+      lastDate: DateTime(2080),
+      helpText: "Select your birth date",
+    );
+    if (selected != null) {
+      setState(() {
+        birthDate = '${selected.year}-${selected.month}-${selected.day}';
+      });
     }
   }
 
-  Future chooseFile() async {
+  checkForProfile() {
+    if (_selectedProfilePictureOption == "Choose existing photo") {
+      chooseFileForProfile();
+    } else if (_selectedProfilePictureOption == "Take photo") {
+      takeImageForProfile();
+    }
+  }
+
+  Future chooseFileForProfile() async {
     final source = ImageSource.gallery;
     final pickedFile = await ImagePicker().pickImage(source: source);
     setState(() {
-      _image = File(pickedFile!.path);
-      hasImage = true;
+      profilePicture = File(pickedFile!.path);
+      hasProfilePicture = true;
     });
   }
 
-  Future takeImage() async {
+  Future takeImageForProfile() async {
     final source = ImageSource.camera;
     final pickedFile = await ImagePicker().pickImage(source: source);
     setState(() {
-      _image = File(pickedFile!.path);
-      hasImage = true;
+      profilePicture = File(pickedFile!.path);
+      hasProfilePicture = true;
+    });
+  }
+
+  checkForCover() {
+    if (_selectedProfilePictureOption == "Choose existing photo") {
+      chooseFileForCover();
+    } else if (_selectedProfilePictureOption == "Take photo") {
+      takeImageForCover();
+    }
+  }
+
+  Future chooseFileForCover() async {
+    final source = ImageSource.gallery;
+    final pickedFile = await ImagePicker().pickImage(source: source);
+    setState(() {
+      coverPhoto = File(pickedFile!.path);
+      hasCoverPhoto = true;
+    });
+  }
+
+  Future takeImageForCover() async {
+    final source = ImageSource.camera;
+    final pickedFile = await ImagePicker().pickImage(source: source);
+    setState(() {
+      coverPhoto = File(pickedFile!.path);
+      hasCoverPhoto = true;
     });
   }
 
   Future signUp() async {
-    //Check if there is internet connection or not and display message error if not.
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
       Warning().errorMessage(
         context,
         title: "No internet connection !",
-        message: "Pleas turn on wifi or mobile data",
+        message: "Please turn on wifi or mobile data",
         icons: Icons.signal_wifi_off,
       );
     } else if (_name.text.isEmpty) {
       Warning().errorMessage(
         context,
         title: "Name field can't be empty !",
-        message: 'Please enter your name.',
+        message: "Please enter your name.",
         icons: Icons.warning,
       );
     } else if (_email.text.isEmpty) {
       Warning().errorMessage(
         context,
         title: "Email field can't be empty !",
-        message: 'Please enter your email.',
+        message: "Please enter your email.",
         icons: Icons.warning,
       );
     } else if (!_email.text.contains('@')) {
@@ -477,94 +556,54 @@ class _SignUpState extends State<SignUp> {
       Warning().errorMessage(
         context,
         title: "Phone field can't be empty !",
-        message: 'Please enter your phone.',
+        message: "Please enter your phone.",
         icons: Icons.warning,
       );
     } else if (_password.text.isEmpty) {
       Warning().errorMessage(
         context,
         title: "Password field can't be empty !",
-        message: 'Please enter your password.',
+        message: "Please enter your password.",
         icons: Icons.warning,
       );
     } else if (_confirmPassword.text.isEmpty) {
       Warning().errorMessage(
         context,
         title: "ConfirmPassword field can't be empty !",
-        message: 'Please confirm your password.',
+        message: "Please confirm your password.",
         icons: Icons.warning,
       );
     } else if (_password.text != _confirmPassword.text) {
       Warning().errorMessage(
         context,
         title: "Password values doesn't match !",
-        message: 'Please confirm your password.',
+        message: "Please confirm your password.",
         icons: Icons.warning,
       );
-    } else if (_selectedType == "Type") {
+    } else if (hasProfilePicture != true) {
       Warning().errorMessage(
         context,
-        title: "Type can't be empty !",
-        message: 'Please choose a type.',
+        title: "Profile picture can't be empty !",
+        message: "Please take or choose profile picture",
         icons: Icons.warning,
       );
-    } else if (_selectedCategory == "Category") {
+    } else if (hasCoverPhoto != true) {
       Warning().errorMessage(
         context,
-        title: "Category can't be empty !",
-        message: 'Please choose a category.',
-        icons: Icons.warning,
-      );
-    } else if (hasImage != true) {
-      Warning().errorMessage(
-        context,
-        title: "Image can't be empty !",
-        message: 'Please take or choose image',
+        title: "Cover photo can't be empty !",
+        message: "Please take or choose cover photo",
         icons: Icons.warning,
       );
     } else {
-      if (_selectedType == 'admin') {
-        setState(() {
-          type = 1;
-        });
-      } else if (_selectedType == 'هاوي') {
-        setState(() {
-          type = 2;
-        });
-      } else if (_selectedType == 'محترف') {
-        setState(() {
-          type = 3;
-        });
-      } else if (_selectedType == 'وكيل') {
-        setState(() {
-          type = 4;
-        });
-      } else if (_selectedType == 'اكاديميه') {
-        setState(() {
-          type = 5;
-        });
-      } else if (_selectedType == 'نادي') {
-        setState(() {
-          type = 6;
-        });
-      } else if (_selectedCategory == 'كره السله') {
-        setState(() {
-          category = 2;
-        });
-      } else if (_selectedCategory == 'كره القدم') {
-        setState(() {
-          category = 1;
-        });
-      }
       authBloc.add(SignUpButtonPressed(
         name: _name.text,
         email: _email.text,
         phone: _phone.text,
         password: _password.text,
         passwordConfirmation: _confirmPassword.text,
-        type: type,
-        category: category,
-        image: _image,
+        birthDate: birthDate,
+        profilePicture: profilePicture,
+        coverPhoto: coverPhoto,
       ));
     }
   }

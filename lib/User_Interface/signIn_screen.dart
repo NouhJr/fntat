@@ -265,21 +265,21 @@ class _SignInState extends State<SignIn> {
       Warning().errorMessage(
         context,
         title: "No internet connection !",
-        message: "Pleas turn on wifi or mobile data",
+        message: "Please turn on wifi or mobile data",
         icons: Icons.signal_wifi_off,
       );
     } else if (_phone.text.isEmpty) {
       Warning().errorMessage(
         context,
         title: "Phone field can't be empty !",
-        message: 'Please enter your phone.',
+        message: "Please enter your phone.",
         icons: Icons.warning,
       );
     } else if (_password.text.isEmpty) {
       Warning().errorMessage(
         context,
         title: "Password field can't be empty !",
-        message: 'Please enter your password.',
+        message: "Please enter your password.",
         icons: Icons.warning,
       );
     } else {

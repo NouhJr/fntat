@@ -70,7 +70,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
     gettingUserId();
     getPostData();
     getPostComments();
-    getCommentReplies();
+    //getCommentReplies();
     _scrollController.addListener(() {
       if (_scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
@@ -170,7 +170,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                                   posts[0]['user']['image'] != null
                                       ? CircleAvatar(
                                           backgroundImage: NetworkImage(
-                                              'http://164.160.104.125:9090/fntat/${posts[0]['user']['image']}'),
+                                              '$ImageServerPrefix/${posts[0]['user']['image']}'),
                                           radius: 25.0,
                                         )
                                       : CircleAvatar(
@@ -512,7 +512,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                         leading: comments[index]['user']['image'] != null
                             ? CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                    'http://164.160.104.125:9090/fntat/${comments[index]['user']['image']}'),
+                                    '$ImageServerPrefix/${comments[index]['user']['image']}'),
                                 radius: 25.0,
                               )
                             : CircleAvatar(
@@ -632,170 +632,6 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                           ),
                         ],
                       ),
-                      // Column(
-                      //   children: [
-                      //     Card(
-                      //       clipBehavior: Clip.antiAliasWithSaveLayer,
-                      //       elevation: 2.0,
-                      //       margin: EdgeInsets.symmetric(
-                      //           horizontal: 8.0, vertical: 8.0),
-                      //       child: Padding(
-                      //         padding: const EdgeInsets.all(10.0),
-                      //         child: Column(
-                      //           children: [
-                      //             InkWell(
-                      //               onTap: () {
-                      //                 if (userId == comments[index]['user_id']) {
-                      //                   Navigator.pushNamed(context, '/Profile');
-                      //                 } else {
-                      //                   Navigator.push(
-                      //                     context,
-                      //                     MaterialPageRoute(
-                      //                       builder: (context) =>
-                      //                           OtherUsersProfile(
-                      //                         userID: comments[index]['user_id'],
-                      //                       ),
-                      //                     ),
-                      //                   );
-                      //                 }
-                      //               },
-                      //               child: Row(
-                      //                 children: [
-                      //                   comments[index]['user']['image'] != null
-                      //                       ? CircleAvatar(
-                      //                           backgroundImage: NetworkImage(
-                      //                               'http://164.160.104.125:9090/fntat/${comments[index]['user']['image']}'),
-                      //                           radius: 30.0,
-                      //                         )
-                      //                       : CircleAvatar(
-                      //                           backgroundImage:
-                      //                               AssetImage(noUserImage),
-                      //                           radius: 30.0,
-                      //                         ),
-                      //                   SizedBox(
-                      //                     width: 20.0,
-                      //                   ),
-                      //                   Expanded(
-                      //                     child: Column(
-                      //                       crossAxisAlignment:
-                      //                           CrossAxisAlignment.start,
-                      //                       children: [
-                      //                         Text(
-                      //                           '${comments[index]['user']['name']}',
-                      //                           style: KNameStyle,
-                      //                         ),
-                      //                       ],
-                      //                     ),
-                      //                   ),
-                      //                   userId == comments[index]['user_id']
-                      //                       ? PopupMenuButton(
-                      //                           icon: Icon(
-                      //                             Icons.more_vert,
-                      //                             size: 25.0,
-                      //                             color: KSubPrimaryFontsColor,
-                      //                           ),
-                      //                           onSelected: (t) => {
-                      //                             commentOptions(
-                      //                               t.toString().substring(0, 12),
-                      //                               comments[index]['id'],
-                      //                               comments[index]['post_id'],
-                      //                               comments[index]['comment'],
-                      //                             ),
-                      //                           },
-                      //                           itemBuilder: (context) {
-                      //                             return cOptions.map((choice) {
-                      //                               return PopupMenuItem<String>(
-                      //                                 value: choice,
-                      //                                 child: Text(
-                      //                                   choice,
-                      //                                   style: KPostOptionsStyle,
-                      //                                 ),
-                      //                               );
-                      //                             }).toList();
-                      //                           },
-                      //                         )
-                      //                       : Container(),
-                      //                 ],
-                      //               ),
-                      //             ),
-                      //             Divider(
-                      //               color: KSubSecondryFontsColor,
-                      //               thickness: 0.5,
-                      //             ),
-                      //             Column(
-                      //               crossAxisAlignment: CrossAxisAlignment.start,
-                      //               children: [
-                      //                 Row(
-                      //                   mainAxisAlignment:
-                      //                       MainAxisAlignment.start,
-                      //                   children: [
-                      //                     Expanded(
-                      //                       child: InkWell(
-                      //                         onTap: () {
-                      //                           Navigator.push(
-                      //                             context,
-                      //                             MaterialPageRoute(
-                      //                               builder: (context) =>
-                      //                                   CommentDetails(
-                      //                                 postID: posts[0]['id'],
-                      //                                 commentID: comments[index]
-                      //                                     ['id'],
-                      //                               ),
-                      //                             ),
-                      //                           );
-                      //                         },
-                      //                         child: Text(
-                      //                           '${comments[index]['comment']}',
-                      //                           style: KPostStyle,
-                      //                         ),
-                      //                       ),
-                      //                     ),
-                      //                   ],
-                      //                 ),
-                      //               ],
-                      //             ),
-                      //             SizedBox(
-                      //               height: 5.0,
-                      //             ),
-                      //             Divider(
-                      //               color: KSubSecondryFontsColor,
-                      //               thickness: 0.5,
-                      //             ),
-                      //             Row(
-                      //               children: [
-                      //                 Expanded(
-                      //                   child: Row(
-                      //                     children: [
-                      //                       TextButton(
-                      //                         child: Text(
-                      //                           "Reply",
-                      //                           style: KUserEmailStyle,
-                      //                         ),
-                      //                         onPressed: () {
-                      //                           Navigator.push(
-                      //                             context,
-                      //                             MaterialPageRoute(
-                      //                               builder: (context) =>
-                      //                                   AddReplay(
-                      //                                 postID: posts[0]['id'],
-                      //                                 commentID: comments[index]
-                      //                                     ['id'],
-                      //                               ),
-                      //                             ),
-                      //                           );
-                      //                         },
-                      //                       ),
-                      //                     ],
-                      //                   ),
-                      //                 )
-                      //               ],
-                      //             ),
-                      //           ],
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
                       separatorBuilder: (context, index) => Divider(
                         color: KSubSecondryFontsColor,
                         thickness: 0.5,
@@ -915,17 +751,16 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("TOKEN");
     dio.options.headers["authorization"] = "Bearer $token";
-    dio.options.connectTimeout = 1000;
-    dio.options.receiveTimeout = 1000;
     try {
-      final res = await dio.get('$ServerUrl/show-post-comments/$pID');
+      final res = await dio.get('$ServerUrl/show-post-comments-replays/$pID');
       final List<dynamic> commentsBody = res.data['data'];
       setState(() {
         comments = commentsBody;
       });
+      print(comments);
+      getCommentReplies();
     } on Exception catch (error) {
       print(error.toString());
-      comments = [];
     }
   }
 
@@ -940,6 +775,7 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
   Future getDataOnRefresh() async {
     getPostData();
     getPostComments();
+    getCommentReplies();
   }
 
   displayPostImage(String image) {

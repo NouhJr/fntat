@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fntat/Blocs/authentication_bloc.dart';
 import 'package:fntat/Blocs/Events/authentication_events.dart';
 import 'package:fntat/Blocs/States/authentication_states.dart';
-import 'package:fntat/User_Interface/account_screen.dart';
 import 'package:fntat/User_Interface/home_screen.dart';
 import 'package:fntat/Components/constants.dart';
 
@@ -44,10 +43,7 @@ class _SettingsState extends State<Settings> {
           ),
           onPressed: () {
             if (fromAcc == true) {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => Account()),
-                  (route) => false);
+              Navigator.pop(context);
             } else {
               Navigator.pushAndRemoveUntil(
                   context,
@@ -65,178 +61,200 @@ class _SettingsState extends State<Settings> {
                   context, '/Initial', (route) => false),
             }
         },
-        child: Padding(
-          padding: EdgeInsets.all(5.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
+        child: Stack(
+          children: [
+            Container(
+              child: Image(
+                image: AssetImage("assets/images/10839772.jpg"),
+                fit: BoxFit.cover,
                 width: double.infinity,
-                child: Text(
-                  "Edit Profile",
-                  style: KPrimaryFontStyle,
+                height: double.infinity,
+              ),
+            ),
+            ListView(
+              children: [
+                SizedBox(
+                  height: 20.0,
                 ),
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              TextButton(
-                onPressed: () => {
-                  Navigator.pushNamed(context, '/EditName'),
-                },
-                child: Text(
-                  "Edit Name",
-                  style: KEditButtonsStyle,
+                Container(
+                  decoration: BoxDecoration(
+                    color: KSubPrimaryColor.withOpacity(0.7),
+                  ),
+                  margin: EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        child: Text(
+                          "Edit Profile",
+                          style: KPrimaryFontStyle,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      TextButton(
+                        onPressed: () => {
+                          Navigator.pushNamed(context, '/EditName'),
+                        },
+                        child: Text(
+                          "Edit Name",
+                          style: KEditButtonsStyle,
+                        ),
+                        style: ButtonStyle(
+                          overlayColor:
+                              MaterialStateProperty.all(Colors.transparent),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      TextButton(
+                        onPressed: () => {
+                          Navigator.pushNamed(context, '/EditEmail'),
+                        },
+                        child: Text(
+                          "Edit Email",
+                          style: KEditButtonsStyle,
+                        ),
+                        style: ButtonStyle(
+                          overlayColor:
+                              MaterialStateProperty.all(Colors.transparent),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      TextButton(
+                        onPressed: () => {
+                          Navigator.pushNamed(context, '/EditBirthDate'),
+                        },
+                        child: Text(
+                          "Edit Birthdate",
+                          style: KEditButtonsStyle,
+                        ),
+                        style: ButtonStyle(
+                          overlayColor:
+                              MaterialStateProperty.all(Colors.transparent),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      TextButton(
+                        onPressed: () => {
+                          Navigator.pushNamed(context, '/EditPhone'),
+                        },
+                        child: Text(
+                          "Edit Phone",
+                          style: KEditButtonsStyle,
+                        ),
+                        style: ButtonStyle(
+                          overlayColor:
+                              MaterialStateProperty.all(Colors.transparent),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      TextButton(
+                        onPressed: () => {
+                          Navigator.pushNamed(context, '/EditPicture'),
+                        },
+                        child: Text(
+                          "Edit Profile Picture",
+                          style: KEditButtonsStyle,
+                        ),
+                        style: ButtonStyle(
+                          overlayColor:
+                              MaterialStateProperty.all(Colors.transparent),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      TextButton(
+                        onPressed: () => {
+                          Navigator.pushNamed(context, '/EditCoverPhoto'),
+                        },
+                        child: Text(
+                          "Edit Cover Photo",
+                          style: KEditButtonsStyle,
+                        ),
+                        style: ButtonStyle(
+                          overlayColor:
+                              MaterialStateProperty.all(Colors.transparent),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      Divider(
+                        color: KSubSecondryFontsColor,
+                        thickness: 1.0,
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Container(
+                        width: double.infinity,
+                        child: Text(
+                          "Privacy",
+                          style: KPrimaryFontStyle,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      TextButton(
+                        onPressed: () => {
+                          Navigator.pushNamed(context, '/ChangePassword'),
+                        },
+                        child: Text(
+                          "Change Password",
+                          style: KEditButtonsStyle,
+                        ),
+                        style: ButtonStyle(
+                          overlayColor:
+                              MaterialStateProperty.all(Colors.transparent),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      TextButton(
+                        onPressed: signOut,
+                        child: Text(
+                          "Sign Out",
+                          style: KSignOutButtonStyle,
+                        ),
+                        style: ButtonStyle(
+                          overlayColor:
+                              MaterialStateProperty.all(Colors.transparent),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      Divider(
+                        color: KSubSecondryFontsColor,
+                        thickness: 1.0,
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                    ],
+                  ),
                 ),
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent),
-                ),
-              ),
-              SizedBox(
-                height: 5.0,
-              ),
-              TextButton(
-                onPressed: () => {
-                  Navigator.pushNamed(context, '/EditEmail'),
-                },
-                child: Text(
-                  "Edit Email",
-                  style: KEditButtonsStyle,
-                ),
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent),
-                ),
-              ),
-              SizedBox(
-                height: 5.0,
-              ),
-              TextButton(
-                onPressed: () => {
-                  Navigator.pushNamed(context, '/EditPhone'),
-                },
-                child: Text(
-                  "Edit Phone",
-                  style: KEditButtonsStyle,
-                ),
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent),
-                ),
-              ),
-              SizedBox(
-                height: 5.0,
-              ),
-              TextButton(
-                onPressed: () => {
-                  Navigator.pushNamed(context, '/EditPicture'),
-                },
-                child: Text(
-                  "Edit Picture",
-                  style: KEditButtonsStyle,
-                ),
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent),
-                ),
-              ),
-              SizedBox(
-                height: 5.0,
-              ),
-              Divider(
-                color: KSubSecondryFontsColor,
-                thickness: 1.0,
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Container(
-                width: double.infinity,
-                child: Text(
-                  "Privacy",
-                  style: KPrimaryFontStyle,
-                ),
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              TextButton(
-                onPressed: () => {
-                  Navigator.pushNamed(context, '/ChangePassword'),
-                },
-                child: Text(
-                  "Change Password",
-                  style: KEditButtonsStyle,
-                ),
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent),
-                ),
-              ),
-              SizedBox(
-                height: 5.0,
-              ),
-              TextButton(
-                onPressed: signOut,
-                child: Text(
-                  "Sign Out",
-                  style: KSignOutButtonStyle,
-                ),
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent),
-                ),
-              ),
-              SizedBox(
-                height: 5.0,
-              ),
-              Divider(
-                color: KSubSecondryFontsColor,
-                thickness: 1.0,
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
-
-  // showAds() {
-  //   return showDialog(
-  //       context: context,
-  //       builder: (context) {
-  //         return AlertDialog(
-  //           contentPadding: EdgeInsets.all(
-  //             8.0,
-  //           ),
-  //           content: Stack(
-  //             alignment: Alignment.center,
-  //             children: [
-  //               Image.asset(
-  //                 "assets/images/demo_ad_vertical.jpg",
-  //                 fit: BoxFit.cover,
-  //               ),
-  //             ],
-  //           ),
-  //           actions: [
-  //             TextButton(
-  //               child: Text(
-  //                 'Skip',
-  //                 style: TextStyle(
-  //                   color: KSubPrimaryFontsColor,
-  //                   fontFamily: KPrimaryFontFamily,
-  //                   fontWeight: FontWeight.w600,
-  //                   fontSize: 18.0,
-  //                   height: 1.3,
-  //                 ),
-  //               ),
-  //               onPressed: () {
-  //                 authBloc.add(SignOutButtonPressed());
-  //                 Navigator.pop(context);
-  //               },
-  //             ),
-  //           ],
-  //         );
-  //       });
-  // }
 
   signOut() {
     showDialog(

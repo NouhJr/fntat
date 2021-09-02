@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fntat/Blocs/States/userProfile_states.dart';
 import 'package:fntat/Blocs/Events/userProfile_events.dart';
 import 'package:fntat/Data/userProfile_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   UserProfileApi api;
@@ -10,6 +11,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 
   @override
   Stream<UserProfileState> mapEventToState(UserProfileEvent event) async* {
+    var prefs = await SharedPreferences.getInstance();
     if (event is StartEvent) {
       yield UserProfileInitialState();
     } else if (event is GettingFollowingAndFollowersAndPostsCount) {
@@ -32,15 +34,26 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     } else if (event is GettingUserProfileData) {
       yield UserProfileLoadingState();
       var userData = await api.gettingUserProfileData();
-      if (userData['data'] == null) {
+      if (userData == 400) {
         yield GettingUserProfileDataErrorState(
             msg: "Error Loading Profile Data");
-      } else {
+      } else if (userData['success'] == true) {
         yield GettingUserProfileDataSuccessState(
-            name: userData['data']['name'],
-            email: userData['data']['email'],
-            phone: userData['data']['phone'],
-            image: userData['data']['image']);
+          name: userData['data']['name'],
+          email: userData['data']['email'],
+          phone: userData['data']['phone'],
+          image: userData['data']['image'],
+          coverPhoto: userData['data']['cover_image'],
+          type: userData['data']['type'],
+          category: userData['data']['user_category']?['category_id'] ?? 0,
+          country: userData['data']['country'],
+          legOrHand: userData['data']['favorite'],
+          birthDate: userData['data']['birth_date'],
+          height: userData['data']['length'],
+          weight: userData['data']['weight'],
+          mainPosition: userData['data']['main_position'],
+          otherPosition: userData['data']['other_position'],
+        );
       }
     } else if (event is GettingOtherUsersProfileData) {
       yield UserProfileLoadingState();
@@ -100,6 +113,15 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       } else if (editPictureData['success'] == true) {
         yield UpdatePictureSuccessState(
             message: "Picture updated successfully");
+      }
+    } else if (event is EditBirthDateButtonPressed) {
+      yield UserProfileLoadingState();
+      var editBDateData = await api.updateBirthDate(event.birthDate);
+      if (editBDateData['success'] == false || editBDateData == 400) {
+        yield UpdateBirthDateErrorState(message: "Failed to update birth date");
+      } else if (editBDateData['success'] == true) {
+        yield UpdateBirthDateSuccessState(
+            message: "Birthdate updated successfully");
       }
     } else if (event is AddNewPostButtonPressed) {
       yield UserProfileLoadingState();
@@ -233,6 +255,32 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
         yield DeleteMessageErrorState();
       } else if (deleteMessageData['success'] == true) {
         yield DeleteMessageSuccessState();
+      }
+    } else if (event is AddCardButtonPressed) {
+      yield UserProfileLoadingState();
+      var cardData = await api.addCard(
+          event.country,
+          event.type,
+          event.category,
+          event.favorite,
+          event.height,
+          event.weight,
+          event.mainPosition,
+          event.otherPosition,
+          event.video);
+      if (cardData == 400 || cardData['success'] == false) {
+        yield AddCardErrorState();
+      } else if (cardData['success'] == true) {
+        prefs.setString("VIDEO", cardData['data']['user_vedio']);
+        yield AddCardSuccessState();
+      }
+    } else if (event is EditCoverPhotoButtonPressed) {
+      yield UserProfileLoadingState();
+      var updateCoverData = await api.updateCoverPhoto(event.newPhoto);
+      if (updateCoverData == 400 || updateCoverData['success'] == false) {
+        yield UpdateCoverPhotoErrorState();
+      } else if (updateCoverData['success'] == true) {
+        yield UpdateCoverPhotoSuccessState();
       }
     }
   }

@@ -132,6 +132,46 @@ class UserProfileApi {
     }
   }
 
+  updateCoverPhoto(File newPhoto) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    String fileName = newPhoto.path.split('/').last;
+    FormData formData = FormData.fromMap({
+      "cover_image":
+          await MultipartFile.fromFile(newPhoto.path, filename: fileName),
+    });
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      var res = await dio.post(
+        '$ServerUrl/update-cover-image-profile',
+        data: formData,
+      );
+      final data = res.data;
+      return data;
+    } on Exception catch (e) {
+      print(e.toString());
+      return 400;
+    }
+  }
+
+  updateBirthDate(String birthDate) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    FormData formDate = FormData.fromMap({"birth_date": birthDate});
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      var res = await dio.post(
+        '$ServerUrl/update-birth-date',
+        data: formDate,
+      );
+      final data = res.data;
+      return data;
+    } on Exception catch (e) {
+      print(e.toString());
+      return 400;
+    }
+  }
+
   changePassword(
       String oldPassword, String newPassword, String confirmNewPassword) async {
     var prefs = await SharedPreferences.getInstance();
@@ -169,7 +209,6 @@ class UserProfileApi {
     });
     dio.options.headers["authorization"] = "Bearer $token";
     try {
-      // Future.delayed(Duration(seconds: 3));
       final res = await dio.post(
         '$ServerUrl/profile',
         data: formData,
@@ -526,6 +565,42 @@ class UserProfileApi {
       return data;
     } on Exception catch (error) {
       print(error.toString());
+      return 400;
+    }
+  }
+
+  addCard(
+      String country,
+      int type,
+      int category,
+      String favorite,
+      String height,
+      String weight,
+      String mainPosition,
+      String otherPosition,
+      File video) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    dio.options.headers["authorization"] = "Bearer $token";
+    String videoName = video.path.split('/').last;
+    FormData formData = FormData.fromMap({
+      "country": country,
+      "type": type,
+      "category_id": category,
+      "favorite": favorite,
+      "length": height,
+      "weight": weight,
+      "main_position": mainPosition,
+      "other_position": otherPosition,
+      "user_vedio":
+          await MultipartFile.fromFile(video.path, filename: videoName),
+    });
+    try {
+      var res =
+          await dio.post('$ServerUrl/update-user-card-data', data: formData);
+      return res.data;
+    } on Exception catch (e) {
+      print(e.toString());
       return 400;
     }
   }

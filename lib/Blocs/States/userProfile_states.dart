@@ -56,11 +56,32 @@ class GettingUserProfileDataSuccessState extends UserProfileState {
   final email;
   final phone;
   final image;
-  GettingUserProfileDataSuccessState(
-      {required this.name,
-      required this.email,
-      required this.phone,
-      required this.image});
+  final coverPhoto;
+  final type;
+  final category;
+  final country;
+  final legOrHand;
+  final birthDate;
+  final height;
+  final weight;
+  final mainPosition;
+  final otherPosition;
+  GettingUserProfileDataSuccessState({
+    this.name,
+    this.email,
+    this.phone,
+    this.image,
+    this.coverPhoto,
+    this.type,
+    this.category,
+    this.country,
+    this.legOrHand,
+    this.birthDate,
+    this.height,
+    this.weight,
+    this.mainPosition,
+    this.otherPosition,
+  });
 }
 
 class GettingUserProfileDataErrorState extends UserProfileState {
@@ -119,6 +140,20 @@ class UpdatePictureErrorState extends UserProfileState {
   UpdatePictureErrorState({required this.message});
 }
 
+class UpdateCoverPhotoSuccessState extends UserProfileState {}
+
+class UpdateCoverPhotoErrorState extends UserProfileState {}
+
+class UpdateBirthDateSuccessState extends UserProfileState {
+  final String message;
+  UpdateBirthDateSuccessState({required this.message});
+}
+
+class UpdateBirthDateErrorState extends UserProfileState {
+  final String message;
+  UpdateBirthDateErrorState({required this.message});
+}
+
 class AddPostSuccessState extends UserProfileState {}
 
 class AddPostErrorState extends UserProfileState {}
@@ -175,3 +210,7 @@ class GettingHomePagePostsErrorState extends UserProfileState {
 class DeleteMessageSuccessState extends UserProfileState {}
 
 class DeleteMessageErrorState extends UserProfileState {}
+
+class AddCardSuccessState extends UserProfileState {}
+
+class AddCardErrorState extends UserProfileState {}

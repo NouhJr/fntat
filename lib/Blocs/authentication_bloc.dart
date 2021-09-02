@@ -21,11 +21,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         event.phone,
         event.password,
         event.passwordConfirmation,
-        event.type,
-        event.category,
-        event.image,
+        event.birthDate,
+        event.profilePicture,
+        event.coverPhoto,
       );
-      if (data == 400) {
+      if (data == 400 || data['message'] != "transaction success") {
         yield AuthenticationErrorState("Registration failed");
       } else if (data['response_code'] == 400 &&
           data['message']['email']?[0] == "The email has already been taken.") {
@@ -35,11 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         yield AuthenticationErrorState("The phone has already been taken.");
       } else {
         prefs.setString("TOKEN", data['data']['token']);
-        prefs.setString("NAME", data['data']['user']['name']);
-        prefs.setString("EMAIL", data['data']['user']['email']);
         prefs.setInt("USERID", data['data']['user']['id']);
-        prefs.setInt("USERTYPE", event.type);
-        prefs.setInt("USERSTATUS", data['data']['user']['status']);
         await api.getFirebaseToken(data['data']['user']['id']);
         yield SignUpsuccessState();
       }
@@ -55,8 +51,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else if (data['message'] == "login sucess") {
         prefs.setString("TOKEN", data['token']);
         prefs.setInt("USERID", data['user']);
-        prefs.setInt("USERTYPE", data['type']);
-        prefs.setInt("USERSTATUS", data['status']);
         await api.gettingUserFollowingIDs();
         await api.getFirebaseToken(data['user']);
         yield SignInSuccessState();

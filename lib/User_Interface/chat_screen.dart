@@ -110,7 +110,7 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Stack(
           children: [
             Container(
-              color: KHeaderColor,
+              color: KPrimaryColor,
             ),
             Positioned(
               top: 20.0,
@@ -204,11 +204,11 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             Positioned(
-              top: 200.0,
+              top: 160.0,
               right: 0.0,
               left: 0.0,
               child: Container(
-                height: screenSize.height - 200,
+                height: screenSize.height - 160,
                 padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
@@ -223,7 +223,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             Positioned(
-              top: 200.0,
+              top: 160.0,
               right: 0.0,
               left: 0.0,
               child: Container(
@@ -263,7 +263,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             Positioned(
-              top: 230.0,
+              top: 190.0,
               right: 60.0,
               left: 150.0,
               child: Container(
@@ -286,7 +286,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             Positioned(
-              top: 120.0,
+              top: 80.0,
               right: 40.0,
               left: 150.0,
               child: InkWell(

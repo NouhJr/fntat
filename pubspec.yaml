@@ -45,7 +45,9 @@ dependencies:
   firebase_storage:
   firebase_messaging:
   firebase_analytics:
-  backdrop:             
+  country_picker:
+  flutter_svg:
+  video_player:             
         
 dev_dependencies:
   flutter_test:
@@ -80,6 +82,11 @@ flutter:
     - assets/images/demo_ad.png
     - assets/images/ad_image_horizontal.png
     - assets/images/ad_image_1.png
+    - assets/images/profilecard.png
+    - assets/images/profilecardgreen.png
+    - assets/images/profilecardgreenhalf.png
+    - assets/images/profilecardgreencropped.png
+    - assets/images/profilecardgreenhalfcropped.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

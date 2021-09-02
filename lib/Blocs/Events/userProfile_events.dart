@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:equatable/equatable.dart';
-import 'package:http/http.dart';
 
 class UserProfileEvent extends Equatable {
   @override
@@ -42,6 +41,16 @@ class EditEmailButtonPressed extends UserProfileEvent {
 class EditPictureButtonPressed extends UserProfileEvent {
   final File newPicture;
   EditPictureButtonPressed({required this.newPicture});
+}
+
+class EditCoverPhotoButtonPressed extends UserProfileEvent {
+  final File newPhoto;
+  EditCoverPhotoButtonPressed({required this.newPhoto});
+}
+
+class EditBirthDateButtonPressed extends UserProfileEvent {
+  final String birthDate;
+  EditBirthDateButtonPressed({required this.birthDate});
 }
 
 class ChangePasswordButtonPressed extends UserProfileEvent {
@@ -132,4 +141,27 @@ class GettingHomePagePostsEvent extends UserProfileEvent {}
 class DeleteMessageButtonPressed extends UserProfileEvent {
   final messageID;
   DeleteMessageButtonPressed({required this.messageID});
+}
+
+class AddCardButtonPressed extends UserProfileEvent {
+  final country;
+  final type;
+  final category;
+  final favorite;
+  final mainPosition;
+  final otherPosition;
+  final height;
+  final weight;
+  final video;
+  AddCardButtonPressed({
+    this.country,
+    this.type,
+    this.category,
+    this.favorite,
+    this.mainPosition,
+    this.otherPosition,
+    this.height,
+    this.weight,
+    this.video,
+  });
 }

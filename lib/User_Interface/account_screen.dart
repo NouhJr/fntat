@@ -9,10 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fntat/Blocs/userProfile_bloc.dart';
 import 'package:fntat/Blocs/States/userProfile_states.dart';
 import 'package:fntat/Blocs/Events/userProfile_events.dart';
-import 'package:fntat/User_Interface/followers_screen.dart';
-import 'package:fntat/User_Interface/following_screen.dart';
 import 'package:fntat/User_Interface/postDetails_screen.dart';
-import 'package:fntat/User_Interface/addComment_screen.dart';
 import 'package:fntat/User_Interface/sharePost_screen.dart';
 import 'package:fntat/User_Interface/settings_screen.dart';
 import 'package:fntat/User_Interface/home_screen.dart';
@@ -31,7 +28,6 @@ class _AccountState extends State<Account> {
   String noUserImage = "assets/images/nouserimagehandler.jpg";
   bool useAsset = true;
   bool loading = false;
-  bool shrinked = false;
   var dio = Dio();
   List<dynamic> posts = [];
   var nextPageUrl;
@@ -173,7 +169,6 @@ class _AccountState extends State<Account> {
 
   Future getDataOnRefresh() async {
     userProfileBloc.add(GettingUserProfileData());
-    userProfileBloc.add(GettingFollowingAndFollowersAndPostsCount());
     gettingUserOwnedPosts();
   }
 
@@ -189,19 +184,33 @@ class _AccountState extends State<Account> {
           });
         }
       });
-      return Center(
-        child: CircularProgressIndicator(
-          backgroundColor: KSubPrimaryColor,
-          color: KPrimaryColor,
-          strokeWidth: 5.0,
-        ),
+      return Column(
+        children: [
+          SizedBox(
+            height: 150.0,
+          ),
+          Center(
+            child: CircularProgressIndicator(
+              backgroundColor: KSubPrimaryColor,
+              color: KPrimaryColor,
+              strokeWidth: 5.0,
+            ),
+          ),
+        ],
       );
     } else {
-      return Center(
-        child: Text(
-          "There's no posts for this account yet",
-          style: KErrorStyle,
-        ),
+      return Column(
+        children: [
+          SizedBox(
+            height: 150.0,
+          ),
+          Center(
+            child: Text(
+              "There's no posts for this account yet",
+              style: KErrorStyle,
+            ),
+          ),
+        ],
       );
     }
   }
@@ -478,14 +487,26 @@ class _AccountState extends State<Account> {
     );
   }
 
+  String age(String date) {
+    var parseToDate = DateTime.parse(date);
+    var age = DateTime.now().year - parseToDate.year;
+    return age.toString();
+  }
+
   var userName = '';
   var userEmail = '';
   var userPhone = '';
   var userImage = "assets/images/nouserimagehandler.jpg";
-
-  var followersCount = 0;
-  var followingCount = 0;
-  var postsCount = 0;
+  var coverPhoto;
+  var userType;
+  var userCategory;
+  var userLegOrHand;
+  var userCountry;
+  var userAge;
+  var userHeight;
+  var userWeight;
+  var userMainPosition;
+  var userOtherPosition;
 
   @override
   void initState() {
@@ -493,7 +514,6 @@ class _AccountState extends State<Account> {
     checkConnection();
     userProfileBloc = BlocProvider.of<UserProfileBloc>(context);
     userProfileBloc.add(GettingUserProfileData());
-    userProfileBloc.add(GettingFollowingAndFollowersAndPostsCount());
     gettingUserId();
     gettingUserOwnedPosts();
     _scrollController.addListener(() {
@@ -517,122 +537,125 @@ class _AccountState extends State<Account> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: KPrimaryColor,
+        elevation: 0.0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: KSubPrimaryColor,
+            size: 25.0,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomeScreen(
+                      toNotifications: true,
+                    ),
+                  ),
+                  (route) => false);
+            },
+            icon: Icon(
+              Icons.notifications,
+              color: KSubPrimaryColor,
+              size: 25.0,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomeScreen(
+                      toMessages: true,
+                    ),
+                  ),
+                  (route) => false);
+            },
+            icon: Icon(
+              Icons.email,
+              color: KSubPrimaryColor,
+              size: 25.0,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Settings(fromAccount: true),
+                ),
+              );
+            },
+            icon: Icon(
+              Icons.settings,
+              color: KSubPrimaryColor,
+              size: 25.0,
+            ),
+          ),
+        ],
+      ),
       body: hasConnection
           ? BlocListener<UserProfileBloc, UserProfileState>(
               listener: (context, state) {
                 if (state is GettingUserProfileDataSuccessState) {
                   setState(() {
-                    userName = state.name ?? "";
-                    userEmail = state.email ?? "";
-                    userPhone = state.phone ?? "";
-                    if (state.image != null) {
-                      setState(() {
-                        userImage = '$ImageServerPrefix/${state.image}';
-                        useAsset = false;
-                      });
-                    }
+                    userName = state.name;
+                    userEmail = state.email;
+                    userPhone = state.phone;
+                    userType = state.type;
+                    userCategory = state.category;
+                    userCountry = state.country;
+                    userLegOrHand = state.legOrHand;
+                    userAge = age(state.birthDate ?? DateTime.now().toString());
+                    userHeight = state.height;
+                    userWeight = state.weight;
+                    userMainPosition = state.mainPosition;
+                    userOtherPosition = state.otherPosition;
                   });
-                } else if (state
-                    is GettingFollowingAndFollowersCountSuccessState) {
-                  setState(() {
-                    followersCount = state.followersCount ?? 0;
-                    followingCount = state.followingCount ?? 0;
-                    postsCount = state.postsCount ?? 0;
-                  });
+                  if (state.image != null && state.coverPhoto != null) {
+                    setState(() {
+                      userImage = '$ImageServerPrefix/${state.image}';
+                      coverPhoto = '$ImageServerPrefix/${state.coverPhoto}';
+                      useAsset = false;
+                    });
+                  }
                 }
               },
               child: Stack(
                 children: [
-                  Container(
-                    color: KHeaderColor,
-                  ),
-                  Positioned(
-                    top: 20.0,
-                    left: 20.0,
-                    child: Container(
-                      width: 35.0,
-                      height: 60.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: KPrimaryColor,
-                      ),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.arrow_back_ios,
-                          color: KSubPrimaryColor,
-                          size: 25.0,
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 25.0,
-                    right: 10.0,
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HomeScreen(
-                                    toNotifications: true,
-                                  ),
-                                ),
-                                (route) => false);
-                          },
-                          icon: Icon(
-                            Icons.notifications,
-                            color: KSubPrimaryColor,
-                            size: 25.0,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HomeScreen(
-                                    toMessages: true,
-                                  ),
-                                ),
-                                (route) => false);
-                          },
-                          icon: Icon(
-                            Icons.email,
-                            color: KSubPrimaryColor,
-                            size: 25.0,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    Settings(fromAccount: true),
+                  coverPhoto != null
+                      ? Positioned(
+                          top: 0.0,
+                          child: Container(
+                            width: screenSize.width,
+                            height: 145.0,
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              image: DecorationImage(
+                                image: NetworkImage(coverPhoto),
+                                fit: BoxFit.cover,
                               ),
-                            );
-                          },
-                          icon: Icon(
-                            Icons.settings,
-                            color: KSubPrimaryColor,
-                            size: 25.0,
+                            ),
                           ),
+                        )
+                      : Container(
+                          color: KPrimaryColor,
                         ),
-                      ],
-                    ),
-                  ),
                   Positioned(
-                    top: 200.0,
+                    top: 120.0,
                     right: 0.0,
                     left: 0.0,
                     child: Container(
                       padding: EdgeInsets.all(8.0),
-                      height: screenSize.height - 200,
+                      height: screenSize.height - 120,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(25.0),
@@ -644,21 +667,21 @@ class _AccountState extends State<Account> {
                     ),
                   ),
                   Positioned(
-                    top: 120.0,
-                    right: 40.0,
-                    left: 150.0,
-                    child: Row(
-                      children: [
-                        useAsset
-                            ? CircleAvatar(
-                                backgroundImage: AssetImage(userImage),
-                                radius: 55.0,
-                              )
-                            : CircleAvatar(
-                                backgroundImage: NetworkImage(userImage),
-                                radius: 55.0,
-                              ),
-                      ],
+                    top: 20.0,
+                    left: 0.0,
+                    child: ProfileCard(
+                      image: userImage,
+                      name: userName,
+                      useAsset: useAsset,
+                      category: userCategory,
+                      type: userType,
+                      countryName: userCountry,
+                      legOrHand: userLegOrHand,
+                      age: userAge ?? '0',
+                      height: userHeight ?? '0',
+                      weight: userWeight ?? '0',
+                      mainPosition: userMainPosition ?? '',
+                      otherPosition: userOtherPosition ?? '',
                     ),
                   ),
                 ],
@@ -668,113 +691,16 @@ class _AccountState extends State<Account> {
     );
   }
 
-  userData() {
-    return Column(children: [
-      SizedBox(
-        height: 15.0,
-      ),
-      Text(
-        userName,
-        style: KUserNameStyle,
-      ),
-      Text(
-        userEmail,
-        style: KUserEmailStyle,
-      ),
-      Text(
-        userPhone,
-        style: KUserEmailStyle,
-      ),
-      Divider(
-        color: KSubPrimaryFontsColor,
-        thickness: 1.0,
-        indent: 80.0,
-        endIndent: 80.0,
-      ),
-      SizedBox(
-        height: 5.0,
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Row(
-            children: [
-              Text(
-                "Posts",
-                style: KFollowing_FollowersStyle,
-              ),
-              SizedBox(
-                width: 5.0,
-              ),
-              Text(
-                '$postsCount',
-                style: KFollowing_FollowersStyle,
-              ),
-            ],
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FollowersScreen(
-                    numberOfFollowers: followersCount,
-                  ),
-                ),
-              );
-            },
-            child: Row(
-              children: [
-                Text("Followers", style: KFollowing_FollowersStyle),
-                SizedBox(
-                  width: 5.0,
-                ),
-                Text(
-                  '$followersCount',
-                  style: KFollowing_FollowersStyle,
-                ),
-              ],
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FollowingScreen(
-                    numberOfFollowing: followingCount,
-                  ),
-                ),
-              );
-            },
-            child: Row(
-              children: [
-                Text(
-                  "Following",
-                  style: KFollowing_FollowersStyle,
-                ),
-                SizedBox(
-                  width: 5.0,
-                ),
-                Text(
-                  '$followingCount',
-                  style: KFollowing_FollowersStyle,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ]);
-  }
-
   account() {
     return ListView(
       controller: _scrollController,
       physics: ScrollPhysics(),
       shrinkWrap: true,
       children: [
-        userData(),
+        //userData(),
+        SizedBox(
+          height: 120.0,
+        ),
         posts.isNotEmpty
             ? LayoutBuilder(
                 builder: (context, size) => Stack(

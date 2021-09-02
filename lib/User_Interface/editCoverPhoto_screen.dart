@@ -9,15 +9,14 @@ import 'package:fntat/Blocs/States/userProfile_states.dart';
 import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Components/flushbar.dart';
 
-class EditProfilePicture extends StatefulWidget {
+class EditCoverPhoto extends StatefulWidget {
   @override
-  _EditProfilePictureState createState() => _EditProfilePictureState();
+  _EditCoverPhotoState createState() => _EditCoverPhotoState();
 }
 
-class _EditProfilePictureState extends State<EditProfilePicture> {
+class _EditCoverPhotoState extends State<EditCoverPhoto> {
   bool hasImage = false;
   late File _image;
-
   late UserProfileBloc userbloc;
 
   @override
@@ -25,26 +24,6 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
     super.initState();
     userbloc = BlocProvider.of<UserProfileBloc>(context);
   }
-
-  final stateWidget =
-      BlocBuilder<UserProfileBloc, UserProfileState>(builder: (context, state) {
-    if (state is UpdatePictureErrorState) {
-      return Text(
-        state.message,
-        style: KErrorStyle,
-      );
-    } else if (state is UserProfileLoadingState) {
-      return Center(
-        child: CircularProgressIndicator(
-          backgroundColor: KSubPrimaryColor,
-          color: KPrimaryColor,
-          strokeWidth: 3.0,
-        ),
-      );
-    } else {
-      return Container();
-    }
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +41,6 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
             Navigator.pop(context),
           },
         ),
-        title: Text(
-          "Edit Profile Picture",
-          style: KScreenTitlesStyle,
-        ),
         actions: [
           Row(
             children: [
@@ -81,7 +56,9 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
                 ),
                 child: Center(
                   child: InkWell(
-                    onTap: updatePicture,
+                    onTap: () {
+                      updateCover();
+                    },
                     child: Text(
                       "Save",
                       style: KSubPrimaryButtonsFontStyle,
@@ -98,7 +75,7 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
       ),
       body: BlocListener<UserProfileBloc, UserProfileState>(
         listener: (context, state) {
-          if (state is UpdatePictureSuccessState) {
+          if (state is UpdateCoverPhotoSuccessState) {
             Navigator.pop(context);
           }
         },
@@ -112,7 +89,7 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
               ),
               Container(
                 child: Text(
-                  "Update your profile picture",
+                  "Update your cover photo",
                   style: KPrimaryFontStyle,
                 ),
               ),
@@ -158,8 +135,8 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
                           children: [
                             Container(
                               clipBehavior: Clip.antiAliasWithSaveLayer,
-                              width: 190.0,
-                              height: 190.0,
+                              width: 350.0,
+                              height: 120.0,
                               decoration: BoxDecoration(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10.0)),
@@ -198,7 +175,7 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
               SizedBox(
                 height: 20.0,
               ),
-              stateWidget,
+              //stateWidget,
             ],
           ),
         ),
@@ -233,8 +210,7 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
     });
   }
 
-  updatePicture() async {
-    //Check if there is internet connection or not and display message error if not.
+  updateCover() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
       Warning().errorMessage(
@@ -246,12 +222,14 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
     } else if (hasImage == false) {
       Warning().errorMessage(
         context,
-        title: "No picture is selected !",
-        message: 'Please choose or take a picture.',
+        title: "No photo is selected !",
+        message: 'Please choose or take a photo.',
         icons: Icons.warning,
       );
     } else {
-      userbloc.add(EditPictureButtonPressed(newPicture: _image));
+      userbloc.add(
+        EditCoverPhotoButtonPressed(newPhoto: _image),
+      );
     }
   }
 }
