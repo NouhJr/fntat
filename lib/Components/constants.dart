@@ -1,9 +1,8 @@
 //Import necessary packages
 import 'dart:ui';
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 ///*************************COLORS**************************/
@@ -31,8 +30,8 @@ const ServerUrl = "http://164.160.104.133:9090/fntat/api";
 const ImageServerPrefix = "http://164.160.104.133:9090/fntat";
 
 ///*************************FONTS**************************/
-// const KPrimaryFontFamily = "Segoe UI";
-const KPrimaryFontFamily = "Janna LT";
+const KPrimaryFontFamily = "Segoe UI";
+// const KPrimaryFontFamily = "Janna LT";
 
 ///*************************FONTSTYLES**************************/
 const KPrimaryFontStyle = TextStyle(
@@ -40,7 +39,7 @@ const KPrimaryFontStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 22.0,
   color: KSubPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KPrimaryButtonsFontStyle = TextStyle(
@@ -49,7 +48,7 @@ const KPrimaryButtonsFontStyle = TextStyle(
   fontSize: 20.0,
   color: KPrimaryColor,
   // color: KPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KSubSubPrimaryButtonsFontStyle = TextStyle(
@@ -57,7 +56,7 @@ const KSubSubPrimaryButtonsFontStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 20.0,
   color: KPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KSubPrimaryButtonsFontStyle2 = TextStyle(
@@ -65,7 +64,7 @@ const KSubPrimaryButtonsFontStyle2 = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 20.0,
   color: KPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KSubPrimaryButtonsFontStyle = TextStyle(
@@ -73,7 +72,7 @@ const KSubPrimaryButtonsFontStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 19.0,
   color: KPrimaryColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KSubPrimaryButtonsFontStyle3 = TextStyle(
@@ -81,7 +80,7 @@ const KSubPrimaryButtonsFontStyle3 = TextStyle(
   fontWeight: FontWeight.w700,
   fontSize: 18.0,
   color: KPrimaryColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KSignUpButtonInAppBarStyle = TextStyle(
@@ -89,7 +88,7 @@ const KSignUpButtonInAppBarStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 18.0,
   color: KPrimaryColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KErrorStyle = TextStyle(
@@ -97,7 +96,7 @@ const KErrorStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 20.0,
   color: KSubPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KSubErrorStyle = TextStyle(
@@ -105,7 +104,7 @@ const KSubErrorStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 20.0,
   color: KPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KPrimaryFontStyleLarge = TextStyle(
@@ -113,7 +112,7 @@ const KPrimaryFontStyleLarge = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 28.0,
   color: KSubPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KSubPrimaryFontStyleLarge = TextStyle(
@@ -121,7 +120,7 @@ const KSubPrimaryFontStyleLarge = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 28.0,
   color: KPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KDropdownButtonStyle = TextStyle(
@@ -129,13 +128,13 @@ const KDropdownButtonStyle = TextStyle(
   fontSize: 20.0,
   fontWeight: FontWeight.bold,
   color: KSubSecondryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KTextFieldStyle = TextStyle(
   fontSize: 20.0,
   fontWeight: FontWeight.w500,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KUserNameStyle = TextStyle(
@@ -143,7 +142,7 @@ const KUserNameStyle = TextStyle(
   fontSize: 25.0,
   fontWeight: FontWeight.bold,
   color: KSubPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KReceiverNameStyle = TextStyle(
@@ -151,7 +150,7 @@ const KReceiverNameStyle = TextStyle(
   fontSize: 22.0,
   fontWeight: FontWeight.w700,
   color: KPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KLastSeenStyle = TextStyle(
@@ -159,7 +158,7 @@ const KLastSeenStyle = TextStyle(
   fontSize: 19.0,
   fontWeight: FontWeight.w600,
   color: KSubFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KUserEmailStyle = TextStyle(
@@ -167,7 +166,7 @@ const KUserEmailStyle = TextStyle(
   fontSize: 20.0,
   fontWeight: FontWeight.bold,
   color: KSubSecondryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KPostTimeStyle = TextStyle(
@@ -175,7 +174,7 @@ const KPostTimeStyle = TextStyle(
   fontSize: 19.0,
   fontWeight: FontWeight.bold,
   color: KSubSecondryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KPostTimeInSubPostStyle = TextStyle(
@@ -183,7 +182,7 @@ const KPostTimeInSubPostStyle = TextStyle(
   fontSize: 16.0,
   fontWeight: FontWeight.bold,
   color: KSubSecondryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KFollowing_FollowersStyle = TextStyle(
@@ -191,7 +190,7 @@ const KFollowing_FollowersStyle = TextStyle(
   fontSize: 19.0,
   fontWeight: FontWeight.w700,
   color: KSubPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KScreenTitlesStyle = TextStyle(
@@ -199,7 +198,15 @@ const KScreenTitlesStyle = TextStyle(
   fontSize: 25.0,
   fontWeight: FontWeight.bold,
   color: KPrimaryColor,
-  height: 1.3,
+  height: 1.0,
+);
+
+const KScreenTitlesStyle2 = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontSize: 25.0,
+  fontWeight: FontWeight.bold,
+  color: KPrimaryFontsColor,
+  height: 1.0,
 );
 
 const KEditButtonsStyle = TextStyle(
@@ -207,7 +214,7 @@ const KEditButtonsStyle = TextStyle(
   fontSize: 19.0,
   fontWeight: FontWeight.w600,
   color: KSubPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KSignOutButtonStyle = TextStyle(
@@ -215,7 +222,7 @@ const KSignOutButtonStyle = TextStyle(
   fontSize: 19.0,
   fontWeight: FontWeight.w600,
   color: KWarningColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KSplashStyle = TextStyle(
@@ -225,14 +232,14 @@ const KSplashStyle = TextStyle(
   fontStyle: FontStyle.italic,
   color: KPrimaryColor,
   letterSpacing: 1.0,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KWriteCommentAndSendMessageStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
   fontWeight: FontWeight.w600,
   fontSize: 19.0,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KAddPostButtonStyle = TextStyle(
@@ -240,7 +247,7 @@ const KAddPostButtonStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 18.0,
   color: KPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KAddPostButtonInAppBarStyle = TextStyle(
@@ -248,7 +255,7 @@ const KAddPostButtonInAppBarStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 22.0,
   color: KPrimaryColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KNameStyle = TextStyle(
@@ -256,7 +263,7 @@ const KNameStyle = TextStyle(
   fontSize: 21.0,
   fontWeight: FontWeight.bold,
   color: KSubPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KNameStyle2 = TextStyle(
@@ -264,7 +271,7 @@ const KNameStyle2 = TextStyle(
   fontSize: 19.0,
   fontWeight: FontWeight.w800,
   color: KSubPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KNameInHeaderStyle = TextStyle(
@@ -272,7 +279,7 @@ const KNameInHeaderStyle = TextStyle(
   fontSize: 23.0,
   fontWeight: FontWeight.bold,
   color: KPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KEmailInHeaderStyle = TextStyle(
@@ -280,7 +287,7 @@ const KEmailInHeaderStyle = TextStyle(
   fontSize: 20.0,
   fontWeight: FontWeight.w700,
   color: KPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KSearchLabelStyle = TextStyle(
@@ -288,7 +295,7 @@ const KSearchLabelStyle = TextStyle(
   fontSize: 20.0,
   fontWeight: FontWeight.w700,
   color: KSubPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KNameInSubPostStyle = TextStyle(
@@ -296,7 +303,7 @@ const KNameInSubPostStyle = TextStyle(
   fontSize: 18.0,
   fontWeight: FontWeight.bold,
   color: KSubPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KFlushBarTitleStyle = TextStyle(
@@ -304,7 +311,7 @@ const KFlushBarTitleStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 18.0,
   color: KPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KFlushBarMessageStyle = TextStyle(
@@ -312,7 +319,7 @@ const KFlushBarMessageStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 16.0,
   color: KPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KPostStyle = TextStyle(
@@ -320,7 +327,7 @@ const KPostStyle = TextStyle(
   fontWeight: FontWeight.w600,
   fontSize: 18.0,
   color: KSubPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KPostStyle2 = TextStyle(
@@ -328,7 +335,7 @@ const KPostStyle2 = TextStyle(
   fontWeight: FontWeight.w600,
   fontSize: 17.0,
   color: KSubPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KSubPostStyle = TextStyle(
@@ -336,14 +343,14 @@ const KSubPostStyle = TextStyle(
   fontWeight: FontWeight.w600,
   fontSize: 15.0,
   color: KSubPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KLikesCommentsAndSharesCount = TextStyle(
   fontFamily: KPrimaryFontFamily,
   fontSize: 16.0,
   fontWeight: FontWeight.w600,
-  height: 1.3,
+  height: 1.0,
   color: KSubSecondryFontsColor,
 );
 
@@ -352,7 +359,7 @@ const KSnackBarContentStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 18.0,
   color: KPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KPostOptionsStyle = TextStyle(
@@ -360,7 +367,7 @@ const KPostOptionsStyle = TextStyle(
   fontWeight: FontWeight.w600,
   fontSize: 17.0,
   color: KSubPrimaryFontsColor,
-  height: 1.3,
+  height: 1.0,
 );
 
 const KCategoryButtonStyle = TextStyle(
@@ -536,6 +543,8 @@ TextField descriptionTextField(TextEditingController controller) {
 }
 
 ///*************************PROFILE CARD**************************/
+var dio = Dio();
+
 class ProfileCard extends StatefulWidget {
   final name;
   final image;
@@ -572,9 +581,9 @@ class _ProfileCardState extends State<ProfileCard> {
   var flagUrl;
 
   getCountryFlag() async {
-    var res = await http.get(Uri.parse(
-        "https://restcountries.eu/rest/v2/name/${widget.countryName}?fields=flag"));
-    final jsonRes = json.decode(res.body);
+    var res = await dio.get(
+        "https://restcountries.eu/rest/v2/name/${widget.countryName}?fields=flag");
+    final jsonRes = res.data;
     setState(() {
       flagUrl = jsonRes[0]['flag'];
     });
@@ -779,18 +788,19 @@ class _HomeProfileCardState extends State<HomeProfileCard> {
   var flagUrl;
 
   getCountryFlag() async {
-    var res = await http.get(Uri.parse(
-        "https://restcountries.eu/rest/v2/name/${widget.countryName}?fields=flag"));
-    final jsonRes = json.decode(res.body);
+    var res = await dio.get(
+        "https://restcountries.eu/rest/v2/name/${widget.countryName}?fields=flag");
+    final jsonRes = res.data;
     setState(() {
       flagUrl = jsonRes[0]['flag'];
     });
+    print(flagUrl);
   }
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 1)).then((value) => {
+    Future.delayed(Duration(seconds: 2)).then((value) => {
           getCountryFlag(),
         });
   }

@@ -7,7 +7,6 @@ import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:video_player/video_player.dart';
 import 'package:flutter/services.dart';
 import 'package:fntat/Blocs/authentication_bloc.dart';
 import 'package:fntat/Blocs/userProfile_bloc.dart';
@@ -33,6 +32,7 @@ import 'package:fntat/User_Interface/editPost_screen.dart';
 import 'package:fntat/User_Interface/sharePost_screen.dart';
 import 'package:fntat/User_Interface/editBirthDate_screen.dart';
 import 'package:fntat/User_Interface/editCoverPhoto_screen.dart';
+import 'package:fntat/User_Interface/playVideo_screen.dart';
 import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Components/flushbar.dart';
 import 'package:fntat/Components/carousel.dart';
@@ -91,7 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final ScrollController messagesScrollController = ScrollController();
   final ScrollController postsScrollController = ScrollController();
   final ScrollController categoriesController = ScrollController();
-  late VideoPlayerController videoController;
   bool useAsset = true;
   bool isHome = true;
   bool isSearch = false;
@@ -1309,24 +1308,90 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       '',
                                             ),
                                           ),
-                                          // Container(
-                                          //   height: 250.0,
-                                          //   width: 150.0,
-                                          //   child: GestureDetector(
-                                          //     onTap: () {
-                                          //       print("here");
-                                          //       setState(() {
-                                          //         videoController
-                                          //                 .value.isPlaying
-                                          //             ? videoController.pause()
-                                          //             : videoController.play();
-                                          //       });
-                                          //     },
-                                          //     child:
-                                          //         VideoPlayer(videoController),
-                                          //   ),
-                                          //   //color: KPrimaryColor,
-                                          // ),
+                                          SizedBox(
+                                            width: 20.0,
+                                          ),
+                                          Container(
+                                            height: 200.0,
+                                            width: 150.0,
+                                            child: Stack(
+                                              children: [
+                                                Container(
+                                                  child: Image(
+                                                    image: AssetImage(
+                                                        "assets/images/footballplayground.jpg"),
+                                                    fit: BoxFit.cover,
+                                                    width: double.infinity,
+                                                    height: double.infinity,
+                                                  ),
+                                                ),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    color: KPrimaryColor
+                                                        .withOpacity(0.5),
+                                                  ),
+                                                  margin: EdgeInsets.all(5.0),
+                                                  child: categoryResults[index]
+                                                                  ['user']
+                                                              ['user_vedio'] !=
+                                                          null
+                                                      ? Column(
+                                                          children: [
+                                                            SizedBox(
+                                                              height: 30.0,
+                                                            ),
+                                                            Text(
+                                                              "Play Skills Video",
+                                                              style: KPostStyle,
+                                                            ),
+                                                            Center(
+                                                              child: IconButton(
+                                                                onPressed: () {
+                                                                  Navigator
+                                                                      .push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              SkillsVideo(
+                                                                        userName:
+                                                                            categoryResults[index]['user']['name'],
+                                                                        videoUrl:
+                                                                            '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                },
+                                                                icon: Icon(
+                                                                  Icons
+                                                                      .play_arrow,
+                                                                ),
+                                                                iconSize: 70.0,
+                                                                color:
+                                                                    KSubPrimaryColor,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : Row(
+                                                          children: [
+                                                            SizedBox(
+                                                              width: 5.0,
+                                                            ),
+                                                            Center(
+                                                              child: Text(
+                                                                "No video available",
+                                                                style:
+                                                                    KSubPostStyle,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                ),
+                                              ],
+                                            ),
+                                            color: KPrimaryColor,
+                                          ),
                                         ],
                                       )
                                     : Row(
@@ -1394,11 +1459,80 @@ class _HomeScreenState extends State<HomeScreen> {
                                           SizedBox(
                                             width: 20.0,
                                           ),
-                                          // Container(
-                                          //   height: 250.0,
-                                          //   width: 150.0,
-                                          //   child: VideoPlayer(videoController),
-                                          // ),
+                                          Container(
+                                            height: 200.0,
+                                            width: 150.0,
+                                            child: Stack(
+                                              children: [
+                                                Container(
+                                                  child: Image(
+                                                    image: AssetImage(
+                                                        "assets/images/footballplayground.jpg"),
+                                                    fit: BoxFit.cover,
+                                                    width: double.infinity,
+                                                    height: double.infinity,
+                                                  ),
+                                                ),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    color: KPrimaryColor
+                                                        .withOpacity(0.5),
+                                                  ),
+                                                  margin: EdgeInsets.all(5.0),
+                                                  child: categoryResults[index]
+                                                                  ['user']
+                                                              ['user_vedio'] !=
+                                                          null
+                                                      ? Column(
+                                                          children: [
+                                                            SizedBox(
+                                                              height: 30.0,
+                                                            ),
+                                                            Text(
+                                                              "Play Skills Video",
+                                                              style: KPostStyle,
+                                                            ),
+                                                            Center(
+                                                              child: IconButton(
+                                                                onPressed: () {
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder: (context) => SkillsVideo(
+                                                                                userName: categoryResults[index]['user']['name'],
+                                                                                videoUrl: '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
+                                                                              )));
+                                                                },
+                                                                icon: Icon(
+                                                                  Icons
+                                                                      .play_arrow,
+                                                                ),
+                                                                iconSize: 70.0,
+                                                                color:
+                                                                    KSubPrimaryColor,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : Row(
+                                                          children: [
+                                                            SizedBox(
+                                                              width: 5.0,
+                                                            ),
+                                                            Center(
+                                                              child: Text(
+                                                                "No video available",
+                                                                style:
+                                                                    KSubPostStyle,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                ),
+                                              ],
+                                            ),
+                                            color: KPrimaryColor,
+                                          ),
                                         ],
                                       ),
                               ],
@@ -1519,6 +1653,89 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       '',
                                                 ),
                                               ),
+                                              SizedBox(
+                                                width: 20.0,
+                                              ),
+                                              Container(
+                                                height: 200.0,
+                                                width: 150.0,
+                                                child: Stack(
+                                                  children: [
+                                                    Container(
+                                                      child: Image(
+                                                        image: AssetImage(
+                                                            "assets/images/basketballplayground.jpg"),
+                                                        fit: BoxFit.cover,
+                                                        width: double.infinity,
+                                                        height: double.infinity,
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        color: KPrimaryColor
+                                                            .withOpacity(0.5),
+                                                      ),
+                                                      margin:
+                                                          EdgeInsets.all(5.0),
+                                                      child: categoryResults[
+                                                                          index]
+                                                                      ['user'][
+                                                                  'user_vedio'] !=
+                                                              null
+                                                          ? Column(
+                                                              children: [
+                                                                SizedBox(
+                                                                  height: 30.0,
+                                                                ),
+                                                                Text(
+                                                                  "Play Skills Video",
+                                                                  style:
+                                                                      KPostStyle,
+                                                                ),
+                                                                Center(
+                                                                  child:
+                                                                      IconButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) => SkillsVideo(
+                                                                                    userName: categoryResults[index]['user']['name'],
+                                                                                    videoUrl: '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
+                                                                                  )));
+                                                                    },
+                                                                    icon: Icon(
+                                                                      Icons
+                                                                          .play_arrow,
+                                                                    ),
+                                                                    iconSize:
+                                                                        70.0,
+                                                                    color:
+                                                                        KSubPrimaryColor,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )
+                                                          : Row(
+                                                              children: [
+                                                                SizedBox(
+                                                                  width: 5.0,
+                                                                ),
+                                                                Center(
+                                                                  child: Text(
+                                                                    "No video available",
+                                                                    style:
+                                                                        KSubPostStyle,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                color: KPrimaryColor,
+                                              ),
                                             ],
                                           )
                                         : Row(
@@ -1587,6 +1804,89 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           ['other_position'] ??
                                                       '',
                                                 ),
+                                              ),
+                                              SizedBox(
+                                                width: 20.0,
+                                              ),
+                                              Container(
+                                                height: 200.0,
+                                                width: 150.0,
+                                                child: Stack(
+                                                  children: [
+                                                    Container(
+                                                      child: Image(
+                                                        image: AssetImage(
+                                                            "assets/images/basketballplayground.jpg"),
+                                                        fit: BoxFit.cover,
+                                                        width: double.infinity,
+                                                        height: double.infinity,
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        color: KPrimaryColor
+                                                            .withOpacity(0.5),
+                                                      ),
+                                                      margin:
+                                                          EdgeInsets.all(5.0),
+                                                      child: categoryResults[
+                                                                          index]
+                                                                      ['user'][
+                                                                  'user_vedio'] !=
+                                                              null
+                                                          ? Column(
+                                                              children: [
+                                                                SizedBox(
+                                                                  height: 30.0,
+                                                                ),
+                                                                Text(
+                                                                  "Play Skills Video",
+                                                                  style:
+                                                                      KPostStyle,
+                                                                ),
+                                                                Center(
+                                                                  child:
+                                                                      IconButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) => SkillsVideo(
+                                                                                    userName: categoryResults[index]['user']['name'],
+                                                                                    videoUrl: '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
+                                                                                  )));
+                                                                    },
+                                                                    icon: Icon(
+                                                                      Icons
+                                                                          .play_arrow,
+                                                                    ),
+                                                                    iconSize:
+                                                                        70.0,
+                                                                    color:
+                                                                        KSubPrimaryColor,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )
+                                                          : Row(
+                                                              children: [
+                                                                SizedBox(
+                                                                  width: 5.0,
+                                                                ),
+                                                                Center(
+                                                                  child: Text(
+                                                                    "No video available",
+                                                                    style:
+                                                                        KSubPostStyle,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                color: KPrimaryColor,
                                               ),
                                             ],
                                           ),

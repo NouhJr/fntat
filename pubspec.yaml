@@ -47,7 +47,7 @@ dependencies:
   firebase_analytics:
   country_picker:
   flutter_svg:
-  video_player:             
+  better_player:             
         
 dev_dependencies:
   flutter_test:
@@ -87,6 +87,8 @@ flutter:
     - assets/images/profilecardgreenhalf.png
     - assets/images/profilecardgreencropped.png
     - assets/images/profilecardgreenhalfcropped.png
+    - assets/images/footballplayground.jpg
+    - assets/images/basketballplayground.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
