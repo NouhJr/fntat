@@ -684,6 +684,53 @@ class _AccountState extends State<Account> {
                       otherPosition: userOtherPosition ?? '',
                     ),
                   ),
+                  Positioned(
+                    top: 130.0,
+                    left: 210.0,
+                    child: Container(
+                      child: Container(
+                        width: 140.0,
+                        height: 35.0,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 2.0,
+                            color: KPrimaryColor,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomeScreen(
+                                    toCategories: true,
+                                  ),
+                                ),
+                                (route) => false);
+                          },
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 5.0,
+                              ),
+                              Icon(
+                                Icons.groups,
+                                color: KPrimaryColor,
+                              ),
+                              SizedBox(
+                                width: 5.0,
+                              ),
+                              Text(
+                                "Categories",
+                                style: KSubPrimaryButtonsFontStyle,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             )
@@ -697,7 +744,6 @@ class _AccountState extends State<Account> {
       physics: ScrollPhysics(),
       shrinkWrap: true,
       children: [
-        //userData(),
         SizedBox(
           height: 120.0,
         ),

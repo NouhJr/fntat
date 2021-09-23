@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -73,16 +74,21 @@ class Home extends StatelessWidget {
 class HomeScreen extends StatefulWidget {
   final toNotifications;
   final toMessages;
-  HomeScreen({this.toNotifications, this.toMessages});
+  final toCategories;
+  HomeScreen({this.toNotifications, this.toMessages, this.toCategories});
   @override
   _HomeScreenState createState() => _HomeScreenState(
-      toNotifications: toNotifications, toMessages: toMessages);
+        toNotifications: toNotifications,
+        toMessages: toMessages,
+        toCategories: toCategories,
+      );
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   final toNotifications;
   final toMessages;
-  _HomeScreenState({this.toNotifications, this.toMessages});
+  final toCategories;
+  _HomeScreenState({this.toNotifications, this.toMessages, this.toCategories});
 
   ///***************************************VARIABLES************************************************/
   TextEditingController postTextController = TextEditingController();
@@ -469,6 +475,11 @@ class _HomeScreenState extends State<HomeScreen> {
     } else if (toMessages == true) {
       setState(() {
         isMessages = true;
+        isHome = false;
+      });
+    } else if (toCategories == true) {
+      setState(() {
+        isCategory = true;
         isHome = false;
       });
     }
@@ -2418,10 +2429,15 @@ class _HomeScreenState extends State<HomeScreen> {
                               decoration: BoxDecoration(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10.0)),
-                                image: DecorationImage(
-                                  image: FileImage(postImage!),
-                                  fit: BoxFit.cover,
-                                ),
+                                image: kIsWeb
+                                    ? DecorationImage(
+                                        image: NetworkImage(postImage!.path),
+                                        fit: BoxFit.cover,
+                                      )
+                                    : DecorationImage(
+                                        image: FileImage(postImage!),
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                             ),
                             Positioned(
@@ -3169,7 +3185,9 @@ class _HomeScreenState extends State<HomeScreen> {
       onSelect: (Country country) {
         setState(() {
           selectedCountry = country.displayName
-              .substring(0, country.displayName.indexOf(' '));
+              .substring(country.displayName.indexOf('(') + 1,
+                  country.displayName.indexOf(')'))
+              .toLowerCase();
         });
       },
     );

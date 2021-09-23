@@ -46,8 +46,8 @@ dependencies:
   firebase_messaging:
   firebase_analytics:
   country_picker:
-  flutter_svg:
   better_player:             
+  country_icons:
         
 dev_dependencies:
   flutter_test:

@@ -2,8 +2,6 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 ///*************************COLORS**************************/
 const KPrimaryColor = Color(0xFF2c9448); //Color(0xFF4379e6);
@@ -325,7 +323,7 @@ const KFlushBarMessageStyle = TextStyle(
 const KPostStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
   fontWeight: FontWeight.w600,
-  fontSize: 18.0,
+  fontSize: 17.0,
   color: KSubPrimaryFontsColor,
   height: 1.0,
 );
@@ -374,6 +372,22 @@ const KCategoryButtonStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
   fontSize: 19,
   color: KSubPrimaryFontsColor,
+);
+
+const KNameInCardStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontSize: 16.0,
+  fontWeight: FontWeight.w900,
+  color: KSubPrimaryFontsColor,
+  height: 1.0,
+);
+
+const KDataInCardStyle = TextStyle(
+  fontFamily: KPrimaryFontFamily,
+  fontWeight: FontWeight.w600,
+  fontSize: 16.0,
+  color: KSubPrimaryFontsColor,
+  height: 1.0,
 );
 
 ///*************************TEXTFIELDS**************************/
@@ -542,10 +556,9 @@ TextField descriptionTextField(TextEditingController controller) {
   );
 }
 
-///*************************PROFILE CARD**************************/
-var dio = Dio();
+///*************************USER CARD**************************/
 
-class ProfileCard extends StatefulWidget {
+class ProfileCard extends StatelessWidget {
   final name;
   final image;
   final useAsset;
@@ -574,32 +587,6 @@ class ProfileCard extends StatefulWidget {
   });
 
   @override
-  _ProfileCardState createState() => _ProfileCardState();
-}
-
-class _ProfileCardState extends State<ProfileCard> {
-  var flagUrl;
-
-  getCountryFlag() async {
-    var res = await dio.get(
-        "https://restcountries.eu/rest/v2/name/${widget.countryName}?fields=flag");
-    final jsonRes = res.data;
-    setState(() {
-      flagUrl = jsonRes[0]['flag'];
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.countryName != "") {
-      Future.delayed(Duration(seconds: 1)).then((value) => {
-            getCountryFlag(),
-          });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
@@ -611,26 +598,32 @@ class _ProfileCardState extends State<ProfileCard> {
         Positioned(
           top: 30.0,
           left: 40.0,
-          child: widget.useAsset
+          child: useAsset
               ? Container(
                   width: 120.0,
                   height: 100.0,
-                  child: Image.asset(widget.image),
+                  child: Image.asset(image),
                 )
               : Container(
                   width: 120.0,
                   height: 100.0,
-                  child: Image.network(widget.image),
+                  child: Image.network(image),
                 ),
         ),
         Positioned(
           top: 30.0,
           left: 30.0,
-          child: Container(
-            width: 40.0,
-            height: 100.0,
-            decoration: BoxDecoration(
-              color: KPrimaryColor.withOpacity(0.6),
+          child: Visibility(
+            visible:
+                countryName != null || mainPosition != '' || otherPosition != ''
+                    ? true
+                    : false,
+            child: Container(
+              width: 40.0,
+              height: 100.0,
+              decoration: BoxDecoration(
+                color: KPrimaryColor.withOpacity(0.6),
+              ),
             ),
           ),
         ),
@@ -640,14 +633,17 @@ class _ProfileCardState extends State<ProfileCard> {
           child: Container(
             width: 30.0,
             height: 30.0,
-            child: flagUrl != null ? SvgPicture.network(flagUrl) : Container(),
+            child: countryName == null
+                ? Container()
+                : Image.asset('icons/flags/png/$countryName.png',
+                    package: 'country_icons'),
           ),
         ),
         Positioned(
-          top: 80.0,
+          top: 75.0,
           left: 40.0,
           child: Text(
-            widget.mainPosition,
+            mainPosition,
             style: KPostStyle2,
           ),
         ),
@@ -655,155 +651,116 @@ class _ProfileCardState extends State<ProfileCard> {
           top: 100.0,
           left: 40.0,
           child: Text(
-            widget.otherPosition,
+            otherPosition,
             style: KPostStyle2,
           ),
         ),
         Positioned(
-          top: 130.0,
-          left: widget.name.toString().length <= 4
-              ? 70.0
-              : widget.name.toString().length > 4 &&
-                      widget.name.toString().length < 10
-                  ? 60.0
-                  : widget.name.toString().length >= 10
-                      ? 40.0
-                      : 85.0,
-          child: Text(
-            widget.name,
-            style: KNameStyle2,
+          top: name.toString().length >= 14 ? 130.0 : 135.0,
+          left: name.toString().length <= 4
+              ? 80.0
+              : name.toString().length > 4 && name.toString().length <= 10
+                  ? 50.0
+                  : 40.0,
+          child: Container(
+            width: 130.0,
+            height: 80.0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: KNameInCardStyle,
+                ),
+              ],
+            ),
           ),
         ),
         Positioned(
-          top: 155.0,
+          top: name.toString().length >= 14 ? 165.0 : 160.0,
           left: 30.0,
           child: Row(
             children: [
-              Text(
-                //'Age 23',
-                'Age ${widget.age}',
-                style: KPostStyle2,
+              Visibility(
+                visible: age != '0' ? true : false,
+                child: Text(
+                  'Age $age',
+                  style: KDataInCardStyle,
+                ),
               ),
               SizedBox(
                 width: 30.0,
               ),
-              Text(
-                //'Ht 170',
-                'Ht ${widget.height}',
-                style: KPostStyle2,
+              Visibility(
+                visible: height != '0' ? true : false,
+                child: Text(
+                  'Ht $height',
+                  style: KDataInCardStyle,
+                ),
               ),
             ],
           ),
         ),
         Positioned(
-          top: 180.0,
+          top: name.toString().length >= 14 ? 190.0 : 185.0,
           left: 30.0,
           child: Row(
             children: [
-              Text(
-                widget.category == 1
-                    ? 'Leg ${widget.legOrHand}'
-                    : widget.category == 2
-                        ? 'Hand ${widget.legOrHand}'
-                        : '',
-                style: KPostStyle2,
+              Visibility(
+                visible: legOrHand != null ? true : false,
+                child: Text(
+                  category == 1
+                      ? 'Leg $legOrHand'
+                      : category == 2
+                          ? 'Hand $legOrHand'
+                          : '',
+                  style: KDataInCardStyle,
+                ),
               ),
               SizedBox(
-                width: widget.category == 2 ? 8.0 : 15.0,
+                width: category == 1 && legOrHand.toString().length == 5
+                    ? 13.0
+                    : category == 1 && legOrHand.toString().length == 4
+                        ? 20.0
+                        : 8.0,
               ),
-              Text(
-                'Wt ${widget.weight}',
-                style: KPostStyle2,
+              Visibility(
+                visible: weight != '0' ? true : false,
+                child: Text(
+                  'Wt $weight',
+                  style: KDataInCardStyle,
+                ),
               ),
             ],
           ),
         ),
-        // Positioned(
-        //   top: 220.0,
-        //   left: 90.0,
-        //   child: widget.type == 1
-        //       ? Text(
-        //           "Admin",
-        //           style: KPostStyle2,
-        //         )
-        //       : widget.type == 2
-        //           ? Text(
-        //               "Amateur",
-        //               style: KPostStyle2,
-        //             )
-        //           : widget.type == 3
-        //               ? Text(
-        //                   "Professional",
-        //                   style: KPostStyle2,
-        //                 )
-        //               : widget.type == 4
-        //                   ? Text(
-        //                       "Agent",
-        //                       style: KPostStyle2,
-        //                     )
-        //                   : widget.type == 5
-        //                       ? Text(
-        //                           "Academy",
-        //                           style: KPostStyle2,
-        //                         )
-        //                       : widget.type == 6
-        //                           ? Text(
-        //                               "Club",
-        //                               style: KPostStyle2,
-        //                             )
-        //                           : Text(""),
-        // ),
         Positioned(
-          top: widget.category == 2 ? 205.0 : 210.0,
-          left: widget.category == 2 ? 60.0 : 70.0,
-          child: widget.category == 1
-              ? Text(
-                  "Football",
-                  style: KPostStyle2,
-                )
-              : widget.category == 2
-                  ? Text(
-                      "Basketball",
-                      style: KPostStyle2,
-                    )
-                  : Text(""),
+          top: category == 2 ? 210.0 : 215.0,
+          left: category == 2 ? 60.0 : 70.0,
+          child: Visibility(
+            visible: category != null ? true : false,
+            child: Text(
+              category == 1
+                  ? "Football"
+                  : category == 2
+                      ? "Basketball"
+                      : "",
+              style: KDataInCardStyle,
+            ),
+          ),
         ),
       ],
     );
   }
 }
 
-class HomeProfileCard extends StatefulWidget {
+class HomeProfileCard extends StatelessWidget {
   final userImage;
   final userName;
   final useAsset;
   final countryName;
   HomeProfileCard(
       {this.userName, this.userImage, this.useAsset, this.countryName});
-  @override
-  _HomeProfileCardState createState() => _HomeProfileCardState();
-}
-
-class _HomeProfileCardState extends State<HomeProfileCard> {
-  var flagUrl;
-
-  getCountryFlag() async {
-    var res = await dio.get(
-        "https://restcountries.eu/rest/v2/name/${widget.countryName}?fields=flag");
-    final jsonRes = res.data;
-    setState(() {
-      flagUrl = jsonRes[0]['flag'];
-    });
-    print(flagUrl);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration(seconds: 2)).then((value) => {
-          getCountryFlag(),
-        });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -817,13 +774,13 @@ class _HomeProfileCardState extends State<HomeProfileCard> {
         Positioned(
           top: 20.0,
           left: 110.0,
-          child: widget.useAsset
+          child: useAsset
               ? CircleAvatar(
-                  backgroundImage: AssetImage(widget.userImage),
+                  backgroundImage: AssetImage(userImage),
                   radius: 30.0,
                 )
               : CircleAvatar(
-                  backgroundImage: NetworkImage(widget.userImage),
+                  backgroundImage: NetworkImage(userImage),
                   radius: 30.0,
                 ),
         ),
@@ -833,15 +790,32 @@ class _HomeProfileCardState extends State<HomeProfileCard> {
           child: Container(
             width: 40.0,
             height: 40.0,
-            child: flagUrl != null ? SvgPicture.network(flagUrl) : Container(),
+            child: countryName == null
+                ? Container()
+                : Image.asset('icons/flags/png/$countryName.png',
+                    package: 'country_icons'),
           ),
         ),
         Positioned(
-          top: 85.0,
-          left: widget.userName.toString().length <= 10 ? 50.0 : 40.0,
-          child: Text(
-            widget.userName,
-            style: KNameStyle2,
+          top: 80.0,
+          left: userName.toString().length <= 4
+              ? 80.0
+              : userName.toString().length > 4 &&
+                      userName.toString().length <= 10
+                  ? 50.0
+                  : 50.0,
+          child: Container(
+            width: 130.0,
+            height: 80.0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  userName,
+                  style: KNameStyle2,
+                ),
+              ],
+            ),
           ),
         ),
       ],

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -24,6 +25,8 @@ class _SignUpState extends State<SignUp> {
   bool _obsecureConfirmPassword = true;
   late File profilePicture;
   late File coverPhoto;
+  var profilePictureForWeb;
+  var coverPhotoForWeb;
   bool hasProfilePicture = false;
   bool hasCoverPhoto = false;
   late AuthBloc authBloc;
@@ -343,10 +346,17 @@ class _SignUpState extends State<SignUp> {
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(10.0)),
-                                            image: DecorationImage(
-                                              image: FileImage(profilePicture),
-                                              fit: BoxFit.cover,
-                                            ),
+                                            image: kIsWeb
+                                                ? DecorationImage(
+                                                    image: NetworkImage(
+                                                        profilePicture.path),
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : DecorationImage(
+                                                    image: FileImage(
+                                                        profilePicture),
+                                                    fit: BoxFit.cover,
+                                                  ),
                                           ),
                                         ),
                                         Positioned(
@@ -387,10 +397,17 @@ class _SignUpState extends State<SignUp> {
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(10.0)),
-                                            image: DecorationImage(
-                                              image: FileImage(coverPhoto),
-                                              fit: BoxFit.cover,
-                                            ),
+                                            image: kIsWeb
+                                                ? DecorationImage(
+                                                    image: NetworkImage(
+                                                        coverPhoto.path),
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : DecorationImage(
+                                                    image:
+                                                        FileImage(coverPhoto),
+                                                    fit: BoxFit.cover,
+                                                  ),
                                           ),
                                         ),
                                         Positioned(
@@ -470,26 +487,30 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
-  checkForProfile() {
+  checkForProfile() async {
     if (_selectedProfilePictureOption == "Choose existing photo") {
-      chooseFileForProfile();
+      chooseFileForProfileMobile();
     } else if (_selectedProfilePictureOption == "Take photo") {
-      takeImageForProfile();
+      if (kIsWeb) {
+        chooseFileForProfileMobile();
+      } else {
+        takeImageForProfileMobile();
+      }
     }
   }
 
-  Future chooseFileForProfile() async {
-    final source = ImageSource.gallery;
-    final pickedFile = await ImagePicker().pickImage(source: source);
+  Future chooseFileForProfileMobile() async {
+    final sourceProfile = ImageSource.gallery;
+    final pickedFile = await ImagePicker().pickImage(source: sourceProfile);
     setState(() {
       profilePicture = File(pickedFile!.path);
       hasProfilePicture = true;
     });
   }
 
-  Future takeImageForProfile() async {
-    final source = ImageSource.camera;
-    final pickedFile = await ImagePicker().pickImage(source: source);
+  Future takeImageForProfileMobile() async {
+    final sourceProfile = ImageSource.camera;
+    final pickedFile = await ImagePicker().pickImage(source: sourceProfile);
     setState(() {
       profilePicture = File(pickedFile!.path);
       hasProfilePicture = true;
@@ -497,14 +518,18 @@ class _SignUpState extends State<SignUp> {
   }
 
   checkForCover() {
-    if (_selectedProfilePictureOption == "Choose existing photo") {
-      chooseFileForCover();
-    } else if (_selectedProfilePictureOption == "Take photo") {
-      takeImageForCover();
+    if (_selectedCoverPhotoOption == "Choose existing photo") {
+      chooseFileForCoverMobile();
+    } else if (_selectedCoverPhotoOption == "Take photo") {
+      if (kIsWeb) {
+        chooseFileForCoverMobile();
+      } else {
+        takeImageForCoverMobile();
+      }
     }
   }
 
-  Future chooseFileForCover() async {
+  Future chooseFileForCoverMobile() async {
     final source = ImageSource.gallery;
     final pickedFile = await ImagePicker().pickImage(source: source);
     setState(() {
@@ -513,7 +538,7 @@ class _SignUpState extends State<SignUp> {
     });
   }
 
-  Future takeImageForCover() async {
+  Future takeImageForCoverMobile() async {
     final source = ImageSource.camera;
     final pickedFile = await ImagePicker().pickImage(source: source);
     setState(() {

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:image_picker/image_picker.dart';
@@ -140,10 +141,15 @@ class _EditCoverPhotoState extends State<EditCoverPhoto> {
                               decoration: BoxDecoration(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10.0)),
-                                image: DecorationImage(
-                                  image: FileImage(_image),
-                                  fit: BoxFit.cover,
-                                ),
+                                image: kIsWeb
+                                    ? DecorationImage(
+                                        image: NetworkImage(_image.path),
+                                        fit: BoxFit.cover,
+                                      )
+                                    : DecorationImage(
+                                        image: FileImage(_image),
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                             ),
                             Positioned(
