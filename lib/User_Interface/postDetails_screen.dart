@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -128,142 +129,132 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
             });
           }
         },
-        child: RefreshIndicator(
-          backgroundColor: KSubPrimaryColor,
-          color: KPrimaryColor,
-          strokeWidth: 3.0,
-          child: ListView(
-            controller: _scrollController,
-            physics: ScrollPhysics(),
-            shrinkWrap: true,
-            children: [
-              checkPostLength()
-                  ? Card(
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      elevation: 2.0,
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          children: [
-                            InkWell(
-                              onTap: () => {
-                                if (userId == posts[0]['user_id'])
-                                  {
-                                    Navigator.pushNamed(context, '/Profile'),
-                                  }
-                                else
-                                  {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => OtherUsersProfile(
-                                          userID: posts[0]['user_id'],
-                                        ),
-                                      ),
-                                    ),
-                                  }
-                              },
-                              child: Row(
-                                children: [
-                                  posts[0]['user']['image'] != null
-                                      ? CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                              '$ImageServerPrefix/${posts[0]['user']['image']}'),
-                                          radius: 25.0,
-                                        )
-                                      : CircleAvatar(
-                                          backgroundImage:
-                                              AssetImage(noUserImage),
-                                          radius: 30.0,
-                                        ),
-                                  SizedBox(
-                                    width: 20.0,
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '${posts[0]['user']['name']}',
-                                          style: KNameStyle,
-                                        ),
-                                        posts[0]['updated_at']
-                                                    .toString()
-                                                    .substring(11, 13)
-                                                    .contains('00') ||
+        child: kIsWeb
+            ? Container(
+                width: 435.0,
+                height: double.infinity,
+                child: RefreshIndicator(
+                  backgroundColor: KSubPrimaryColor,
+                  color: KPrimaryColor,
+                  strokeWidth: 3.0,
+                  child: ListView(
+                    controller: _scrollController,
+                    physics: ScrollPhysics(),
+                    shrinkWrap: true,
+                    children: [
+                      checkPostLength()
+                          ? Card(
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              elevation: 2.0,
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 8.0),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  children: [
+                                    InkWell(
+                                      onTap: () => {
+                                        if (userId == posts[0]['user_id'])
+                                          {
+                                            Navigator.pushNamed(
+                                                context, '/Profile'),
+                                          }
+                                        else
+                                          {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    OtherUsersProfile(
+                                                  userID: posts[0]['user_id'],
+                                                ),
+                                              ),
+                                            ),
+                                          }
+                                      },
+                                      child: Row(
+                                        children: [
+                                          posts[0]['user']['image'] != null
+                                              ? CircleAvatar(
+                                                  backgroundImage: NetworkImage(
+                                                      '$ImageServerPrefix/${posts[0]['user']['image']}'),
+                                                  radius: 25.0,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundImage:
+                                                      AssetImage(noUserImage),
+                                                  radius: 30.0,
+                                                ),
+                                          SizedBox(
+                                            width: 20.0,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '${posts[0]['user']['name']}',
+                                                  style: KNameStyle,
+                                                ),
                                                 posts[0]['updated_at']
-                                                    .toString()
-                                                    .substring(11, 13)
-                                                    .contains('01') ||
-                                                posts[0]['updated_at']
-                                                    .toString()
-                                                    .substring(11, 13)
-                                                    .contains('02') ||
-                                                posts[0]['updated_at']
-                                                    .toString()
-                                                    .substring(11, 13)
-                                                    .contains('03') ||
-                                                posts[0]['updated_at']
-                                                    .toString()
-                                                    .substring(11, 13)
-                                                    .contains('04') ||
-                                                posts[0]['updated_at']
-                                                    .toString()
-                                                    .substring(11, 13)
-                                                    .contains('05') ||
-                                                posts[0]['updated_at']
-                                                    .toString()
-                                                    .substring(11, 13)
-                                                    .contains('06') ||
-                                                posts[0]['updated_at']
-                                                    .toString()
-                                                    .substring(11, 13)
-                                                    .contains('07') ||
-                                                posts[0]['updated_at']
-                                                    .toString()
-                                                    .substring(11, 13)
-                                                    .contains('08') ||
-                                                posts[0]['updated_at']
-                                                    .toString()
-                                                    .substring(11, 13)
-                                                    .contains('09') ||
-                                                posts[0]['updated_at']
-                                                    .toString()
-                                                    .substring(11, 13)
-                                                    .contains('10') ||
-                                                posts[0]['updated_at']
-                                                    .toString()
-                                                    .substring(11, 13)
-                                                    .contains('11')
-                                            ? Text(
-                                                '${posts[0]['updated_at'].toString().substring(11, 16)} AM',
-                                                style: KPostTimeStyle,
-                                              )
-                                            : posts[0]['updated_at']
-                                                    .toString()
-                                                    .substring(11, 13)
-                                                    .contains('12')
-                                                ? Text(
-                                                    '12:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                    style: KPostTimeStyle,
-                                                  )
-                                                : posts[0]['updated_at']
-                                                        .toString()
-                                                        .substring(11, 13)
-                                                        .contains('13')
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('00') ||
+                                                        posts[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('01') ||
+                                                        posts[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('02') ||
+                                                        posts[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('03') ||
+                                                        posts[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('04') ||
+                                                        posts[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('05') ||
+                                                        posts[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('06') ||
+                                                        posts[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('07') ||
+                                                        posts[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('08') ||
+                                                        posts[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('09') ||
+                                                        posts[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('10') ||
+                                                        posts[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('11')
                                                     ? Text(
-                                                        '1:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                        '${posts[0]['updated_at'].toString().substring(11, 16)} AM',
                                                         style: KPostTimeStyle,
                                                       )
                                                     : posts[0]['updated_at']
                                                             .toString()
                                                             .substring(11, 13)
-                                                            .contains('14')
+                                                            .contains('12')
                                                         ? Text(
-                                                            '2:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                            '12:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
                                                             style:
                                                                 KPostTimeStyle,
                                                           )
@@ -271,419 +262,1020 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                                                                 .toString()
                                                                 .substring(
                                                                     11, 13)
-                                                                .contains('15')
+                                                                .contains('13')
                                                             ? Text(
-                                                                '3:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                '1:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
                                                                 style:
                                                                     KPostTimeStyle,
                                                               )
                                                             : posts[0]['updated_at']
                                                                     .toString()
-                                                                    .substring(11, 13)
-                                                                    .contains('16')
+                                                                    .substring(
+                                                                        11, 13)
+                                                                    .contains(
+                                                                        '14')
                                                                 ? Text(
-                                                                    '4:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                    '2:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
                                                                     style:
                                                                         KPostTimeStyle,
                                                                   )
-                                                                : posts[0]['updated_at'].toString().substring(11, 13).contains('17')
+                                                                : posts[0]['updated_at'].toString().substring(11, 13).contains('15')
                                                                     ? Text(
-                                                                        '5:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                        '3:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
                                                                         style:
                                                                             KPostTimeStyle,
                                                                       )
-                                                                    : posts[0]['updated_at'].toString().substring(11, 13).contains('18')
+                                                                    : posts[0]['updated_at'].toString().substring(11, 13).contains('16')
                                                                         ? Text(
-                                                                            '6:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                            '4:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
                                                                             style:
                                                                                 KPostTimeStyle,
                                                                           )
-                                                                        : posts[0]['updated_at'].toString().substring(11, 13).contains('19')
+                                                                        : posts[0]['updated_at'].toString().substring(11, 13).contains('17')
                                                                             ? Text(
-                                                                                '7:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                '5:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
                                                                                 style: KPostTimeStyle,
                                                                               )
-                                                                            : posts[0]['updated_at'].toString().substring(11, 13).contains('20')
+                                                                            : posts[0]['updated_at'].toString().substring(11, 13).contains('18')
                                                                                 ? Text(
-                                                                                    '8:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                    '6:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
                                                                                     style: KPostTimeStyle,
                                                                                   )
-                                                                                : posts[0]['updated_at'].toString().substring(11, 13).contains('21')
+                                                                                : posts[0]['updated_at'].toString().substring(11, 13).contains('19')
                                                                                     ? Text(
-                                                                                        '9:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                        '7:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
                                                                                         style: KPostTimeStyle,
                                                                                       )
-                                                                                    : posts[0]['updated_at'].toString().substring(11, 13).contains('22')
+                                                                                    : posts[0]['updated_at'].toString().substring(11, 13).contains('20')
                                                                                         ? Text(
-                                                                                            '10:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                            '8:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
                                                                                             style: KPostTimeStyle,
                                                                                           )
-                                                                                        : posts[0]['updated_at'].toString().substring(11, 13).contains('23')
+                                                                                        : posts[0]['updated_at'].toString().substring(11, 13).contains('21')
                                                                                             ? Text(
-                                                                                                '11:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                                '9:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
                                                                                                 style: KPostTimeStyle,
                                                                                               )
-                                                                                            : posts[0]['updated_at'].toString().substring(11, 13).contains('00')
+                                                                                            : posts[0]['updated_at'].toString().substring(11, 13).contains('22')
                                                                                                 ? Text(
-                                                                                                    '12:${posts[0]['updated_at'].toString().substring(14, 16)} AM',
+                                                                                                    '10:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
                                                                                                     style: KPostTimeStyle,
                                                                                                   )
-                                                                                                : Text(''),
+                                                                                                : posts[0]['updated_at'].toString().substring(11, 13).contains('23')
+                                                                                                    ? Text(
+                                                                                                        '11:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                                        style: KPostTimeStyle,
+                                                                                                      )
+                                                                                                    : posts[0]['updated_at'].toString().substring(11, 13).contains('00')
+                                                                                                        ? Text(
+                                                                                                            '12:${posts[0]['updated_at'].toString().substring(14, 16)} AM',
+                                                                                                            style: KPostTimeStyle,
+                                                                                                          )
+                                                                                                        : Text(''),
+                                              ],
+                                            ),
+                                          ),
+                                          userId == posts[0]['user_id']
+                                              ? PopupMenuButton(
+                                                  icon: Icon(
+                                                    Icons.more_vert,
+                                                    size: 25.0,
+                                                  ),
+                                                  onSelected: (e) => {
+                                                    postOptions(
+                                                      e
+                                                          .toString()
+                                                          .substring(0, 9),
+                                                      posts[0]['id'],
+                                                    ),
+                                                  },
+                                                  itemBuilder: (context) {
+                                                    return options
+                                                        .map((choice) {
+                                                      return PopupMenuItem<
+                                                          String>(
+                                                        value: choice,
+                                                        child: Text(
+                                                          choice,
+                                                          style:
+                                                              KPostOptionsStyle,
+                                                        ),
+                                                      );
+                                                    }).toList();
+                                                  },
+                                                )
+                                              : Container(),
+                                        ],
+                                      ),
+                                    ),
+                                    Divider(
+                                      color: KSubSecondryFontsColor,
+                                      thickness: 0.5,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                '${posts[0]['post']}',
+                                                style: KPostStyle,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
-                                  ),
-                                  userId == posts[0]['user_id']
-                                      ? PopupMenuButton(
-                                          icon: Icon(
-                                            Icons.more_vert,
-                                            size: 25.0,
+                                    SizedBox(
+                                      height: 5.0,
+                                    ),
+                                    posts[0]['image_flag'] == 1
+                                        ? Container(
+                                            width: double.infinity,
+                                            child: displayPostImage(
+                                                posts[0]['images'][0]['image']),
+                                          )
+                                        : SizedBox(
+                                            height: 5.0,
                                           ),
-                                          onSelected: (e) => {
-                                            postOptions(
-                                              e.toString().substring(0, 9),
-                                              posts[0]['id'],
+                                    posts[0]['post_shared_id'] != null
+                                        ? displayPost(
+                                            posts[0]['post_shared_id'],
+                                          )
+                                        : Container(),
+                                    Divider(
+                                      color: KSubSecondryFontsColor,
+                                      thickness: 0.5,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                '${posts[0]['likes_count'] ?? "0"} Likes',
+                                                style:
+                                                    KLikesCommentsAndSharesCount,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Row(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    '${posts[0]['comments_count'] ?? "0"} Comments',
+                                                    style:
+                                                        KLikesCommentsAndSharesCount,
+                                                  ),
+                                                  Text(
+                                                    ' • ',
+                                                    style:
+                                                        KLikesCommentsAndSharesCount,
+                                                  ),
+                                                  Text(
+                                                    '${posts[0]['shares_count'] ?? "0"} Shares',
+                                                    style:
+                                                        KLikesCommentsAndSharesCount,
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Divider(
+                                      color: KSubSecondryFontsColor,
+                                      thickness: 0.5,
+                                    ),
+                                    Container(
+                                      height: 25.0,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          isLiked
+                                              ? IconButton(
+                                                  icon: Icon(
+                                                    Icons.favorite,
+                                                    color: KWarningColor,
+                                                  ),
+                                                  iconSize: 21.0,
+                                                  onPressed: () {
+                                                    unLike(posts[0]['id'], lID);
+                                                    setState(() {
+                                                      isLiked = false;
+                                                    });
+                                                  },
+                                                )
+                                              : IconButton(
+                                                  icon: Icon(
+                                                    FontAwesomeIcons.heart,
+                                                    color:
+                                                        KSubSecondryFontsColor,
+                                                  ),
+                                                  iconSize: 20.0,
+                                                  onPressed: () {
+                                                    like(posts[0]['id']);
+                                                    setState(() {
+                                                      isLiked = true;
+                                                    });
+                                                  },
+                                                ),
+                                          SizedBox(
+                                            width: 20.0,
+                                          ),
+                                          IconButton(
+                                            icon: Icon(
+                                              FontAwesomeIcons.shareAlt,
                                             ),
-                                          },
-                                          itemBuilder: (context) {
-                                            return options.map((choice) {
-                                              return PopupMenuItem<String>(
-                                                value: choice,
-                                                child: Text(
-                                                  choice,
-                                                  style: KPostOptionsStyle,
+                                            iconSize: 20.0,
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SharePost(
+                                                    postID: posts[0]['id'],
+                                                    userID: posts[0]['user_id'],
+                                                  ),
                                                 ),
                                               );
-                                            }).toList();
-                                          },
-                                        )
-                                      : Container(),
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              color: KSubSecondryFontsColor,
-                              thickness: 0.5,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        '${posts[0]['post']}',
-                                        style: KPostStyle,
+                                            },
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5.0,
-                            ),
-                            posts[0]['image_flag'] == 1
-                                ? Container(
-                                    width: double.infinity,
-                                    child: displayPostImage(
-                                        posts[0]['images'][0]['image']),
-                                  )
-                                : SizedBox(
-                                    height: 5.0,
-                                  ),
-                            posts[0]['post_shared_id'] != null
-                                ? displayPost(
-                                    posts[0]['post_shared_id'],
-                                  )
-                                : Container(),
-                            Divider(
-                              color: KSubSecondryFontsColor,
-                              thickness: 0.5,
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        '${posts[0]['likes_count'] ?? "0"} Likes',
-                                        style: KLikesCommentsAndSharesCount,
-                                      ),
-                                    ],
+                              ),
+                            )
+                          : postStateIndicator(),
+                      checkCommentsLength()
+                          ? ListView.separated(
+                              physics: ScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) => ExpansionTile(
+                                leading:
+                                    comments[index]['user']['image'] != null
+                                        ? CircleAvatar(
+                                            backgroundImage: NetworkImage(
+                                                '$ImageServerPrefix/${comments[index]['user']['image']}'),
+                                            radius: 25.0,
+                                          )
+                                        : CircleAvatar(
+                                            backgroundImage:
+                                                AssetImage(noUserImage),
+                                            radius: 25.0,
+                                          ),
+                                title: InkWell(
+                                  onTap: () {
+                                    if (userId == comments[index]['user_id']) {
+                                      Navigator.pushNamed(context, '/Profile');
+                                    } else {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              OtherUsersProfile(
+                                            userID: comments[index]['user_id'],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: Text(
+                                    '${comments[index]['user']['name']}',
+                                    style: KNameInSubPostStyle,
                                   ),
                                 ),
-                                Expanded(
-                                  child: Row(
+                                subtitle: Text(
+                                  '${comments[index]['comment']}',
+                                  style: KSubPostStyle,
+                                ),
+                                trailing: userId == comments[index]['user_id']
+                                    ? PopupMenuButton(
+                                        icon: Icon(
+                                          Icons.more_vert,
+                                          size: 25.0,
+                                          color: KSubPrimaryFontsColor,
+                                        ),
+                                        onSelected: (t) => {
+                                          commentOptions(
+                                            t.toString().substring(0, 12),
+                                            comments[index]['id'],
+                                            comments[index]['post_id'],
+                                            comments[index]['comment'],
+                                          ),
+                                        },
+                                        itemBuilder: (context) {
+                                          return cOptions.map((choice) {
+                                            return PopupMenuItem<String>(
+                                              value: choice,
+                                              child: Text(
+                                                choice,
+                                                style: KPostOptionsStyle,
+                                              ),
+                                            );
+                                          }).toList();
+                                        },
+                                      )
+                                    : Container(),
+                                children: [
+                                  checkRepliesLength()
+                                      ? ListView.separated(
+                                          physics: ScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemBuilder: (context, pos) =>
+                                              ListTile(
+                                            title: Text(
+                                              '${replies[pos]['replay_comment']}',
+                                              style: KSubPostStyle,
+                                            ),
+                                          ),
+                                          separatorBuilder: (context, index) =>
+                                              Divider(
+                                            color: KSubSecondryFontsColor,
+                                            thickness: 0.5,
+                                          ),
+                                          itemCount: replies.length,
+                                        )
+                                      : repliesStateIndicator(),
+                                  Container(
+                                    margin: const EdgeInsets.all(5.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        useAsset
+                                            ? CircleAvatar(
+                                                backgroundImage:
+                                                    AssetImage(loggedUserImage),
+                                                radius: 20.0,
+                                              )
+                                            : CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                    '$ImageServerPrefix/$loggedUserImage'),
+                                                radius: 20.0,
+                                              ),
+                                        SizedBox(
+                                          width: 15.0,
+                                        ),
+                                        Container(
+                                          width: 250.0,
+                                          height: 50.0,
+                                          child: commentTextField(
+                                              replayController,
+                                              "Write a replay"),
+                                        ),
+                                        SizedBox(
+                                          width: 10.0,
+                                        ),
+                                        Expanded(
+                                          child: IconButton(
+                                            onPressed: () {
+                                              addReply(comments[index]['id']);
+                                            },
+                                            icon: Icon(Icons.send),
+                                            color: KPrimaryColor,
+                                            iconSize: 25.0,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              separatorBuilder: (context, index) => Divider(
+                                color: KSubSecondryFontsColor,
+                                thickness: 0.5,
+                              ),
+                              itemCount: comments.length,
+                            )
+                          : stateIndicator(),
+                    ],
+                  ),
+                  onRefresh: getDataOnRefresh,
+                ),
+              )
+            : RefreshIndicator(
+                backgroundColor: KSubPrimaryColor,
+                color: KPrimaryColor,
+                strokeWidth: 3.0,
+                child: ListView(
+                  controller: _scrollController,
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  children: [
+                    checkPostLength()
+                        ? Card(
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            elevation: 2.0,
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 8.0),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                children: [
+                                  InkWell(
+                                    onTap: () => {
+                                      if (userId == posts[0]['user_id'])
+                                        {
+                                          Navigator.pushNamed(
+                                              context, '/Profile'),
+                                        }
+                                      else
+                                        {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  OtherUsersProfile(
+                                                userID: posts[0]['user_id'],
+                                              ),
+                                            ),
+                                          ),
+                                        }
+                                    },
+                                    child: Row(
+                                      children: [
+                                        posts[0]['user']['image'] != null
+                                            ? CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                    '$ImageServerPrefix/${posts[0]['user']['image']}'),
+                                                radius: 25.0,
+                                              )
+                                            : CircleAvatar(
+                                                backgroundImage:
+                                                    AssetImage(noUserImage),
+                                                radius: 30.0,
+                                              ),
+                                        SizedBox(
+                                          width: 20.0,
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '${posts[0]['user']['name']}',
+                                                style: KNameStyle,
+                                              ),
+                                              posts[0]['updated_at']
+                                                          .toString()
+                                                          .substring(11, 13)
+                                                          .contains('00') ||
+                                                      posts[0]['updated_at']
+                                                          .toString()
+                                                          .substring(11, 13)
+                                                          .contains('01') ||
+                                                      posts[0]['updated_at']
+                                                          .toString()
+                                                          .substring(11, 13)
+                                                          .contains('02') ||
+                                                      posts[0]['updated_at']
+                                                          .toString()
+                                                          .substring(11, 13)
+                                                          .contains('03') ||
+                                                      posts[0]['updated_at']
+                                                          .toString()
+                                                          .substring(11, 13)
+                                                          .contains('04') ||
+                                                      posts[0]['updated_at']
+                                                          .toString()
+                                                          .substring(11, 13)
+                                                          .contains('05') ||
+                                                      posts[0]['updated_at']
+                                                          .toString()
+                                                          .substring(11, 13)
+                                                          .contains('06') ||
+                                                      posts[0]['updated_at']
+                                                          .toString()
+                                                          .substring(11, 13)
+                                                          .contains('07') ||
+                                                      posts[0]['updated_at']
+                                                          .toString()
+                                                          .substring(11, 13)
+                                                          .contains('08') ||
+                                                      posts[0]['updated_at']
+                                                          .toString()
+                                                          .substring(11, 13)
+                                                          .contains('09') ||
+                                                      posts[0]['updated_at']
+                                                          .toString()
+                                                          .substring(11, 13)
+                                                          .contains('10') ||
+                                                      posts[0]['updated_at']
+                                                          .toString()
+                                                          .substring(11, 13)
+                                                          .contains('11')
+                                                  ? Text(
+                                                      '${posts[0]['updated_at'].toString().substring(11, 16)} AM',
+                                                      style: KPostTimeStyle,
+                                                    )
+                                                  : posts[0]['updated_at']
+                                                          .toString()
+                                                          .substring(11, 13)
+                                                          .contains('12')
+                                                      ? Text(
+                                                          '12:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                          style: KPostTimeStyle,
+                                                        )
+                                                      : posts[0]['updated_at']
+                                                              .toString()
+                                                              .substring(11, 13)
+                                                              .contains('13')
+                                                          ? Text(
+                                                              '1:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                              style:
+                                                                  KPostTimeStyle,
+                                                            )
+                                                          : posts[0]['updated_at']
+                                                                  .toString()
+                                                                  .substring(
+                                                                      11, 13)
+                                                                  .contains(
+                                                                      '14')
+                                                              ? Text(
+                                                                  '2:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                  style:
+                                                                      KPostTimeStyle,
+                                                                )
+                                                              : posts[0]['updated_at']
+                                                                      .toString()
+                                                                      .substring(11, 13)
+                                                                      .contains('15')
+                                                                  ? Text(
+                                                                      '3:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                      style:
+                                                                          KPostTimeStyle,
+                                                                    )
+                                                                  : posts[0]['updated_at'].toString().substring(11, 13).contains('16')
+                                                                      ? Text(
+                                                                          '4:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                          style:
+                                                                              KPostTimeStyle,
+                                                                        )
+                                                                      : posts[0]['updated_at'].toString().substring(11, 13).contains('17')
+                                                                          ? Text(
+                                                                              '5:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                              style: KPostTimeStyle,
+                                                                            )
+                                                                          : posts[0]['updated_at'].toString().substring(11, 13).contains('18')
+                                                                              ? Text(
+                                                                                  '6:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                  style: KPostTimeStyle,
+                                                                                )
+                                                                              : posts[0]['updated_at'].toString().substring(11, 13).contains('19')
+                                                                                  ? Text(
+                                                                                      '7:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                      style: KPostTimeStyle,
+                                                                                    )
+                                                                                  : posts[0]['updated_at'].toString().substring(11, 13).contains('20')
+                                                                                      ? Text(
+                                                                                          '8:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                          style: KPostTimeStyle,
+                                                                                        )
+                                                                                      : posts[0]['updated_at'].toString().substring(11, 13).contains('21')
+                                                                                          ? Text(
+                                                                                              '9:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                              style: KPostTimeStyle,
+                                                                                            )
+                                                                                          : posts[0]['updated_at'].toString().substring(11, 13).contains('22')
+                                                                                              ? Text(
+                                                                                                  '10:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                                  style: KPostTimeStyle,
+                                                                                                )
+                                                                                              : posts[0]['updated_at'].toString().substring(11, 13).contains('23')
+                                                                                                  ? Text(
+                                                                                                      '11:${posts[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                                      style: KPostTimeStyle,
+                                                                                                    )
+                                                                                                  : posts[0]['updated_at'].toString().substring(11, 13).contains('00')
+                                                                                                      ? Text(
+                                                                                                          '12:${posts[0]['updated_at'].toString().substring(14, 16)} AM',
+                                                                                                          style: KPostTimeStyle,
+                                                                                                        )
+                                                                                                      : Text(''),
+                                            ],
+                                          ),
+                                        ),
+                                        userId == posts[0]['user_id']
+                                            ? PopupMenuButton(
+                                                icon: Icon(
+                                                  Icons.more_vert,
+                                                  size: 25.0,
+                                                ),
+                                                onSelected: (e) => {
+                                                  postOptions(
+                                                    e
+                                                        .toString()
+                                                        .substring(0, 9),
+                                                    posts[0]['id'],
+                                                  ),
+                                                },
+                                                itemBuilder: (context) {
+                                                  return options.map((choice) {
+                                                    return PopupMenuItem<
+                                                        String>(
+                                                      value: choice,
+                                                      child: Text(
+                                                        choice,
+                                                        style:
+                                                            KPostOptionsStyle,
+                                                      ),
+                                                    );
+                                                  }).toList();
+                                                },
+                                              )
+                                            : Container(),
+                                      ],
+                                    ),
+                                  ),
+                                  Divider(
+                                    color: KSubSecondryFontsColor,
+                                    thickness: 0.5,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.end,
+                                            MainAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            '${posts[0]['comments_count'] ?? "0"} Comments',
-                                            style: KLikesCommentsAndSharesCount,
-                                          ),
-                                          Text(
-                                            ' • ',
-                                            style: KLikesCommentsAndSharesCount,
-                                          ),
-                                          Text(
-                                            '${posts[0]['shares_count'] ?? "0"} Shares',
-                                            style: KLikesCommentsAndSharesCount,
+                                          Expanded(
+                                            child: Text(
+                                              '${posts[0]['post']}',
+                                              style: KPostStyle,
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
-                            ),
-                            Divider(
-                              color: KSubSecondryFontsColor,
-                              thickness: 0.5,
-                            ),
-                            Container(
-                              height: 25.0,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  isLiked
-                                      ? IconButton(
-                                          icon: Icon(
-                                            Icons.favorite,
-                                            color: KWarningColor,
-                                          ),
-                                          iconSize: 21.0,
-                                          onPressed: () {
-                                            unLike(posts[0]['id'], lID);
-                                            setState(() {
-                                              isLiked = false;
-                                            });
-                                          },
+                                  SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  posts[0]['image_flag'] == 1
+                                      ? Container(
+                                          width: double.infinity,
+                                          child: displayPostImage(
+                                              posts[0]['images'][0]['image']),
                                         )
-                                      : IconButton(
+                                      : SizedBox(
+                                          height: 5.0,
+                                        ),
+                                  posts[0]['post_shared_id'] != null
+                                      ? displayPost(
+                                          posts[0]['post_shared_id'],
+                                        )
+                                      : Container(),
+                                  Divider(
+                                    color: KSubSecondryFontsColor,
+                                    thickness: 0.5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              '${posts[0]['likes_count'] ?? "0"} Likes',
+                                              style:
+                                                  KLikesCommentsAndSharesCount,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Row(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Text(
+                                                  '${posts[0]['comments_count'] ?? "0"} Comments',
+                                                  style:
+                                                      KLikesCommentsAndSharesCount,
+                                                ),
+                                                Text(
+                                                  ' • ',
+                                                  style:
+                                                      KLikesCommentsAndSharesCount,
+                                                ),
+                                                Text(
+                                                  '${posts[0]['shares_count'] ?? "0"} Shares',
+                                                  style:
+                                                      KLikesCommentsAndSharesCount,
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Divider(
+                                    color: KSubSecondryFontsColor,
+                                    thickness: 0.5,
+                                  ),
+                                  Container(
+                                    height: 25.0,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        isLiked
+                                            ? IconButton(
+                                                icon: Icon(
+                                                  Icons.favorite,
+                                                  color: KWarningColor,
+                                                ),
+                                                iconSize: 21.0,
+                                                onPressed: () {
+                                                  unLike(posts[0]['id'], lID);
+                                                  setState(() {
+                                                    isLiked = false;
+                                                  });
+                                                },
+                                              )
+                                            : IconButton(
+                                                icon: Icon(
+                                                  FontAwesomeIcons.heart,
+                                                  color: KSubSecondryFontsColor,
+                                                ),
+                                                iconSize: 20.0,
+                                                onPressed: () {
+                                                  like(posts[0]['id']);
+                                                  setState(() {
+                                                    isLiked = true;
+                                                  });
+                                                },
+                                              ),
+                                        SizedBox(
+                                          width: 20.0,
+                                        ),
+                                        IconButton(
                                           icon: Icon(
-                                            FontAwesomeIcons.heart,
-                                            color: KSubSecondryFontsColor,
+                                            FontAwesomeIcons.shareAlt,
                                           ),
                                           iconSize: 20.0,
                                           onPressed: () {
-                                            like(posts[0]['id']);
-                                            setState(() {
-                                              isLiked = true;
-                                            });
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => SharePost(
+                                                  postID: posts[0]['id'],
+                                                  userID: posts[0]['user_id'],
+                                                ),
+                                              ),
+                                            );
                                           },
                                         ),
-                                  SizedBox(
-                                    width: 20.0,
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      FontAwesomeIcons.shareAlt,
+                                      ],
                                     ),
-                                    iconSize: 20.0,
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => SharePost(
-                                            postID: posts[0]['id'],
-                                            userID: posts[0]['user_id'],
-                                          ),
-                                        ),
-                                      );
-                                    },
                                   ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : postStateIndicator(),
-              checkCommentsLength()
-                  ? ListView.separated(
-                      physics: ScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) => ExpansionTile(
-                        leading: comments[index]['user']['image'] != null
-                            ? CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    '$ImageServerPrefix/${comments[index]['user']['image']}'),
-                                radius: 25.0,
-                              )
-                            : CircleAvatar(
-                                backgroundImage: AssetImage(noUserImage),
-                                radius: 25.0,
-                              ),
-                        title: InkWell(
-                          onTap: () {
-                            if (userId == comments[index]['user_id']) {
-                              Navigator.pushNamed(context, '/Profile');
-                            } else {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => OtherUsersProfile(
-                                    userID: comments[index]['user_id'],
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                          child: Text(
-                            '${comments[index]['user']['name']}',
-                            style: KNameInSubPostStyle,
-                          ),
-                        ),
-                        subtitle: Text(
-                          '${comments[index]['comment']}',
-                          style: KSubPostStyle,
-                        ),
-                        trailing: userId == comments[index]['user_id']
-                            ? PopupMenuButton(
-                                icon: Icon(
-                                  Icons.more_vert,
-                                  size: 25.0,
-                                  color: KSubPrimaryFontsColor,
-                                ),
-                                onSelected: (t) => {
-                                  commentOptions(
-                                    t.toString().substring(0, 12),
-                                    comments[index]['id'],
-                                    comments[index]['post_id'],
-                                    comments[index]['comment'],
-                                  ),
-                                },
-                                itemBuilder: (context) {
-                                  return cOptions.map((choice) {
-                                    return PopupMenuItem<String>(
-                                      value: choice,
-                                      child: Text(
-                                        choice,
-                                        style: KPostOptionsStyle,
+                          )
+                        : postStateIndicator(),
+                    checkCommentsLength()
+                        ? ListView.separated(
+                            physics: ScrollPhysics(),
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) => ExpansionTile(
+                              leading: comments[index]['user']['image'] != null
+                                  ? CircleAvatar(
+                                      backgroundImage: NetworkImage(
+                                          '$ImageServerPrefix/${comments[index]['user']['image']}'),
+                                      radius: 25.0,
+                                    )
+                                  : CircleAvatar(
+                                      backgroundImage: AssetImage(noUserImage),
+                                      radius: 25.0,
+                                    ),
+                              title: InkWell(
+                                onTap: () {
+                                  if (userId == comments[index]['user_id']) {
+                                    Navigator.pushNamed(context, '/Profile');
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => OtherUsersProfile(
+                                          userID: comments[index]['user_id'],
+                                        ),
                                       ),
                                     );
-                                  }).toList();
+                                  }
                                 },
-                              )
-                            : Container(),
-                        children: [
-                          checkRepliesLength()
-                              ? ListView.separated(
-                                  physics: ScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, pos) => ListTile(
-                                    title: Text(
-                                      '${replies[pos]['replay_comment']}',
-                                      style: KSubPostStyle,
-                                    ),
-                                  ),
-                                  separatorBuilder: (context, index) => Divider(
-                                    color: KSubSecondryFontsColor,
-                                    thickness: 0.5,
-                                  ),
-                                  itemCount: replies.length,
-                                )
-                              : repliesStateIndicator(),
-                          Container(
-                            margin: const EdgeInsets.all(5.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                useAsset
-                                    ? CircleAvatar(
-                                        backgroundImage:
-                                            AssetImage(loggedUserImage),
-                                        radius: 20.0,
-                                      )
-                                    : CircleAvatar(
-                                        backgroundImage: NetworkImage(
-                                            '$ImageServerPrefix/$loggedUserImage'),
-                                        radius: 20.0,
+                                child: Text(
+                                  '${comments[index]['user']['name']}',
+                                  style: KNameInSubPostStyle,
+                                ),
+                              ),
+                              subtitle: Text(
+                                '${comments[index]['comment']}',
+                                style: KSubPostStyle,
+                              ),
+                              trailing: userId == comments[index]['user_id']
+                                  ? PopupMenuButton(
+                                      icon: Icon(
+                                        Icons.more_vert,
+                                        size: 25.0,
+                                        color: KSubPrimaryFontsColor,
                                       ),
-                                SizedBox(
-                                  width: 15.0,
-                                ),
+                                      onSelected: (t) => {
+                                        commentOptions(
+                                          t.toString().substring(0, 12),
+                                          comments[index]['id'],
+                                          comments[index]['post_id'],
+                                          comments[index]['comment'],
+                                        ),
+                                      },
+                                      itemBuilder: (context) {
+                                        return cOptions.map((choice) {
+                                          return PopupMenuItem<String>(
+                                            value: choice,
+                                            child: Text(
+                                              choice,
+                                              style: KPostOptionsStyle,
+                                            ),
+                                          );
+                                        }).toList();
+                                      },
+                                    )
+                                  : Container(),
+                              children: [
+                                checkRepliesLength()
+                                    ? ListView.separated(
+                                        physics: ScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, pos) => ListTile(
+                                          title: Text(
+                                            '${replies[pos]['replay_comment']}',
+                                            style: KSubPostStyle,
+                                          ),
+                                        ),
+                                        separatorBuilder: (context, index) =>
+                                            Divider(
+                                          color: KSubSecondryFontsColor,
+                                          thickness: 0.5,
+                                        ),
+                                        itemCount: replies.length,
+                                      )
+                                    : repliesStateIndicator(),
                                 Container(
-                                  width: 250.0,
-                                  height: 50.0,
-                                  child: commentTextField(
-                                      replayController, "Write a replay"),
-                                ),
-                                SizedBox(
-                                  width: 10.0,
-                                ),
-                                Expanded(
-                                  child: IconButton(
-                                    onPressed: () {
-                                      addReply(comments[index]['id']);
-                                    },
-                                    icon: Icon(Icons.send),
-                                    color: KPrimaryColor,
-                                    iconSize: 25.0,
+                                  margin: const EdgeInsets.all(5.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      useAsset
+                                          ? CircleAvatar(
+                                              backgroundImage:
+                                                  AssetImage(loggedUserImage),
+                                              radius: 20.0,
+                                            )
+                                          : CircleAvatar(
+                                              backgroundImage: NetworkImage(
+                                                  '$ImageServerPrefix/$loggedUserImage'),
+                                              radius: 20.0,
+                                            ),
+                                      SizedBox(
+                                        width: 15.0,
+                                      ),
+                                      Container(
+                                        width: 250.0,
+                                        height: 50.0,
+                                        child: commentTextField(
+                                            replayController, "Write a replay"),
+                                      ),
+                                      SizedBox(
+                                        width: 10.0,
+                                      ),
+                                      Expanded(
+                                        child: IconButton(
+                                          onPressed: () {
+                                            addReply(comments[index]['id']);
+                                          },
+                                          icon: Icon(Icons.send),
+                                          color: KPrimaryColor,
+                                          iconSize: 25.0,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
-                      separatorBuilder: (context, index) => Divider(
-                        color: KSubSecondryFontsColor,
-                        thickness: 0.5,
-                      ),
-                      itemCount: comments.length,
-                    )
-                  : stateIndicator(),
-            ],
-          ),
-          onRefresh: getDataOnRefresh,
-        ),
+                            separatorBuilder: (context, index) => Divider(
+                              color: KSubSecondryFontsColor,
+                              thickness: 0.5,
+                            ),
+                            itemCount: comments.length,
+                          )
+                        : stateIndicator(),
+                  ],
+                ),
+                onRefresh: getDataOnRefresh,
+              ),
       ),
       resizeToAvoidBottomInset: true,
-      bottomSheet: Container(
-        margin: const EdgeInsets.all(5.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            useAsset
-                ? CircleAvatar(
-                    backgroundImage: AssetImage(loggedUserImage),
-                    radius: 20.0,
-                  )
-                : CircleAvatar(
-                    backgroundImage:
-                        NetworkImage('$ImageServerPrefix/$loggedUserImage'),
-                    radius: 20.0,
+      bottomSheet: kIsWeb
+          ? Container(
+              width: 435.0,
+              margin: const EdgeInsets.all(5.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  useAsset
+                      ? CircleAvatar(
+                          backgroundImage: AssetImage(loggedUserImage),
+                          radius: 20.0,
+                        )
+                      : CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              '$ImageServerPrefix/$loggedUserImage'),
+                          radius: 20.0,
+                        ),
+                  SizedBox(
+                    width: 15.0,
                   ),
-            SizedBox(
-              width: 15.0,
-            ),
-            Container(
-              width: 250.0,
-              height: 50.0,
-              child: commentTextField(commentController, "Write a comment"),
-            ),
-            SizedBox(
-              width: 10.0,
-            ),
-            Expanded(
-              child: IconButton(
-                onPressed: () {
-                  addComment();
-                },
-                icon: Icon(Icons.send),
-                color: KPrimaryColor,
-                iconSize: 30.0,
+                  Container(
+                    width: 250.0,
+                    height: 50.0,
+                    child:
+                        commentTextField(commentController, "Write a comment"),
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Expanded(
+                    child: IconButton(
+                      onPressed: () {
+                        addComment();
+                      },
+                      icon: Icon(Icons.send),
+                      color: KPrimaryColor,
+                      iconSize: 30.0,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : Container(
+              margin: const EdgeInsets.all(5.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  useAsset
+                      ? CircleAvatar(
+                          backgroundImage: AssetImage(loggedUserImage),
+                          radius: 20.0,
+                        )
+                      : CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              '$ImageServerPrefix/$loggedUserImage'),
+                          radius: 20.0,
+                        ),
+                  SizedBox(
+                    width: 15.0,
+                  ),
+                  Container(
+                    width: 250.0,
+                    height: 50.0,
+                    child:
+                        commentTextField(commentController, "Write a comment"),
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Expanded(
+                    child: IconButton(
+                      onPressed: () {
+                        addComment();
+                      },
+                      icon: Icon(Icons.send),
+                      color: KPrimaryColor,
+                      iconSize: 30.0,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -757,7 +1349,6 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
       setState(() {
         comments = commentsBody;
       });
-      print(comments);
       getCommentReplies();
     } on Exception catch (error) {
       print(error.toString());

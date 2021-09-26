@@ -92,21 +92,21 @@ class _SignUpState extends State<SignUp> {
             }
         },
         child: kIsWeb
-            ? Center(
-                child: Container(
-                  width: 435.0,
-                  height: double.infinity,
-                  child: Stack(
-                    children: [
-                      Container(
-                        child: Image(
-                          image: AssetImage("assets/images/10839772.jpg"),
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
-                      ),
-                      ListView(
+            ? Stack(
+                children: [
+                  Container(
+                    child: Image(
+                      image: AssetImage("assets/images/10839772.jpg"),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
+                    ),
+                  ),
+                  Center(
+                    child: Container(
+                      width: 435.0,
+                      height: double.infinity,
+                      child: ListView(
                         children: [
                           SizedBox(
                             height: 20.0,
@@ -133,7 +133,8 @@ class _SignUpState extends State<SignUp> {
                                 Container(
                                   width: double.infinity,
                                   height: 50.0,
-                                  child: basicTextField(_name, "Enter name"),
+                                  child:
+                                      basicTextField(_name, "Enter name", true),
                                 ),
                                 SizedBox(
                                   height: 5.0,
@@ -141,7 +142,8 @@ class _SignUpState extends State<SignUp> {
                                 Container(
                                   width: double.infinity,
                                   height: 50.0,
-                                  child: basicTextField(_email, "Enter email"),
+                                  child: basicTextField(
+                                      _email, "Enter email", false),
                                 ),
                                 SizedBox(
                                   height: 5.0,
@@ -149,7 +151,8 @@ class _SignUpState extends State<SignUp> {
                                 Container(
                                   width: double.infinity,
                                   height: 50.0,
-                                  child: basicTextField(_phone, "Enter phone"),
+                                  child: basicTextField(
+                                      _phone, "Enter phone", false),
                                 ),
                                 SizedBox(
                                   height: 5.0,
@@ -290,10 +293,10 @@ class _SignUpState extends State<SignUp> {
                                       ),
                                     ),
                                     SizedBox(
-                                      width: 10.0,
+                                      width: 20.0,
                                     ),
                                     Container(
-                                      width: 170.0,
+                                      width: 185.0,
                                       height: 45.0,
                                       padding: EdgeInsets.all(10.0),
                                       decoration: BoxDecoration(
@@ -485,9 +488,9 @@ class _SignUpState extends State<SignUp> {
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               )
             : Container(
                 width: double.infinity,
@@ -529,7 +532,8 @@ class _SignUpState extends State<SignUp> {
                               Container(
                                 width: double.infinity,
                                 height: 50.0,
-                                child: basicTextField(_name, "Enter name"),
+                                child:
+                                    basicTextField(_name, "Enter name", true),
                               ),
                               SizedBox(
                                 height: 5.0,
@@ -537,7 +541,8 @@ class _SignUpState extends State<SignUp> {
                               Container(
                                 width: double.infinity,
                                 height: 50.0,
-                                child: basicTextField(_email, "Enter email"),
+                                child: basicTextField(
+                                    _email, "Enter email", false),
                               ),
                               SizedBox(
                                 height: 5.0,
@@ -545,7 +550,8 @@ class _SignUpState extends State<SignUp> {
                               Container(
                                 width: double.infinity,
                                 height: 50.0,
-                                child: basicTextField(_phone, "Enter phone"),
+                                child: basicTextField(
+                                    _phone, "Enter phone", false),
                               ),
                               SizedBox(
                                 height: 5.0,

@@ -2,6 +2,7 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 ///*************************COLORS**************************/
 const KPrimaryColor = Color(0xFF2c9448); //Color(0xFF4379e6);
@@ -169,7 +170,7 @@ const KUserEmailStyle = TextStyle(
 
 const KPostTimeStyle = TextStyle(
   fontFamily: KPrimaryFontFamily,
-  fontSize: 19.0,
+  fontSize: 17.0,
   fontWeight: FontWeight.bold,
   color: KSubSecondryFontsColor,
   height: 1.0,
@@ -391,7 +392,8 @@ const KDataInCardStyle = TextStyle(
 );
 
 ///*************************TEXTFIELDS**************************/
-TextField basicTextField(TextEditingController controller, String hint) {
+TextField basicTextField(
+    TextEditingController controller, String hint, bool isName) {
   return TextField(
     style: KTextFieldStyle,
     controller: controller,
@@ -413,6 +415,11 @@ TextField basicTextField(TextEditingController controller, String hint) {
       hintStyle: KWriteCommentAndSendMessageStyle,
     ),
     cursorColor: KPrimaryColor,
+    inputFormatters: isName
+        ? [
+            LengthLimitingTextInputFormatter(31),
+          ]
+        : null,
   );
 }
 
@@ -790,7 +797,7 @@ class HomeProfileCard extends StatelessWidget {
           child: Container(
             width: 40.0,
             height: 40.0,
-            child: countryName == null
+            child: countryName == ""
                 ? Container()
                 : Image.asset('icons/flags/png/$countryName.png',
                     package: 'country_icons'),

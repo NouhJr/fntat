@@ -661,309 +661,617 @@ class _HomeScreenState extends State<HomeScreen> {
                         .showSnackBar(editCoverErrorSnackBar);
                   }
                 },
-                child: Stack(
-                  children: [
-                    Container(
-                      color: KPrimaryColor,
-                    ),
-                    Positioned(
-                      top: 20.0,
-                      left: -30.0,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Account(),
+                child: kIsWeb
+                    ? Container(
+                        width: 600.0,
+                        height: double.infinity,
+                        child: Stack(
+                          children: [
+                            Container(
+                              color: KPrimaryColor,
                             ),
-                          );
-                        },
-                        child: HomeProfileCard(
-                          useAsset: useAsset,
-                          userImage: userImage,
-                          userName: userName,
-                          countryName: userCountry,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 25.0,
-                      right: 10.0,
-                      child: Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                isNotifications = true;
-                                isHome = false;
-                                isSearch = false;
-                                isPost = false;
-                                isMessages = false;
-                              });
-                              gettingNotification();
-                            },
-                            icon: Icon(
-                              Icons.notifications,
-                              color: KSubPrimaryColor,
-                              size: 25.0,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                isNotifications = false;
-                                isHome = false;
-                                isSearch = false;
-                                isPost = false;
-                                isMessages = true;
-                              });
-                              gettingMessages();
-                            },
-                            icon: Icon(
-                              Icons.email,
-                              color: KSubPrimaryColor,
-                              size: 25.0,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      Settings(fromAccount: false),
+                            Positioned(
+                              top: 20.0,
+                              left: -30.0,
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Account(),
+                                    ),
+                                  );
+                                },
+                                child: HomeProfileCard(
+                                  useAsset: useAsset,
+                                  userImage: userImage,
+                                  userName: userName,
+                                  countryName: userCountry,
                                 ),
-                              );
-                            },
-                            icon: Icon(
-                              Icons.settings,
-                              color: KSubPrimaryColor,
-                              size: 25.0,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      top: 170.0,
-                      right: 0.0,
-                      left: 0.0,
-                      child: Container(
-                        padding: EdgeInsets.all(8.0),
-                        height: screenSize.height - 150,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(25.0),
-                            topRight: Radius.circular(25.0),
-                          ),
-                          color: KSubPrimaryColor,
+                            Positioned(
+                              top: 25.0,
+                              right: 10.0,
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isNotifications = true;
+                                        isHome = false;
+                                        isSearch = false;
+                                        isPost = false;
+                                        isMessages = false;
+                                      });
+                                      gettingNotification();
+                                    },
+                                    icon: Icon(
+                                      Icons.notifications,
+                                      color: KSubPrimaryColor,
+                                      size: 25.0,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isNotifications = false;
+                                        isHome = false;
+                                        isSearch = false;
+                                        isPost = false;
+                                        isMessages = true;
+                                      });
+                                      gettingMessages();
+                                    },
+                                    icon: Icon(
+                                      Icons.email,
+                                      color: KSubPrimaryColor,
+                                      size: 25.0,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              Settings(fromAccount: false),
+                                        ),
+                                      );
+                                    },
+                                    icon: Icon(
+                                      Icons.settings,
+                                      color: KSubPrimaryColor,
+                                      size: 25.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Positioned(
+                              top: 170.0,
+                              right: 0.0,
+                              left: 0.0,
+                              child: Container(
+                                padding: EdgeInsets.all(8.0),
+                                height: screenSize.height - 150,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(25.0),
+                                    topRight: Radius.circular(25.0),
+                                  ),
+                                  color: KSubPrimaryColor,
+                                ),
+                                child: isPost
+                                    ? addPost()
+                                    : isSearch
+                                        ? search()
+                                        : isNotifications
+                                            ? notifications()
+                                            : isMessages
+                                                ? messages()
+                                                : isHome
+                                                    ? postsFeed()
+                                                    : isCategory
+                                                        ? category()
+                                                        : isAddCard
+                                                            ? addCard()
+                                                            : null,
+                              ),
+                            ),
+                            Positioned(
+                              top: 130.0,
+                              right: 40.0,
+                              left: 60.0,
+                              child: Row(
+                                children: [
+                                  AnimatedContainer(
+                                    duration: Duration(milliseconds: 400),
+                                    height: isSearch ? 80.0 : 70.0,
+                                    width: isSearch ? 60.0 : 50.0,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 2.0,
+                                        color: KPrimaryColor,
+                                      ),
+                                      color: KSubPrimaryColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          isSearch = true;
+                                          isHome = false;
+                                          isPost = false;
+                                          isCategory = false;
+                                          isNotifications = false;
+                                          isMessages = false;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Icons.search,
+                                        color: isSearch
+                                            ? KPrimaryColor
+                                            : KSubSecondryFontsColor,
+                                        size: isSearch ? 30.0 : 20.0,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10.0,
+                                  ),
+                                  AnimatedContainer(
+                                    duration: Duration(milliseconds: 400),
+                                    height: isHome ? 80.0 : 70.0,
+                                    width: isHome ? 60.0 : 50.0,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 2.0,
+                                        color: KPrimaryColor,
+                                      ),
+                                      color: KSubPrimaryColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          isHome = true;
+                                          postsFeedShowLoading = true;
+                                          isSearch = false;
+                                          isPost = false;
+                                          isCategory = false;
+                                          isNotifications = false;
+                                          isMessages = false;
+                                          isAddCard = false;
+                                        });
+                                        gettingPosts();
+                                      },
+                                      icon: Icon(
+                                        Icons.home,
+                                        color: isHome
+                                            ? KPrimaryColor
+                                            : KSubSecondryFontsColor,
+                                        size: isHome ? 30.0 : 20.0,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10.0,
+                                  ),
+                                  AnimatedContainer(
+                                    duration: Duration(milliseconds: 400),
+                                    height: isCategory ? 80.0 : 70.0,
+                                    width: isCategory ? 60.0 : 50.0,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 2.0,
+                                        color: KPrimaryColor,
+                                      ),
+                                      color: KSubPrimaryColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          isCategory = true;
+                                          isPost = false;
+                                          isHome = false;
+                                          isSearch = false;
+                                          isNotifications = false;
+                                          isMessages = false;
+                                          isAddCard = false;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Icons.groups,
+                                        color: isCategory
+                                            ? KPrimaryColor
+                                            : KSubSecondryFontsColor,
+                                        size: isCategory ? 30.0 : 20.0,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10.0,
+                                  ),
+                                  AnimatedContainer(
+                                    duration: Duration(milliseconds: 400),
+                                    height: isAddCard ? 80.0 : 70.0,
+                                    width: isAddCard ? 60.0 : 50.0,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 2.0,
+                                        color: KPrimaryColor,
+                                      ),
+                                      color: KSubPrimaryColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          isAddCard = true;
+                                          isPost = false;
+                                          isHome = false;
+                                          isSearch = false;
+                                          isCategory = false;
+                                          isNotifications = false;
+                                          isMessages = false;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Icons.post_add,
+                                        color: isAddCard
+                                            ? KPrimaryColor
+                                            : KSubSecondryFontsColor,
+                                        size: isAddCard ? 30.0 : 20.0,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10.0,
+                                  ),
+                                  AnimatedContainer(
+                                    duration: Duration(milliseconds: 400),
+                                    height: isPost ? 80.0 : 70.0,
+                                    width: isPost ? 60.0 : 50.0,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 2.0,
+                                        color: KPrimaryColor,
+                                      ),
+                                      color: KSubPrimaryColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          isPost = true;
+                                          isHome = false;
+                                          isSearch = false;
+                                          isCategory = false;
+                                          isNotifications = false;
+                                          isMessages = false;
+                                          isAddCard = false;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Icons.add,
+                                        color: isPost
+                                            ? KPrimaryColor
+                                            : KSubSecondryFontsColor,
+                                        size: isPost ? 30.0 : 20.0,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                        child: isPost
-                            ? addPost()
-                            : isSearch
-                                ? search()
-                                : isNotifications
-                                    ? notifications()
-                                    : isMessages
-                                        ? messages()
-                                        : isHome
-                                            ? postsFeed()
-                                            : isCategory
-                                                ? category()
-                                                : isAddCard
-                                                    ? addCard()
-                                                    : null,
-                      ),
-                    ),
-                    Positioned(
-                      top: 130.0,
-                      right: 40.0,
-                      left: 60.0,
-                      child: Row(
+                      )
+                    : Stack(
                         children: [
-                          AnimatedContainer(
-                            duration: Duration(milliseconds: 400),
-                            height: isSearch ? 80.0 : 70.0,
-                            width: isSearch ? 60.0 : 50.0,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 2.0,
-                                color: KPrimaryColor,
-                              ),
-                              color: KSubPrimaryColor,
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  isSearch = true;
-                                  isHome = false;
-                                  isPost = false;
-                                  isCategory = false;
-                                  isNotifications = false;
-                                  isMessages = false;
-                                });
+                          Container(
+                            color: KPrimaryColor,
+                          ),
+                          Positioned(
+                            top: 20.0,
+                            left: -30.0,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Account(),
+                                  ),
+                                );
                               },
-                              icon: Icon(
-                                Icons.search,
-                                color: isSearch
-                                    ? KPrimaryColor
-                                    : KSubSecondryFontsColor,
-                                size: isSearch ? 30.0 : 20.0,
+                              child: HomeProfileCard(
+                                useAsset: useAsset,
+                                userImage: userImage,
+                                userName: userName,
+                                countryName: userCountry,
                               ),
                             ),
                           ),
-                          SizedBox(
-                            width: 10.0,
-                          ),
-                          AnimatedContainer(
-                            duration: Duration(milliseconds: 400),
-                            height: isHome ? 80.0 : 70.0,
-                            width: isHome ? 60.0 : 50.0,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 2.0,
-                                color: KPrimaryColor,
-                              ),
-                              color: KSubPrimaryColor,
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  isHome = true;
-                                  postsFeedShowLoading = true;
-                                  isSearch = false;
-                                  isPost = false;
-                                  isCategory = false;
-                                  isNotifications = false;
-                                  isMessages = false;
-                                  isAddCard = false;
-                                });
-                                gettingPosts();
-                              },
-                              icon: Icon(
-                                Icons.home,
-                                color: isHome
-                                    ? KPrimaryColor
-                                    : KSubSecondryFontsColor,
-                                size: isHome ? 30.0 : 20.0,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10.0,
-                          ),
-                          AnimatedContainer(
-                            duration: Duration(milliseconds: 400),
-                            height: isCategory ? 80.0 : 70.0,
-                            width: isCategory ? 60.0 : 50.0,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 2.0,
-                                color: KPrimaryColor,
-                              ),
-                              color: KSubPrimaryColor,
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  isCategory = true;
-                                  isPost = false;
-                                  isHome = false;
-                                  isSearch = false;
-                                  isNotifications = false;
-                                  isMessages = false;
-                                  isAddCard = false;
-                                });
-                              },
-                              icon: Icon(
-                                Icons.groups,
-                                color: isCategory
-                                    ? KPrimaryColor
-                                    : KSubSecondryFontsColor,
-                                size: isCategory ? 30.0 : 20.0,
-                              ),
+                          Positioned(
+                            top: 25.0,
+                            right: 10.0,
+                            child: Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isNotifications = true;
+                                      isHome = false;
+                                      isSearch = false;
+                                      isPost = false;
+                                      isMessages = false;
+                                    });
+                                    gettingNotification();
+                                  },
+                                  icon: Icon(
+                                    Icons.notifications,
+                                    color: KSubPrimaryColor,
+                                    size: 25.0,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isNotifications = false;
+                                      isHome = false;
+                                      isSearch = false;
+                                      isPost = false;
+                                      isMessages = true;
+                                    });
+                                    gettingMessages();
+                                  },
+                                  icon: Icon(
+                                    Icons.email,
+                                    color: KSubPrimaryColor,
+                                    size: 25.0,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            Settings(fromAccount: false),
+                                      ),
+                                    );
+                                  },
+                                  icon: Icon(
+                                    Icons.settings,
+                                    color: KSubPrimaryColor,
+                                    size: 25.0,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          SizedBox(
-                            width: 10.0,
-                          ),
-                          AnimatedContainer(
-                            duration: Duration(milliseconds: 400),
-                            height: isAddCard ? 80.0 : 70.0,
-                            width: isAddCard ? 60.0 : 50.0,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 2.0,
-                                color: KPrimaryColor,
+                          Positioned(
+                            top: 170.0,
+                            right: 0.0,
+                            left: 0.0,
+                            child: Container(
+                              padding: EdgeInsets.all(8.0),
+                              height: screenSize.height - 150,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(25.0),
+                                  topRight: Radius.circular(25.0),
+                                ),
+                                color: KSubPrimaryColor,
                               ),
-                              color: KSubPrimaryColor,
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  isAddCard = true;
-                                  isPost = false;
-                                  isHome = false;
-                                  isSearch = false;
-                                  isCategory = false;
-                                  isNotifications = false;
-                                  isMessages = false;
-                                });
-                              },
-                              icon: Icon(
-                                Icons.post_add,
-                                color: isAddCard
-                                    ? KPrimaryColor
-                                    : KSubSecondryFontsColor,
-                                size: isAddCard ? 30.0 : 20.0,
-                              ),
+                              child: isPost
+                                  ? addPost()
+                                  : isSearch
+                                      ? search()
+                                      : isNotifications
+                                          ? notifications()
+                                          : isMessages
+                                              ? messages()
+                                              : isHome
+                                                  ? postsFeed()
+                                                  : isCategory
+                                                      ? category()
+                                                      : isAddCard
+                                                          ? addCard()
+                                                          : null,
                             ),
                           ),
-                          SizedBox(
-                            width: 10.0,
-                          ),
-                          AnimatedContainer(
-                            duration: Duration(milliseconds: 400),
-                            height: isPost ? 80.0 : 70.0,
-                            width: isPost ? 60.0 : 50.0,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 2.0,
-                                color: KPrimaryColor,
-                              ),
-                              color: KSubPrimaryColor,
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  isPost = true;
-                                  isHome = false;
-                                  isSearch = false;
-                                  isCategory = false;
-                                  isNotifications = false;
-                                  isMessages = false;
-                                  isAddCard = false;
-                                });
-                              },
-                              icon: Icon(
-                                Icons.add,
-                                color: isPost
-                                    ? KPrimaryColor
-                                    : KSubSecondryFontsColor,
-                                size: isPost ? 30.0 : 20.0,
-                              ),
+                          Positioned(
+                            top: 130.0,
+                            right: 40.0,
+                            left: 60.0,
+                            child: Row(
+                              children: [
+                                AnimatedContainer(
+                                  duration: Duration(milliseconds: 400),
+                                  height: isSearch ? 80.0 : 70.0,
+                                  width: isSearch ? 60.0 : 50.0,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 2.0,
+                                      color: KPrimaryColor,
+                                    ),
+                                    color: KSubPrimaryColor,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isSearch = true;
+                                        isHome = false;
+                                        isPost = false;
+                                        isCategory = false;
+                                        isNotifications = false;
+                                        isMessages = false;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.search,
+                                      color: isSearch
+                                          ? KPrimaryColor
+                                          : KSubSecondryFontsColor,
+                                      size: isSearch ? 30.0 : 20.0,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10.0,
+                                ),
+                                AnimatedContainer(
+                                  duration: Duration(milliseconds: 400),
+                                  height: isHome ? 80.0 : 70.0,
+                                  width: isHome ? 60.0 : 50.0,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 2.0,
+                                      color: KPrimaryColor,
+                                    ),
+                                    color: KSubPrimaryColor,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isHome = true;
+                                        postsFeedShowLoading = true;
+                                        isSearch = false;
+                                        isPost = false;
+                                        isCategory = false;
+                                        isNotifications = false;
+                                        isMessages = false;
+                                        isAddCard = false;
+                                      });
+                                      gettingPosts();
+                                    },
+                                    icon: Icon(
+                                      Icons.home,
+                                      color: isHome
+                                          ? KPrimaryColor
+                                          : KSubSecondryFontsColor,
+                                      size: isHome ? 30.0 : 20.0,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10.0,
+                                ),
+                                AnimatedContainer(
+                                  duration: Duration(milliseconds: 400),
+                                  height: isCategory ? 80.0 : 70.0,
+                                  width: isCategory ? 60.0 : 50.0,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 2.0,
+                                      color: KPrimaryColor,
+                                    ),
+                                    color: KSubPrimaryColor,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isCategory = true;
+                                        isPost = false;
+                                        isHome = false;
+                                        isSearch = false;
+                                        isNotifications = false;
+                                        isMessages = false;
+                                        isAddCard = false;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.groups,
+                                      color: isCategory
+                                          ? KPrimaryColor
+                                          : KSubSecondryFontsColor,
+                                      size: isCategory ? 30.0 : 20.0,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10.0,
+                                ),
+                                AnimatedContainer(
+                                  duration: Duration(milliseconds: 400),
+                                  height: isAddCard ? 80.0 : 70.0,
+                                  width: isAddCard ? 60.0 : 50.0,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 2.0,
+                                      color: KPrimaryColor,
+                                    ),
+                                    color: KSubPrimaryColor,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isAddCard = true;
+                                        isPost = false;
+                                        isHome = false;
+                                        isSearch = false;
+                                        isCategory = false;
+                                        isNotifications = false;
+                                        isMessages = false;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.post_add,
+                                      color: isAddCard
+                                          ? KPrimaryColor
+                                          : KSubSecondryFontsColor,
+                                      size: isAddCard ? 30.0 : 20.0,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10.0,
+                                ),
+                                AnimatedContainer(
+                                  duration: Duration(milliseconds: 400),
+                                  height: isPost ? 80.0 : 70.0,
+                                  width: isPost ? 60.0 : 50.0,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 2.0,
+                                      color: KPrimaryColor,
+                                    ),
+                                    color: KSubPrimaryColor,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isPost = true;
+                                        isHome = false;
+                                        isSearch = false;
+                                        isCategory = false;
+                                        isNotifications = false;
+                                        isMessages = false;
+                                        isAddCard = false;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.add,
+                                      color: isPost
+                                          ? KPrimaryColor
+                                          : KSubSecondryFontsColor,
+                                      size: isPost ? 30.0 : 20.0,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
               )
             : internetConnection(),
         bottomSheet: isPost

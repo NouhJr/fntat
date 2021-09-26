@@ -63,136 +63,132 @@ class _SignInState extends State<SignIn> {
             }
         },
         child: kIsWeb
-            ? Center(
-                child: Container(
-                    width: 435.0,
-                    height: double.infinity,
-                    child: Stack(
-                      children: [
-                        Container(
-                          child: Image(
-                            image: AssetImage("assets/images/10839772.jpg"),
-                            fit: BoxFit.cover,
-                            width:
-                                // 1080.0,
-                                double.infinity,
-                            height:
-                                // 2280.0,
-                                double.infinity,
+            ? Stack(
+                children: [
+                  Container(
+                    child: Image(
+                      image: AssetImage("assets/images/10839772.jpg"),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
+                    ),
+                  ),
+                  Center(
+                    child: Container(
+                      width: 435.0,
+                      height: double.infinity,
+                      child: ListView(
+                        children: [
+                          SizedBox(
+                            height: 20.0,
                           ),
-                        ),
-                        ListView(
-                          children: [
-                            SizedBox(
-                              height: 20.0,
+                          Container(
+                            decoration: BoxDecoration(
+                              color: KPrimaryColor.withOpacity(0.5),
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: KPrimaryColor.withOpacity(0.5),
-                              ),
-                              margin: EdgeInsets.all(10.0),
-                              padding: EdgeInsets.all(20.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    child: Text(
-                                      "Signin now and meet awesome people around the world",
-                                      style: KSubPrimaryFontStyleLarge,
-                                      textAlign: TextAlign.center,
-                                    ),
+                            margin: EdgeInsets.all(10.0),
+                            padding: EdgeInsets.all(20.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  child: Text(
+                                    "Signin now and meet awesome people around the world",
+                                    style: KSubPrimaryFontStyleLarge,
+                                    textAlign: TextAlign.center,
                                   ),
-                                  SizedBox(
-                                    height: 15.0,
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    height: 50.0,
-                                    child: basicTextField(_phone, "Phone"),
-                                  ),
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    height: 50.0,
-                                    child: passwordTextField(
-                                      _password,
-                                      "Password",
-                                      _obsecure,
-                                      IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            _obsecure = !_obsecure;
-                                          });
-                                        },
-                                        icon: Icon(
-                                          _obsecure
-                                              ? Icons.visibility
-                                              : Icons.visibility_off,
-                                          size: 25.0,
-                                        ),
-                                        color: KPrimaryColor,
+                                ),
+                                SizedBox(
+                                  height: 15.0,
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  height: 50.0,
+                                  child: basicTextField(_phone, "Phone", false),
+                                ),
+                                SizedBox(
+                                  height: 10.0,
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  height: 50.0,
+                                  child: passwordTextField(
+                                    _password,
+                                    "Password",
+                                    _obsecure,
+                                    IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _obsecure = !_obsecure;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        _obsecure
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                        size: 25.0,
                                       ),
+                                      color: KPrimaryColor,
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  Container(
-                                    child: Center(
-                                      child: TextButton(
-                                          onPressed: () => {
-                                                Navigator.pushNamed(
-                                                    context, '/FindAccount'),
-                                              },
-                                          child: Text(
-                                            "Forgot password?",
-                                            style: TextStyle(
-                                              color: KPrimaryFontsColor,
-                                              fontSize: 16.0,
-                                            ),
-                                          )),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 25.0,
-                                  ),
-                                  Center(
-                                    child: Container(
-                                      width: 120.0,
-                                      height: 30.0,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          width: 3.0,
-                                          color: KSubPrimaryColor,
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(35.0)),
-                                      ),
-                                      child: Center(
-                                        child: InkWell(
-                                          onTap: signIn,
-                                          child: Text(
-                                            "Sign in",
-                                            style:
-                                                KSubSubPrimaryButtonsFontStyle,
+                                ),
+                                SizedBox(
+                                  height: 10.0,
+                                ),
+                                Container(
+                                  child: Center(
+                                    child: TextButton(
+                                        onPressed: () => {
+                                              Navigator.pushNamed(
+                                                  context, '/FindAccount'),
+                                            },
+                                        child: Text(
+                                          "Forgot password?",
+                                          style: TextStyle(
+                                            color: KPrimaryFontsColor,
+                                            fontSize: 16.0,
                                           ),
+                                        )),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 25.0,
+                                ),
+                                Center(
+                                  child: Container(
+                                    width: 120.0,
+                                    height: 30.0,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 3.0,
+                                        color: KSubPrimaryColor,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(35.0)),
+                                    ),
+                                    child: Center(
+                                      child: InkWell(
+                                        onTap: signIn,
+                                        child: Text(
+                                          "Sign in",
+                                          style: KSubSubPrimaryButtonsFontStyle,
                                         ),
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: 15.0,
-                                  ),
-                                  error,
-                                ],
-                              ),
+                                ),
+                                SizedBox(
+                                  height: 15.0,
+                                ),
+                                error,
+                              ],
                             ),
-                          ],
-                        ),
-                      ],
-                    )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               )
             : Container(
                 width: double.infinity,
@@ -238,7 +234,7 @@ class _SignInState extends State<SignIn> {
                               Container(
                                 width: double.infinity,
                                 height: 50.0,
-                                child: basicTextField(_phone, "Phone"),
+                                child: basicTextField(_phone, "Phone", false),
                               ),
                               SizedBox(
                                 height: 10.0,

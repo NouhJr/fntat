@@ -137,7 +137,7 @@ class _FindAccountByPhoneState extends State<FindAccountByPhone> {
                         height: 10.0,
                       ),
                       Container(
-                        child: basicTextField(_phone, "Phone"),
+                        child: basicTextField(_phone, "Phone", false),
                       ),
                       SizedBox(
                         height: 25.0,
@@ -185,7 +185,7 @@ class _FindAccountByPhoneState extends State<FindAccountByPhone> {
                       height: 10.0,
                     ),
                     Container(
-                      child: basicTextField(_phone, "Phone"),
+                      child: basicTextField(_phone, "Phone", false),
                     ),
                     SizedBox(
                       height: 25.0,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:fntat/User_Interface/home_screen.dart';
@@ -131,111 +132,230 @@ class _EditCommentState extends State<EditComment> {
         child: userName != ""
             ? Padding(
                 padding: EdgeInsets.all(20.0),
-                child: ListView(
-                  children: [
-                    Column(
-                      children: [
-                        Row(
-                          children: [
-                            useAsset
-                                ? CircleAvatar(
-                                    backgroundImage: AssetImage(image),
-                                    radius: 25.0,
-                                  )
-                                : CircleAvatar(
-                                    backgroundImage: NetworkImage(image),
-                                    radius: 25.0,
+                child: kIsWeb
+                    ? Center(
+                        child: Container(
+                          width: 435.0,
+                          height: double.infinity,
+                          child: ListView(
+                            children: [
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      useAsset
+                                          ? CircleAvatar(
+                                              backgroundImage:
+                                                  AssetImage(image),
+                                              radius: 25.0,
+                                            )
+                                          : CircleAvatar(
+                                              backgroundImage:
+                                                  NetworkImage(image),
+                                              radius: 25.0,
+                                            ),
+                                      SizedBox(
+                                        width: 20.0,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          userName,
+                                          style: KNameStyle,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                            SizedBox(
-                              width: 20.0,
-                            ),
-                            Expanded(
-                              child: Text(
-                                userName,
-                                style: KNameStyle,
-                              ),
-                            ),
-                          ],
-                        ),
-                        postTextField(_comment, "Write a new post..."),
-                        SizedBox(
-                          height: 25.0,
-                        ),
-                        Card(
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          elevation: 1.0,
-                          child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    useAsset
-                                        ? CircleAvatar(
-                                            backgroundImage: AssetImage(
-                                              image,
-                                            ),
-                                            radius: 20.0,
-                                          )
-                                        : CircleAvatar(
-                                            backgroundImage: NetworkImage(
-                                              image,
-                                            ),
-                                            radius: 20.0,
-                                          ),
-                                    SizedBox(
-                                      width: 20.0,
-                                    ),
-                                    Expanded(
+                                  postTextField(_comment, "Write comment..."),
+                                  SizedBox(
+                                    height: 25.0,
+                                  ),
+                                  Card(
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    elevation: 1.0,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(10.0),
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            userName,
-                                            style: KNameInSubPostStyle,
+                                          Row(
+                                            children: [
+                                              useAsset
+                                                  ? CircleAvatar(
+                                                      backgroundImage:
+                                                          AssetImage(
+                                                        image,
+                                                      ),
+                                                      radius: 20.0,
+                                                    )
+                                                  : CircleAvatar(
+                                                      backgroundImage:
+                                                          NetworkImage(
+                                                        image,
+                                                      ),
+                                                      radius: 20.0,
+                                                    ),
+                                              SizedBox(
+                                                width: 20.0,
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      userName,
+                                                      style:
+                                                          KNameInSubPostStyle,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Divider(
+                                            color: KSubSecondryFontsColor,
+                                            thickness: 0.5,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      comm,
+                                                      style: KSubPostStyle,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 5.0,
                                           ),
                                         ],
                                       ),
                                     ),
-                                  ],
-                                ),
-                                Divider(
-                                  color: KSubSecondryFontsColor,
-                                  thickness: 0.5,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            comm,
-                                            style: KSubPostStyle,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 5.0,
-                                ),
-                              ],
-                            ),
+                                  ),
+                                  SizedBox(
+                                    height: 15.0,
+                                  ),
+                                  stateWidget,
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(
-                          height: 15.0,
-                        ),
-                        stateWidget,
-                      ],
-                    ),
-                  ],
-                ),
+                      )
+                    : ListView(
+                        children: [
+                          Column(
+                            children: [
+                              Row(
+                                children: [
+                                  useAsset
+                                      ? CircleAvatar(
+                                          backgroundImage: AssetImage(image),
+                                          radius: 25.0,
+                                        )
+                                      : CircleAvatar(
+                                          backgroundImage: NetworkImage(image),
+                                          radius: 25.0,
+                                        ),
+                                  SizedBox(
+                                    width: 20.0,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      userName,
+                                      style: KNameStyle,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              postTextField(_comment, "Write a new post..."),
+                              SizedBox(
+                                height: 25.0,
+                              ),
+                              Card(
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                elevation: 1.0,
+                                child: Padding(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          useAsset
+                                              ? CircleAvatar(
+                                                  backgroundImage: AssetImage(
+                                                    image,
+                                                  ),
+                                                  radius: 20.0,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundImage: NetworkImage(
+                                                    image,
+                                                  ),
+                                                  radius: 20.0,
+                                                ),
+                                          SizedBox(
+                                            width: 20.0,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  userName,
+                                                  style: KNameInSubPostStyle,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Divider(
+                                        color: KSubSecondryFontsColor,
+                                        thickness: 0.5,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  comm,
+                                                  style: KSubPostStyle,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 5.0,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15.0,
+                              ),
+                              stateWidget,
+                            ],
+                          ),
+                        ],
+                      ),
               )
             : Center(
                 child: CircularProgressIndicator(

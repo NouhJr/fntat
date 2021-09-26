@@ -42,6 +42,10 @@ class _EditCoverPhotoState extends State<EditCoverPhoto> {
             Navigator.pop(context),
           },
         ),
+        title: Text(
+          "Edit Cover Photo",
+          style: KScreenTitlesStyle,
+        ),
         actions: [
           Row(
             children: [

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -99,30 +100,58 @@ class _EditNameState extends State<EditName> {
             Navigator.pop(context);
           }
         },
-        child: Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                child: Text(
-                  "Update your name",
-                  style: KPrimaryFontStyle,
+        child: kIsWeb
+            ? Center(
+                child: Container(
+                  width: 435.0,
+                  height: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        child: Text(
+                          "Update your name",
+                          style: KPrimaryFontStyle,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Container(
+                        child: basicTextField(_newName, "Update Name", true),
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      stateWidget,
+                    ],
+                  ),
+                ),
+              )
+            : Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      child: Text(
+                        "Update your name",
+                        style: KPrimaryFontStyle,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Container(
+                      child: basicTextField(_newName, "Update Name", true),
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    stateWidget,
+                  ],
                 ),
               ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Container(
-                child: basicTextField(_newName, "Update Name"),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              stateWidget,
-            ],
-          ),
-        ),
       ),
     );
   }

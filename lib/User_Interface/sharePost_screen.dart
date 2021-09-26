@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 // import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
@@ -69,8 +70,7 @@ class _SharePostState extends State<SharePost> {
       });
       if (data['data']['image'] != null) {
         setState(() {
-          postOwnerImage =
-              '$ImageServerPrefix/${data['data']['image']}';
+          postOwnerImage = '$ImageServerPrefix/${data['data']['image']}';
           useAsset = false;
         });
       }
@@ -96,8 +96,7 @@ class _SharePostState extends State<SharePost> {
       );
     } else {
       try {
-        final res = await dio.post(
-            '$ServerUrl/get-post-by-id?post_id=$id',
+        final res = await dio.post('$ServerUrl/get-post-by-id?post_id=$id',
             data: formData);
         final List<dynamic> postsBody = res.data['data']['data'];
         setState(() {
@@ -122,8 +121,7 @@ class _SharePostState extends State<SharePost> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
             image: DecorationImage(
-              image:
-                  NetworkImage('$ImageServerPrefix/$postImage'),
+              image: NetworkImage('$ImageServerPrefix/$postImage'),
               fit: BoxFit.cover,
             ),
           ),
@@ -227,295 +225,586 @@ class _SharePostState extends State<SharePost> {
         child: checkPostLength()
             ? Padding(
                 padding: EdgeInsets.all(20.0),
-                child: ListView(
-                  children: [
-                    Column(
-                      children: [
-                        Row(
-                          children: [
-                            useAsset
-                                ? CircleAvatar(
-                                    backgroundImage: AssetImage(image),
-                                    radius: 25.0,
-                                  )
-                                : CircleAvatar(
-                                    backgroundImage: NetworkImage(image),
-                                    radius: 25.0,
+                child: kIsWeb
+                    ? Center(
+                        child: Container(
+                          width: 435.0,
+                          height: double.infinity,
+                          child: ListView(
+                            children: [
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      useAsset
+                                          ? CircleAvatar(
+                                              backgroundImage:
+                                                  AssetImage(image),
+                                              radius: 25.0,
+                                            )
+                                          : CircleAvatar(
+                                              backgroundImage:
+                                                  NetworkImage(image),
+                                              radius: 25.0,
+                                            ),
+                                      SizedBox(
+                                        width: 20.0,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          userName,
+                                          style: KNameStyle,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                            SizedBox(
-                              width: 20.0,
-                            ),
-                            Expanded(
-                              child: Text(
-                                userName,
-                                style: KNameStyle,
-                              ),
-                            ),
-                          ],
-                        ),
-                        postTextField(_post, "Write a new post..."),
-                        SizedBox(
-                          height: 25.0,
-                        ),
-                        // hasImage
-                        //     ? Row(
-                        //         mainAxisAlignment: MainAxisAlignment.start,
-                        //         children: [
-                        //           Stack(
-                        //             children: [
-                        //               Container(
-                        //                 clipBehavior: Clip.antiAliasWithSaveLayer,
-                        //                 width: 190.0,
-                        //                 height: 190.0,
-                        //                 decoration: BoxDecoration(
-                        //                   borderRadius:
-                        //                       BorderRadius.all(Radius.circular(10.0)),
-                        //                   image: DecorationImage(
-                        //                     image: FileImage(_image!),
-                        //                     fit: BoxFit.cover,
-                        //                   ),
-                        //                 ),
-                        //               ),
-                        //               Positioned(
-                        //                 top: 8.0,
-                        //                 right: 8.0,
-                        //                 child: GestureDetector(
-                        //                   onTap: () {
-                        //                     setState(() {
-                        //                       hasImage = false;
-                        //                     });
-                        //                   },
-                        //                   child: Icon(
-                        //                     Icons.remove_circle,
-                        //                     size: 25.0,
-                        //                     color: KWarningColor,
-                        //                   ),
-                        //                 ),
-                        //               ),
-                        //             ],
-                        //           ),
-                        //         ],
-                        //       )
-                        //     : Row(
-                        //         mainAxisAlignment: MainAxisAlignment.start,
-                        //         children: [
-                        //           Container(),
-                        //         ],
-                        //       ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Card(
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          elevation: 1.0,
-                          child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    useAsset
-                                        ? CircleAvatar(
-                                            backgroundImage: AssetImage(
-                                              postOwnerImage,
-                                            ),
-                                            radius: 20.0,
-                                          )
-                                        : CircleAvatar(
-                                            backgroundImage: NetworkImage(
-                                              postOwnerImage,
-                                            ),
-                                            radius: 20.0,
-                                          ),
-                                    SizedBox(
-                                      width: 20.0,
-                                    ),
-                                    Expanded(
+                                  postTextField(_post, "Write a new post..."),
+                                  SizedBox(
+                                    height: 25.0,
+                                  ),
+                                  // hasImage
+                                  //     ? Row(
+                                  //         mainAxisAlignment: MainAxisAlignment.start,
+                                  //         children: [
+                                  //           Stack(
+                                  //             children: [
+                                  //               Container(
+                                  //                 clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  //                 width: 190.0,
+                                  //                 height: 190.0,
+                                  //                 decoration: BoxDecoration(
+                                  //                   borderRadius:
+                                  //                       BorderRadius.all(Radius.circular(10.0)),
+                                  //                   image: DecorationImage(
+                                  //                     image: FileImage(_image!),
+                                  //                     fit: BoxFit.cover,
+                                  //                   ),
+                                  //                 ),
+                                  //               ),
+                                  //               Positioned(
+                                  //                 top: 8.0,
+                                  //                 right: 8.0,
+                                  //                 child: GestureDetector(
+                                  //                   onTap: () {
+                                  //                     setState(() {
+                                  //                       hasImage = false;
+                                  //                     });
+                                  //                   },
+                                  //                   child: Icon(
+                                  //                     Icons.remove_circle,
+                                  //                     size: 25.0,
+                                  //                     color: KWarningColor,
+                                  //                   ),
+                                  //                 ),
+                                  //               ),
+                                  //             ],
+                                  //           ),
+                                  //         ],
+                                  //       )
+                                  //     : Row(
+                                  //         mainAxisAlignment: MainAxisAlignment.start,
+                                  //         children: [
+                                  //           Container(),
+                                  //         ],
+                                  //       ),
+                                  SizedBox(
+                                    height: 10.0,
+                                  ),
+                                  Card(
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    elevation: 1.0,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(10.0),
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            postOwnerName,
-                                            style: KNameInSubPostStyle,
-                                          ),
-                                          post[0]['updated_at']
-                                                      .toString()
-                                                      .substring(11, 13)
-                                                      .contains('00') ||
-                                                  post[0]['updated_at']
-                                                      .toString()
-                                                      .substring(11, 13)
-                                                      .contains('01') ||
-                                                  post[0]['updated_at']
-                                                      .toString()
-                                                      .substring(11, 13)
-                                                      .contains('02') ||
-                                                  post[0]['updated_at']
-                                                      .toString()
-                                                      .substring(11, 13)
-                                                      .contains('03') ||
-                                                  post[0]['updated_at']
-                                                      .toString()
-                                                      .substring(11, 13)
-                                                      .contains('04') ||
-                                                  post[0]['updated_at']
-                                                      .toString()
-                                                      .substring(11, 13)
-                                                      .contains('05') ||
-                                                  post[0]['updated_at']
-                                                      .toString()
-                                                      .substring(11, 13)
-                                                      .contains('06') ||
-                                                  post[0]['updated_at']
-                                                      .toString()
-                                                      .substring(11, 13)
-                                                      .contains('07') ||
-                                                  post[0]['updated_at']
-                                                      .toString()
-                                                      .substring(11, 13)
-                                                      .contains('08') ||
-                                                  post[0]['updated_at']
-                                                      .toString()
-                                                      .substring(11, 13)
-                                                      .contains('09') ||
-                                                  post[0]['updated_at']
-                                                      .toString()
-                                                      .substring(11, 13)
-                                                      .contains('10') ||
-                                                  post[0]['updated_at']
-                                                      .toString()
-                                                      .substring(11, 13)
-                                                      .contains('11')
-                                              ? Text(
-                                                  '${post[0]['updated_at'].toString().substring(11, 16)} AM',
-                                                  style: KPostTimeStyle,
-                                                )
-                                              : post[0]['updated_at']
-                                                      .toString()
-                                                      .substring(11, 13)
-                                                      .contains('12')
-                                                  ? Text(
-                                                      '12:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                      style: KPostTimeStyle,
+                                          Row(
+                                            children: [
+                                              useAsset
+                                                  ? CircleAvatar(
+                                                      backgroundImage:
+                                                          AssetImage(
+                                                        postOwnerImage,
+                                                      ),
+                                                      radius: 20.0,
                                                     )
-                                                  : post[0]['updated_at']
-                                                          .toString()
-                                                          .substring(11, 13)
-                                                          .contains('13')
-                                                      ? Text(
-                                                          '1:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                          style: KPostTimeStyle,
-                                                        )
-                                                      : post[0]['updated_at']
-                                                              .toString()
-                                                              .substring(11, 13)
-                                                              .contains('14')
-                                                          ? Text(
-                                                              '2:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                              style:
-                                                                  KPostTimeStyle,
-                                                            )
-                                                          : post[0]['updated_at']
-                                                                  .toString()
-                                                                  .substring(
-                                                                      11, 13)
-                                                                  .contains(
-                                                                      '15')
-                                                              ? Text(
-                                                                  '3:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                  style:
-                                                                      KPostTimeStyle,
-                                                                )
-                                                              : post[0]['updated_at'].toString().substring(11, 13).contains('16')
-                                                                  ? Text(
-                                                                      '4:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                      style:
-                                                                          KPostTimeStyle,
-                                                                    )
-                                                                  : post[0]['updated_at'].toString().substring(11, 13).contains('17')
-                                                                      ? Text(
-                                                                          '5:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                          style:
-                                                                              KPostTimeStyle,
-                                                                        )
-                                                                      : post[0]['updated_at'].toString().substring(11, 13).contains('18')
-                                                                          ? Text(
-                                                                              '6:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                              style: KPostTimeStyle,
-                                                                            )
-                                                                          : post[0]['updated_at'].toString().substring(11, 13).contains('19')
-                                                                              ? Text(
-                                                                                  '7:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                                  style: KPostTimeStyle,
-                                                                                )
-                                                                              : post[0]['updated_at'].toString().substring(11, 13).contains('20')
-                                                                                  ? Text(
-                                                                                      '8:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                                      style: KPostTimeStyle,
-                                                                                    )
-                                                                                  : post[0]['updated_at'].toString().substring(11, 13).contains('21')
-                                                                                      ? Text(
-                                                                                          '9:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                                          style: KPostTimeStyle,
-                                                                                        )
-                                                                                      : post[0]['updated_at'].toString().substring(11, 13).contains('22')
-                                                                                          ? Text(
-                                                                                              '10:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                                              style: KPostTimeStyle,
-                                                                                            )
-                                                                                          : post[0]['updated_at'].toString().substring(11, 13).contains('23')
-                                                                                              ? Text(
-                                                                                                  '11:${post[0]['updated_at'].toString().substring(14, 16)} PM',
-                                                                                                  style: KPostTimeStyle,
-                                                                                                )
-                                                                                              : post[0]['updated_at'].toString().substring(11, 13).contains('00')
-                                                                                                  ? Text(
-                                                                                                      '12:${post[0]['updated_at'].toString().substring(14, 16)} AM',
-                                                                                                      style: KPostTimeStyle,
-                                                                                                    )
-                                                                                                  : Text(''),
+                                                  : CircleAvatar(
+                                                      backgroundImage:
+                                                          NetworkImage(
+                                                        postOwnerImage,
+                                                      ),
+                                                      radius: 20.0,
+                                                    ),
+                                              SizedBox(
+                                                width: 20.0,
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      postOwnerName,
+                                                      style:
+                                                          KNameInSubPostStyle,
+                                                    ),
+                                                    post[0]['updated_at'].toString().substring(11, 13).contains('00') ||
+                                                            post[0]['updated_at']
+                                                                .toString()
+                                                                .substring(
+                                                                    11, 13)
+                                                                .contains(
+                                                                    '01') ||
+                                                            post[0]['updated_at']
+                                                                .toString()
+                                                                .substring(
+                                                                    11, 13)
+                                                                .contains(
+                                                                    '02') ||
+                                                            post[0]['updated_at']
+                                                                .toString()
+                                                                .substring(
+                                                                    11, 13)
+                                                                .contains(
+                                                                    '03') ||
+                                                            post[0]['updated_at']
+                                                                .toString()
+                                                                .substring(
+                                                                    11, 13)
+                                                                .contains(
+                                                                    '04') ||
+                                                            post[0]['updated_at']
+                                                                .toString()
+                                                                .substring(
+                                                                    11, 13)
+                                                                .contains(
+                                                                    '05') ||
+                                                            post[0]['updated_at']
+                                                                .toString()
+                                                                .substring(
+                                                                    11, 13)
+                                                                .contains(
+                                                                    '06') ||
+                                                            post[0]['updated_at']
+                                                                .toString()
+                                                                .substring(
+                                                                    11, 13)
+                                                                .contains(
+                                                                    '07') ||
+                                                            post[0]['updated_at']
+                                                                .toString()
+                                                                .substring(11, 13)
+                                                                .contains('08') ||
+                                                            post[0]['updated_at'].toString().substring(11, 13).contains('09') ||
+                                                            post[0]['updated_at'].toString().substring(11, 13).contains('10') ||
+                                                            post[0]['updated_at'].toString().substring(11, 13).contains('11')
+                                                        ? Text(
+                                                            '${post[0]['updated_at'].toString().substring(11, 16)} AM',
+                                                            style:
+                                                                KPostTimeStyle,
+                                                          )
+                                                        : post[0]['updated_at'].toString().substring(11, 13).contains('12')
+                                                            ? Text(
+                                                                '12:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                style:
+                                                                    KPostTimeStyle,
+                                                              )
+                                                            : post[0]['updated_at'].toString().substring(11, 13).contains('13')
+                                                                ? Text(
+                                                                    '1:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                    style:
+                                                                        KPostTimeStyle,
+                                                                  )
+                                                                : post[0]['updated_at'].toString().substring(11, 13).contains('14')
+                                                                    ? Text(
+                                                                        '2:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                        style:
+                                                                            KPostTimeStyle,
+                                                                      )
+                                                                    : post[0]['updated_at'].toString().substring(11, 13).contains('15')
+                                                                        ? Text(
+                                                                            '3:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                            style:
+                                                                                KPostTimeStyle,
+                                                                          )
+                                                                        : post[0]['updated_at'].toString().substring(11, 13).contains('16')
+                                                                            ? Text(
+                                                                                '4:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                style: KPostTimeStyle,
+                                                                              )
+                                                                            : post[0]['updated_at'].toString().substring(11, 13).contains('17')
+                                                                                ? Text(
+                                                                                    '5:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                    style: KPostTimeStyle,
+                                                                                  )
+                                                                                : post[0]['updated_at'].toString().substring(11, 13).contains('18')
+                                                                                    ? Text(
+                                                                                        '6:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                        style: KPostTimeStyle,
+                                                                                      )
+                                                                                    : post[0]['updated_at'].toString().substring(11, 13).contains('19')
+                                                                                        ? Text(
+                                                                                            '7:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                            style: KPostTimeStyle,
+                                                                                          )
+                                                                                        : post[0]['updated_at'].toString().substring(11, 13).contains('20')
+                                                                                            ? Text(
+                                                                                                '8:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                                style: KPostTimeStyle,
+                                                                                              )
+                                                                                            : post[0]['updated_at'].toString().substring(11, 13).contains('21')
+                                                                                                ? Text(
+                                                                                                    '9:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                                    style: KPostTimeStyle,
+                                                                                                  )
+                                                                                                : post[0]['updated_at'].toString().substring(11, 13).contains('22')
+                                                                                                    ? Text(
+                                                                                                        '10:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                                        style: KPostTimeStyle,
+                                                                                                      )
+                                                                                                    : post[0]['updated_at'].toString().substring(11, 13).contains('23')
+                                                                                                        ? Text(
+                                                                                                            '11:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                                            style: KPostTimeStyle,
+                                                                                                          )
+                                                                                                        : post[0]['updated_at'].toString().substring(11, 13).contains('00')
+                                                                                                            ? Text(
+                                                                                                                '12:${post[0]['updated_at'].toString().substring(14, 16)} AM',
+                                                                                                                style: KPostTimeStyle,
+                                                                                                              )
+                                                                                                            : Text(''),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Divider(
+                                            color: KSubSecondryFontsColor,
+                                            thickness: 0.5,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      post[0]['post'],
+                                                      style: KSubPostStyle,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 5.0,
+                                          ),
+                                          post[0]['image_flag'] == 1
+                                              ? displayPostImage(
+                                                  post[0]['images'][0]['image'])
+                                              : Container(),
                                         ],
                                       ),
                                     ),
-                                  ],
-                                ),
-                                Divider(
-                                  color: KSubSecondryFontsColor,
-                                  thickness: 0.5,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            post[0]['post'],
-                                            style: KSubPostStyle,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 5.0,
-                                ),
-                                post[0]['image_flag'] == 1
-                                    ? displayPostImage(
-                                        post[0]['images'][0]['image'])
-                                    : Container(),
-                              ],
-                            ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      )
+                    : ListView(
+                        children: [
+                          Column(
+                            children: [
+                              Row(
+                                children: [
+                                  useAsset
+                                      ? CircleAvatar(
+                                          backgroundImage: AssetImage(image),
+                                          radius: 25.0,
+                                        )
+                                      : CircleAvatar(
+                                          backgroundImage: NetworkImage(image),
+                                          radius: 25.0,
+                                        ),
+                                  SizedBox(
+                                    width: 20.0,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      userName,
+                                      style: KNameStyle,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              postTextField(_post, "Write a new post..."),
+                              SizedBox(
+                                height: 25.0,
+                              ),
+                              // hasImage
+                              //     ? Row(
+                              //         mainAxisAlignment: MainAxisAlignment.start,
+                              //         children: [
+                              //           Stack(
+                              //             children: [
+                              //               Container(
+                              //                 clipBehavior: Clip.antiAliasWithSaveLayer,
+                              //                 width: 190.0,
+                              //                 height: 190.0,
+                              //                 decoration: BoxDecoration(
+                              //                   borderRadius:
+                              //                       BorderRadius.all(Radius.circular(10.0)),
+                              //                   image: DecorationImage(
+                              //                     image: FileImage(_image!),
+                              //                     fit: BoxFit.cover,
+                              //                   ),
+                              //                 ),
+                              //               ),
+                              //               Positioned(
+                              //                 top: 8.0,
+                              //                 right: 8.0,
+                              //                 child: GestureDetector(
+                              //                   onTap: () {
+                              //                     setState(() {
+                              //                       hasImage = false;
+                              //                     });
+                              //                   },
+                              //                   child: Icon(
+                              //                     Icons.remove_circle,
+                              //                     size: 25.0,
+                              //                     color: KWarningColor,
+                              //                   ),
+                              //                 ),
+                              //               ),
+                              //             ],
+                              //           ),
+                              //         ],
+                              //       )
+                              //     : Row(
+                              //         mainAxisAlignment: MainAxisAlignment.start,
+                              //         children: [
+                              //           Container(),
+                              //         ],
+                              //       ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              Card(
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                elevation: 1.0,
+                                child: Padding(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          useAsset
+                                              ? CircleAvatar(
+                                                  backgroundImage: AssetImage(
+                                                    postOwnerImage,
+                                                  ),
+                                                  radius: 20.0,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundImage: NetworkImage(
+                                                    postOwnerImage,
+                                                  ),
+                                                  radius: 20.0,
+                                                ),
+                                          SizedBox(
+                                            width: 20.0,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  postOwnerName,
+                                                  style: KNameInSubPostStyle,
+                                                ),
+                                                post[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('00') ||
+                                                        post[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('01') ||
+                                                        post[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('02') ||
+                                                        post[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('03') ||
+                                                        post[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('04') ||
+                                                        post[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('05') ||
+                                                        post[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('06') ||
+                                                        post[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('07') ||
+                                                        post[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('08') ||
+                                                        post[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('09') ||
+                                                        post[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('10') ||
+                                                        post[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('11')
+                                                    ? Text(
+                                                        '${post[0]['updated_at'].toString().substring(11, 16)} AM',
+                                                        style: KPostTimeStyle,
+                                                      )
+                                                    : post[0]['updated_at']
+                                                            .toString()
+                                                            .substring(11, 13)
+                                                            .contains('12')
+                                                        ? Text(
+                                                            '12:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                            style:
+                                                                KPostTimeStyle,
+                                                          )
+                                                        : post[0]['updated_at']
+                                                                .toString()
+                                                                .substring(
+                                                                    11, 13)
+                                                                .contains('13')
+                                                            ? Text(
+                                                                '1:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                style:
+                                                                    KPostTimeStyle,
+                                                              )
+                                                            : post[0]['updated_at']
+                                                                    .toString()
+                                                                    .substring(
+                                                                        11, 13)
+                                                                    .contains(
+                                                                        '14')
+                                                                ? Text(
+                                                                    '2:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                    style:
+                                                                        KPostTimeStyle,
+                                                                  )
+                                                                : post[0]['updated_at'].toString().substring(11, 13).contains('15')
+                                                                    ? Text(
+                                                                        '3:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                        style:
+                                                                            KPostTimeStyle,
+                                                                      )
+                                                                    : post[0]['updated_at'].toString().substring(11, 13).contains('16')
+                                                                        ? Text(
+                                                                            '4:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                            style:
+                                                                                KPostTimeStyle,
+                                                                          )
+                                                                        : post[0]['updated_at'].toString().substring(11, 13).contains('17')
+                                                                            ? Text(
+                                                                                '5:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                style: KPostTimeStyle,
+                                                                              )
+                                                                            : post[0]['updated_at'].toString().substring(11, 13).contains('18')
+                                                                                ? Text(
+                                                                                    '6:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                    style: KPostTimeStyle,
+                                                                                  )
+                                                                                : post[0]['updated_at'].toString().substring(11, 13).contains('19')
+                                                                                    ? Text(
+                                                                                        '7:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                        style: KPostTimeStyle,
+                                                                                      )
+                                                                                    : post[0]['updated_at'].toString().substring(11, 13).contains('20')
+                                                                                        ? Text(
+                                                                                            '8:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                            style: KPostTimeStyle,
+                                                                                          )
+                                                                                        : post[0]['updated_at'].toString().substring(11, 13).contains('21')
+                                                                                            ? Text(
+                                                                                                '9:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                                style: KPostTimeStyle,
+                                                                                              )
+                                                                                            : post[0]['updated_at'].toString().substring(11, 13).contains('22')
+                                                                                                ? Text(
+                                                                                                    '10:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                                    style: KPostTimeStyle,
+                                                                                                  )
+                                                                                                : post[0]['updated_at'].toString().substring(11, 13).contains('23')
+                                                                                                    ? Text(
+                                                                                                        '11:${post[0]['updated_at'].toString().substring(14, 16)} PM',
+                                                                                                        style: KPostTimeStyle,
+                                                                                                      )
+                                                                                                    : post[0]['updated_at'].toString().substring(11, 13).contains('00')
+                                                                                                        ? Text(
+                                                                                                            '12:${post[0]['updated_at'].toString().substring(14, 16)} AM',
+                                                                                                            style: KPostTimeStyle,
+                                                                                                          )
+                                                                                                        : Text(''),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Divider(
+                                        color: KSubSecondryFontsColor,
+                                        thickness: 0.5,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  post[0]['post'],
+                                                  style: KSubPostStyle,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 5.0,
+                                      ),
+                                      post[0]['image_flag'] == 1
+                                          ? displayPostImage(
+                                              post[0]['images'][0]['image'])
+                                          : Container(),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
               )
             : Center(
                 child: CircularProgressIndicator(
