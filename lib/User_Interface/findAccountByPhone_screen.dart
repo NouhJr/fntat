@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -115,53 +116,107 @@ class _FindAccountByPhoneState extends State<FindAccountByPhone> {
       ),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) => {},
-        child: Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                child: Text(
-                  "Find account by phone",
-                  style: KPrimaryFontStyle,
-                ),
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Container(
-                child: basicTextField(_phone, "Phone"),
-              ),
-              SizedBox(
-                height: 25.0,
-              ),
-              Container(
-                width: 90.0,
-                height: 30.0,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 2.0,
-                    color: KPrimaryColor,
+        child: kIsWeb
+            ? Center(
+                child: Container(
+                  width: 435.0,
+                  height: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 30.0,
+                      ),
+                      Container(
+                        child: Text(
+                          "Find account by phone",
+                          style: KPrimaryFontStyle,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Container(
+                        child: basicTextField(_phone, "Phone"),
+                      ),
+                      SizedBox(
+                        height: 25.0,
+                      ),
+                      Container(
+                        width: 90.0,
+                        height: 30.0,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 2.0,
+                            color: KPrimaryColor,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(35.0)),
+                        ),
+                        child: Center(
+                          child: InkWell(
+                            onTap: findUserByPhone,
+                            child: Text(
+                              "Find",
+                              style: KSubPrimaryButtonsFontStyle,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      error,
+                    ],
                   ),
-                  borderRadius: BorderRadius.all(Radius.circular(35.0)),
                 ),
-                child: Center(
-                  child: InkWell(
-                    onTap: findUserByPhone,
-                    child: Text(
-                      "Find",
-                      style: KSubPrimaryButtonsFontStyle,
+              )
+            : Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      child: Text(
+                        "Find account by phone",
+                        style: KPrimaryFontStyle,
+                      ),
                     ),
-                  ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Container(
+                      child: basicTextField(_phone, "Phone"),
+                    ),
+                    SizedBox(
+                      height: 25.0,
+                    ),
+                    Container(
+                      width: 90.0,
+                      height: 30.0,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 2.0,
+                          color: KPrimaryColor,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(35.0)),
+                      ),
+                      child: Center(
+                        child: InkWell(
+                          onTap: findUserByPhone,
+                          child: Text(
+                            "Find",
+                            style: KSubPrimaryButtonsFontStyle,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    error,
+                  ],
                 ),
               ),
-              SizedBox(
-                height: 10.0,
-              ),
-              error,
-            ],
-          ),
-        ),
       ),
     );
   }

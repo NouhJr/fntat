@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,6 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   TextEditingController _newPassword = new TextEditingController();
   TextEditingController _confirmNewPassword = new TextEditingController();
-
   bool _obsecureNewPassword = true;
   bool _obsecureConfirmNewPassword = true;
 
@@ -81,7 +81,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             color: KPrimaryColor,
           ),
           onPressed: () => {
-            Navigator.pushNamed(context, '/SignIn'),
+            Navigator.pop(context),
           },
         ),
         backgroundColor: KSubPrimaryColor,
@@ -127,71 +127,140 @@ class _ResetPasswordState extends State<ResetPassword> {
                 .showSnackBar(resetPasswordSuccessSnackBar);
           }
         },
-        child: Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                child: Text(
-                  "Reset Password",
-                  style: KPrimaryFontStyle,
-                ),
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Container(
-                child: passwordTextField(
-                  _newPassword,
-                  "New password",
-                  _obsecureNewPassword,
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _obsecureNewPassword = !_obsecureNewPassword;
-                      });
-                    },
-                    icon: Icon(
-                      _obsecureNewPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: KPrimaryColor,
-                    ),
+        child: kIsWeb
+            ? Center(
+                child: Container(
+                  width: 435.0,
+                  height: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        child: Text(
+                          "Reset Password",
+                          style: KPrimaryFontStyle,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Container(
+                        child: passwordTextField(
+                          _newPassword,
+                          "New password",
+                          _obsecureNewPassword,
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obsecureNewPassword = !_obsecureNewPassword;
+                              });
+                            },
+                            icon: Icon(
+                              _obsecureNewPassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: KPrimaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Container(
+                        child: passwordTextField(
+                          _confirmNewPassword,
+                          "Confirm password",
+                          _obsecureConfirmNewPassword,
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obsecureConfirmNewPassword =
+                                    !_obsecureConfirmNewPassword;
+                              });
+                            },
+                            icon: Icon(
+                              _obsecureConfirmNewPassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: KPrimaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      error,
+                    ],
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              Container(
-                child: passwordTextField(
-                  _confirmNewPassword,
-                  "Confirm password",
-                  _obsecureConfirmNewPassword,
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _obsecureConfirmNewPassword =
-                            !_obsecureConfirmNewPassword;
-                      });
-                    },
-                    icon: Icon(
-                      _obsecureConfirmNewPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: KPrimaryColor,
+              )
+            : Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      child: Text(
+                        "Reset Password",
+                        style: KPrimaryFontStyle,
+                      ),
                     ),
-                  ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Container(
+                      child: passwordTextField(
+                        _newPassword,
+                        "New password",
+                        _obsecureNewPassword,
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _obsecureNewPassword = !_obsecureNewPassword;
+                            });
+                          },
+                          icon: Icon(
+                            _obsecureNewPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: KPrimaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Container(
+                      child: passwordTextField(
+                        _confirmNewPassword,
+                        "Confirm password",
+                        _obsecureConfirmNewPassword,
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _obsecureConfirmNewPassword =
+                                  !_obsecureConfirmNewPassword;
+                            });
+                          },
+                          icon: Icon(
+                            _obsecureConfirmNewPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: KPrimaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15.0,
+                    ),
+                    error,
+                  ],
                 ),
               ),
-              SizedBox(
-                height: 15.0,
-              ),
-              error,
-            ],
-          ),
-        ),
       ),
     );
   }
