@@ -39,6 +39,36 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await api.getFirebaseToken(data['data']['user']['id']);
         yield SignUpsuccessState();
       }
+    } else if (event is SignUpButtonPressedWeb) {
+      yield LodingState();
+      var data = await api.signUpForWeb(
+        event.name,
+        event.email,
+        event.phone,
+        event.password,
+        event.passwordConfirmation,
+        event.birthDate,
+        event.profilePicture,
+        event.profilePictureName,
+        event.coverPhoto,
+        event.coverPhotoName,
+      );
+      if (data == 400 ||
+          data['message']['email'] == null ||
+          data['message']['phone'] == null) {
+        yield AuthenticationErrorState("Registration failed");
+      } else if (data['response_code'] == 400 &&
+          data['message']['email']?[0] == "The email has already been taken.") {
+        yield AuthenticationErrorState("The email has already been taken.");
+      } else if (data['response_code'] == 400 &&
+          data['message']['phone']?[0] == "The phone has already been taken.") {
+        yield AuthenticationErrorState("The phone has already been taken.");
+      } else {
+        prefs.setString("TOKEN", data['data']['token']);
+        prefs.setInt("USERID", data['data']['user']['id']);
+        await api.getFirebaseToken(data['data']['user']['id']);
+        yield SignUpsuccessState();
+      }
     } else if (event is SignInButtonPressed) {
       yield LodingState();
       var data = await api.signin(event.phone, event.password);

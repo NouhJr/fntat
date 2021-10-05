@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:carousel_pro/carousel_pro.dart';
 
 Widget imagecarousel = Container(
+  width: kIsWeb ? 435.0 : double.infinity,
   height: 100.0,
   margin: EdgeInsets.only(
     right: 10.0,

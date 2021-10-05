@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:fntat/Components/constants.dart';
 
 class Landing extends StatefulWidget {
@@ -43,9 +44,15 @@ class _LandingState extends State<Landing> {
                   child: Center(
                     child: InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, '/SignUp');
+                        // if (kIsWeb) {
+                        //   Navigator.pushNamed(context, '/SignUp');
+                        // }
+                        // else {
+                        //   Navigator.pushNamed(context, '/SignUpWeb');
+                        // }
                         // Navigator.pushNamedAndRemoveUntil(
                         //     context, '/SignUp', (route) => false);
+                        Navigator.pushNamed(context, '/SignUp');
                       },
                       child: Text(
                         "Create account",

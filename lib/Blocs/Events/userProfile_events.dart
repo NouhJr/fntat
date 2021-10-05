@@ -43,9 +43,27 @@ class EditPictureButtonPressed extends UserProfileEvent {
   EditPictureButtonPressed({required this.newPicture});
 }
 
+class EditPictureButtonPressedWeb extends UserProfileEvent {
+  final List<int> newPicture;
+  final String newPictureName;
+  EditPictureButtonPressedWeb({
+    required this.newPicture,
+    required this.newPictureName,
+  });
+}
+
 class EditCoverPhotoButtonPressed extends UserProfileEvent {
   final File newPhoto;
   EditCoverPhotoButtonPressed({required this.newPhoto});
+}
+
+class EditCoverPhotoButtonPressedWeb extends UserProfileEvent {
+  final List<int> newPhoto;
+  final String newPhotoName;
+  EditCoverPhotoButtonPressedWeb({
+    required this.newPhoto,
+    required this.newPhotoName,
+  });
 }
 
 class EditBirthDateButtonPressed extends UserProfileEvent {
@@ -73,6 +91,17 @@ class AddNewPostWithImageFired extends UserProfileEvent {
   final String post;
   final File? image;
   AddNewPostWithImageFired({required this.post, required this.image});
+}
+
+class AddNewPostWithImageFiredWeb extends UserProfileEvent {
+  final String post;
+  final List<int> image;
+  final String imageName;
+  AddNewPostWithImageFiredWeb({
+    required this.post,
+    required this.image,
+    required this.imageName,
+  });
 }
 
 class FollowButtonPressed extends UserProfileEvent {
@@ -163,5 +192,30 @@ class AddCardButtonPressed extends UserProfileEvent {
     this.height,
     this.weight,
     this.video,
+  });
+}
+
+class AddCardButtonPressedWeb extends UserProfileEvent {
+  final country;
+  final type;
+  final category;
+  final favorite;
+  final mainPosition;
+  final otherPosition;
+  final height;
+  final weight;
+  final video;
+  final videoName;
+  AddCardButtonPressedWeb({
+    this.country,
+    this.type,
+    this.category,
+    this.favorite,
+    this.mainPosition,
+    this.otherPosition,
+    this.height,
+    this.weight,
+    this.video,
+    this.videoName,
   });
 }

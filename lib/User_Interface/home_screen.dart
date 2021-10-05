@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,6 +36,7 @@ import 'package:fntat/User_Interface/sharePost_screen.dart';
 import 'package:fntat/User_Interface/editBirthDate_screen.dart';
 import 'package:fntat/User_Interface/editCoverPhoto_screen.dart';
 import 'package:fntat/User_Interface/playVideo_screen.dart';
+import 'package:fntat/User_Interface/playVideoWeb_screen.dart';
 import 'package:fntat/Components/constants.dart';
 import 'package:fntat/Components/flushbar.dart';
 import 'package:fntat/Components/carousel.dart';
@@ -118,8 +121,11 @@ class _HomeScreenState extends State<HomeScreen> {
   bool moreCategoriesLoading = false;
   bool hasConnection = false;
   bool postHasImage = false;
+  bool postHasImageWeb = false;
   bool singlePostLikeState = false;
   bool hasVideo = false;
+  bool addPostImageLoadingForWeb = false;
+  bool hasVideoWeb = false;
   String userName = "";
   String userImage = "assets/images/nouserimagehandler.jpg";
   String userCountry = "";
@@ -138,9 +144,10 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedSkillsVideo = "Add skills video";
   String mainPosition = '';
   String otherPosition = '';
+  String postImageNameWeb = '';
+  String videoNameWeb = '';
   int typeID = 0;
   int categoryID = 0;
-  List<String> options = ['Edit post', 'Delete post'];
   List<dynamic> categoryResults = [];
   List<dynamic> notificationsResults = [];
   List<dynamic> messagesResults = [];
@@ -150,6 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<dynamic> post = [];
   List<dynamic> singlePostLikes = [];
   List<dynamic> singlePostTempLikes = [];
+  List<String> options = ['Edit post', 'Delete post'];
   List<String> _types = [
     'Type',
     'Admin',
@@ -208,6 +216,10 @@ class _HomeScreenState extends State<HomeScreen> {
     'Take video',
     'Choose existing video',
   ];
+  late List<int> postImageWebBytes;
+  late List<int> videoWebBytes;
+  late Uint8List postImageWebBytesData;
+  late Uint8List videoWebBytesData;
   File? postImage;
   File? userVideo;
   var notificationsNextPageUrl;
@@ -661,129 +673,128 @@ class _HomeScreenState extends State<HomeScreen> {
                         .showSnackBar(editCoverErrorSnackBar);
                   }
                 },
-                child: kIsWeb
-                    ? Container(
-                        width: 600.0,
-                        height: double.infinity,
-                        child: Stack(
-                          children: [
-                            Container(
-                              color: KPrimaryColor,
+                child: Stack(
+                  children: [
+                    Container(
+                      color: KPrimaryColor,
+                    ),
+                    Positioned(
+                      top: 20.0,
+                      left: -30.0,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Account(),
                             ),
-                            Positioned(
-                              top: 20.0,
-                              left: -30.0,
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Account(),
-                                    ),
-                                  );
-                                },
-                                child: HomeProfileCard(
-                                  useAsset: useAsset,
-                                  userImage: userImage,
-                                  userName: userName,
-                                  countryName: userCountry,
+                          );
+                        },
+                        child: HomeProfileCard(
+                          useAsset: useAsset,
+                          userImage: userImage,
+                          userName: userName,
+                          countryName: userCountry,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 25.0,
+                      right: 10.0,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                isNotifications = true;
+                                isHome = false;
+                                isSearch = false;
+                                isPost = false;
+                                isMessages = false;
+                              });
+                              gettingNotification();
+                            },
+                            icon: Icon(
+                              Icons.notifications,
+                              color: KSubPrimaryColor,
+                              size: 25.0,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                isNotifications = false;
+                                isHome = false;
+                                isSearch = false;
+                                isPost = false;
+                                isMessages = true;
+                              });
+                              gettingMessages();
+                            },
+                            icon: Icon(
+                              Icons.email,
+                              color: KSubPrimaryColor,
+                              size: 25.0,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      Settings(fromAccount: false),
                                 ),
-                              ),
+                              );
+                            },
+                            icon: Icon(
+                              Icons.settings,
+                              color: KSubPrimaryColor,
+                              size: 25.0,
                             ),
-                            Positioned(
-                              top: 25.0,
-                              right: 10.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      top: 170.0,
+                      right: 0.0,
+                      left: 0.0,
+                      child: Container(
+                        padding: EdgeInsets.all(8.0),
+                        height: screenSize.height - 150,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(25.0),
+                            topRight: Radius.circular(25.0),
+                          ),
+                          color: KSubPrimaryColor,
+                        ),
+                        child: isPost
+                            ? addPost()
+                            : isSearch
+                                ? search()
+                                : isNotifications
+                                    ? notifications()
+                                    : isMessages
+                                        ? messages()
+                                        : isHome
+                                            ? postsFeed()
+                                            : isCategory
+                                                ? category()
+                                                : isAddCard
+                                                    ? addCard()
+                                                    : null,
+                      ),
+                    ),
+                    Positioned(
+                      top: 130.0,
+                      right: 40.0,
+                      left: 60.0,
+                      child: kIsWeb
+                          ? Center(
                               child: Row(
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        isNotifications = true;
-                                        isHome = false;
-                                        isSearch = false;
-                                        isPost = false;
-                                        isMessages = false;
-                                      });
-                                      gettingNotification();
-                                    },
-                                    icon: Icon(
-                                      Icons.notifications,
-                                      color: KSubPrimaryColor,
-                                      size: 25.0,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        isNotifications = false;
-                                        isHome = false;
-                                        isSearch = false;
-                                        isPost = false;
-                                        isMessages = true;
-                                      });
-                                      gettingMessages();
-                                    },
-                                    icon: Icon(
-                                      Icons.email,
-                                      color: KSubPrimaryColor,
-                                      size: 25.0,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              Settings(fromAccount: false),
-                                        ),
-                                      );
-                                    },
-                                    icon: Icon(
-                                      Icons.settings,
-                                      color: KSubPrimaryColor,
-                                      size: 25.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Positioned(
-                              top: 170.0,
-                              right: 0.0,
-                              left: 0.0,
-                              child: Container(
-                                padding: EdgeInsets.all(8.0),
-                                height: screenSize.height - 150,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(25.0),
-                                    topRight: Radius.circular(25.0),
-                                  ),
-                                  color: KSubPrimaryColor,
-                                ),
-                                child: isPost
-                                    ? addPost()
-                                    : isSearch
-                                        ? search()
-                                        : isNotifications
-                                            ? notifications()
-                                            : isMessages
-                                                ? messages()
-                                                : isHome
-                                                    ? postsFeed()
-                                                    : isCategory
-                                                        ? category()
-                                                        : isAddCard
-                                                            ? addCard()
-                                                            : null,
-                              ),
-                            ),
-                            Positioned(
-                              top: 130.0,
-                              right: 40.0,
-                              left: 60.0,
-                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   AnimatedContainer(
                                     duration: Duration(milliseconds: 400),
@@ -965,129 +976,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : Stack(
-                        children: [
-                          Container(
-                            color: KPrimaryColor,
-                          ),
-                          Positioned(
-                            top: 20.0,
-                            left: -30.0,
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Account(),
-                                  ),
-                                );
-                              },
-                              child: HomeProfileCard(
-                                useAsset: useAsset,
-                                userImage: userImage,
-                                userName: userName,
-                                countryName: userCountry,
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            top: 25.0,
-                            right: 10.0,
-                            child: Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      isNotifications = true;
-                                      isHome = false;
-                                      isSearch = false;
-                                      isPost = false;
-                                      isMessages = false;
-                                    });
-                                    gettingNotification();
-                                  },
-                                  icon: Icon(
-                                    Icons.notifications,
-                                    color: KSubPrimaryColor,
-                                    size: 25.0,
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      isNotifications = false;
-                                      isHome = false;
-                                      isSearch = false;
-                                      isPost = false;
-                                      isMessages = true;
-                                    });
-                                    gettingMessages();
-                                  },
-                                  icon: Icon(
-                                    Icons.email,
-                                    color: KSubPrimaryColor,
-                                    size: 25.0,
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            Settings(fromAccount: false),
-                                      ),
-                                    );
-                                  },
-                                  icon: Icon(
-                                    Icons.settings,
-                                    color: KSubPrimaryColor,
-                                    size: 25.0,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Positioned(
-                            top: 170.0,
-                            right: 0.0,
-                            left: 0.0,
-                            child: Container(
-                              padding: EdgeInsets.all(8.0),
-                              height: screenSize.height - 150,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(25.0),
-                                  topRight: Radius.circular(25.0),
-                                ),
-                                color: KSubPrimaryColor,
-                              ),
-                              child: isPost
-                                  ? addPost()
-                                  : isSearch
-                                      ? search()
-                                      : isNotifications
-                                          ? notifications()
-                                          : isMessages
-                                              ? messages()
-                                              : isHome
-                                                  ? postsFeed()
-                                                  : isCategory
-                                                      ? category()
-                                                      : isAddCard
-                                                          ? addCard()
-                                                          : null,
-                            ),
-                          ),
-                          Positioned(
-                            top: 130.0,
-                            right: 40.0,
-                            left: 60.0,
-                            child: Row(
+                            )
+                          : Row(
                               children: [
                                 AnimatedContainer(
                                   duration: Duration(milliseconds: 400),
@@ -1269,85 +1159,138 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
+                    ),
+                  ],
+                ),
               )
             : internetConnection(),
         bottomSheet: isPost
             ? Padding(
                 padding: const EdgeInsets.only(left: 5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 45.0,
-                      height: 60.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: KPrimaryColor,
-                      ),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.add_a_photo,
-                          color: KSubPrimaryColor,
-                          size: 25.0,
-                        ),
-                        onPressed: takeImage,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10.0,
-                    ),
-                    Container(
-                      width: 45.0,
-                      height: 60.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: KPrimaryColor,
-                      ),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.add_photo_alternate,
-                          color: KSubPrimaryColor,
-                          size: 25.0,
-                        ),
-                        onPressed: chooseImage,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 190.0,
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          width: 90.0,
-                          height: 30.0,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 2.0,
+                child: kIsWeb
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 45.0,
+                            height: 60.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
                               color: KPrimaryColor,
                             ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(35.0)),
-                            color: KPrimaryColor,
-                          ),
-                          child: Center(
-                            child: InkWell(
-                              onTap: () {
-                                addPostButton();
-                              },
-                              child: Text(
-                                "Post",
-                                style: KSubPrimaryButtonsFontStyle2,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.add_a_photo,
+                                color: KSubPrimaryColor,
+                                size: 25.0,
                               ),
+                              onPressed: pickPostImageForWeb,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                          SizedBox(
+                            width: 190.0,
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                width: 90.0,
+                                height: 30.0,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 2.0,
+                                    color: KPrimaryColor,
+                                  ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(35.0)),
+                                  color: KPrimaryColor,
+                                ),
+                                child: Center(
+                                  child: InkWell(
+                                    onTap: () {
+                                      addPostButton();
+                                    },
+                                    child: Text(
+                                      "Post",
+                                      style: KSubPrimaryButtonsFontStyle2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 45.0,
+                            height: 60.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: KPrimaryColor,
+                            ),
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.add_a_photo,
+                                color: KSubPrimaryColor,
+                                size: 25.0,
+                              ),
+                              onPressed: takeImage,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10.0,
+                          ),
+                          Container(
+                            width: 45.0,
+                            height: 60.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: KPrimaryColor,
+                            ),
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.add_photo_alternate,
+                                color: KSubPrimaryColor,
+                                size: 25.0,
+                              ),
+                              onPressed: chooseImage,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 190.0,
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                width: 90.0,
+                                height: 30.0,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 2.0,
+                                    color: KPrimaryColor,
+                                  ),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(35.0)),
+                                  color: KPrimaryColor,
+                                ),
+                                child: Center(
+                                  child: InkWell(
+                                    onTap: () {
+                                      addPostButton();
+                                    },
+                                    child: Text(
+                                      "Post",
+                                      style: KSubPrimaryButtonsFontStyle2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
               )
             : null,
         resizeToAvoidBottomInset: true,
@@ -1543,7 +1486,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? ConstrainedBox(
                     constraints: new BoxConstraints(
                       minHeight: 35.0,
-                      maxHeight: 500.0,
+                      maxHeight: kIsWeb ? 400.0 : 500.0,
                     ),
                     child: LayoutBuilder(
                       builder: (context, size) => Stack(
@@ -1633,82 +1576,177 @@ class _HomeScreenState extends State<HomeScreen> {
                                           Container(
                                             height: 200.0,
                                             width: 150.0,
-                                            child: Stack(
-                                              children: [
-                                                Container(
-                                                  child: Image(
-                                                    image: AssetImage(
-                                                        "assets/images/footballplayground.jpg"),
-                                                    fit: BoxFit.cover,
-                                                    width: double.infinity,
-                                                    height: double.infinity,
-                                                  ),
-                                                ),
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    color: KPrimaryColor
-                                                        .withOpacity(0.5),
-                                                  ),
-                                                  margin: EdgeInsets.all(5.0),
-                                                  child: categoryResults[index]
-                                                                  ['user']
-                                                              ['user_vedio'] !=
-                                                          null
-                                                      ? Column(
-                                                          children: [
-                                                            SizedBox(
-                                                              height: 30.0,
-                                                            ),
-                                                            Text(
-                                                              "Play Skills Video",
-                                                              style: KPostStyle,
-                                                            ),
-                                                            Center(
-                                                              child: IconButton(
-                                                                onPressed: () {
-                                                                  Navigator
-                                                                      .push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                      builder:
-                                                                          (context) =>
-                                                                              SkillsVideo(
-                                                                        userName:
-                                                                            categoryResults[index]['user']['name'],
-                                                                        videoUrl:
-                                                                            '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                },
-                                                                icon: Icon(
-                                                                  Icons
-                                                                      .play_arrow,
-                                                                ),
-                                                                iconSize: 70.0,
-                                                                color:
-                                                                    KSubPrimaryColor,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : Row(
-                                                          children: [
-                                                            SizedBox(
-                                                              width: 5.0,
-                                                            ),
-                                                            Center(
-                                                              child: Text(
-                                                                "No video available",
-                                                                style:
-                                                                    KSubPostStyle,
-                                                              ),
-                                                            ),
-                                                          ],
+                                            child: kIsWeb
+                                                ? Stack(
+                                                    children: [
+                                                      Container(
+                                                        child: Image(
+                                                          image: AssetImage(
+                                                              "assets/images/footballplayground.jpg"),
+                                                          fit: BoxFit.cover,
+                                                          width:
+                                                              double.infinity,
+                                                          height:
+                                                              double.infinity,
                                                         ),
-                                                ),
-                                              ],
-                                            ),
+                                                      ),
+                                                      Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: KPrimaryColor
+                                                              .withOpacity(0.5),
+                                                        ),
+                                                        margin:
+                                                            EdgeInsets.all(5.0),
+                                                        child: categoryResults[
+                                                                            index]
+                                                                        ['user']
+                                                                    [
+                                                                    'user_vedio'] !=
+                                                                null
+                                                            ? Column(
+                                                                children: [
+                                                                  SizedBox(
+                                                                    height:
+                                                                        30.0,
+                                                                  ),
+                                                                  Text(
+                                                                    "Play Skills Video",
+                                                                    style:
+                                                                        KPostStyle,
+                                                                  ),
+                                                                  Center(
+                                                                    child:
+                                                                        IconButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator
+                                                                            .push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                            builder: (context) =>
+                                                                                VideoApp(
+                                                                              userName: categoryResults[index]['user']['name'],
+                                                                              videoUrl: '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                      icon:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .play_arrow,
+                                                                      ),
+                                                                      iconSize:
+                                                                          70.0,
+                                                                      color:
+                                                                          KSubPrimaryColor,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : Row(
+                                                                children: [
+                                                                  SizedBox(
+                                                                    width: 5.0,
+                                                                  ),
+                                                                  Center(
+                                                                    child: Text(
+                                                                      "No video available",
+                                                                      style:
+                                                                          KSubPostStyle,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : Stack(
+                                                    children: [
+                                                      Container(
+                                                        child: Image(
+                                                          image: AssetImage(
+                                                              "assets/images/footballplayground.jpg"),
+                                                          fit: BoxFit.cover,
+                                                          width:
+                                                              double.infinity,
+                                                          height:
+                                                              double.infinity,
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: KPrimaryColor
+                                                              .withOpacity(0.5),
+                                                        ),
+                                                        margin:
+                                                            EdgeInsets.all(5.0),
+                                                        child: categoryResults[
+                                                                            index]
+                                                                        ['user']
+                                                                    [
+                                                                    'user_vedio'] !=
+                                                                null
+                                                            ? Column(
+                                                                children: [
+                                                                  SizedBox(
+                                                                    height:
+                                                                        30.0,
+                                                                  ),
+                                                                  Text(
+                                                                    "Play Skills Video",
+                                                                    style:
+                                                                        KPostStyle,
+                                                                  ),
+                                                                  Center(
+                                                                    child:
+                                                                        IconButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator
+                                                                            .push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                            builder: (context) =>
+                                                                                SkillsVideo(
+                                                                              userName: categoryResults[index]['user']['name'],
+                                                                              videoUrl: '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                      icon:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .play_arrow,
+                                                                      ),
+                                                                      iconSize:
+                                                                          70.0,
+                                                                      color:
+                                                                          KSubPrimaryColor,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : Row(
+                                                                children: [
+                                                                  SizedBox(
+                                                                    width: 5.0,
+                                                                  ),
+                                                                  Center(
+                                                                    child: Text(
+                                                                      "No video available",
+                                                                      style:
+                                                                          KSubPostStyle,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                      ),
+                                                    ],
+                                                  ),
                                             color: KPrimaryColor,
                                           ),
                                         ],
@@ -1781,75 +1819,169 @@ class _HomeScreenState extends State<HomeScreen> {
                                           Container(
                                             height: 200.0,
                                             width: 150.0,
-                                            child: Stack(
-                                              children: [
-                                                Container(
-                                                  child: Image(
-                                                    image: AssetImage(
-                                                        "assets/images/footballplayground.jpg"),
-                                                    fit: BoxFit.cover,
-                                                    width: double.infinity,
-                                                    height: double.infinity,
-                                                  ),
-                                                ),
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    color: KPrimaryColor
-                                                        .withOpacity(0.5),
-                                                  ),
-                                                  margin: EdgeInsets.all(5.0),
-                                                  child: categoryResults[index]
-                                                                  ['user']
-                                                              ['user_vedio'] !=
-                                                          null
-                                                      ? Column(
-                                                          children: [
-                                                            SizedBox(
-                                                              height: 30.0,
-                                                            ),
-                                                            Text(
-                                                              "Play Skills Video",
-                                                              style: KPostStyle,
-                                                            ),
-                                                            Center(
-                                                              child: IconButton(
-                                                                onPressed: () {
-                                                                  Navigator.push(
-                                                                      context,
-                                                                      MaterialPageRoute(
-                                                                          builder: (context) => SkillsVideo(
-                                                                                userName: categoryResults[index]['user']['name'],
-                                                                                videoUrl: '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
-                                                                              )));
-                                                                },
-                                                                icon: Icon(
-                                                                  Icons
-                                                                      .play_arrow,
-                                                                ),
-                                                                iconSize: 70.0,
-                                                                color:
-                                                                    KSubPrimaryColor,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : Row(
-                                                          children: [
-                                                            SizedBox(
-                                                              width: 5.0,
-                                                            ),
-                                                            Center(
-                                                              child: Text(
-                                                                "No video available",
-                                                                style:
-                                                                    KSubPostStyle,
-                                                              ),
-                                                            ),
-                                                          ],
+                                            child: kIsWeb
+                                                ? Stack(
+                                                    children: [
+                                                      Container(
+                                                        child: Image(
+                                                          image: AssetImage(
+                                                              "assets/images/footballplayground.jpg"),
+                                                          fit: BoxFit.cover,
+                                                          width:
+                                                              double.infinity,
+                                                          height:
+                                                              double.infinity,
                                                         ),
-                                                ),
-                                              ],
-                                            ),
+                                                      ),
+                                                      Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: KPrimaryColor
+                                                              .withOpacity(0.5),
+                                                        ),
+                                                        margin:
+                                                            EdgeInsets.all(5.0),
+                                                        child: categoryResults[
+                                                                            index]
+                                                                        ['user']
+                                                                    [
+                                                                    'user_vedio'] !=
+                                                                null
+                                                            ? Column(
+                                                                children: [
+                                                                  SizedBox(
+                                                                    height:
+                                                                        30.0,
+                                                                  ),
+                                                                  Text(
+                                                                    "Play Skills Video",
+                                                                    style:
+                                                                        KPostStyle,
+                                                                  ),
+                                                                  Center(
+                                                                    child:
+                                                                        IconButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.push(
+                                                                            context,
+                                                                            MaterialPageRoute(
+                                                                                builder: (context) => VideoApp(
+                                                                                      userName: categoryResults[index]['user']['name'],
+                                                                                      videoUrl: '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
+                                                                                    )));
+                                                                      },
+                                                                      icon:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .play_arrow,
+                                                                      ),
+                                                                      iconSize:
+                                                                          70.0,
+                                                                      color:
+                                                                          KSubPrimaryColor,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : Row(
+                                                                children: [
+                                                                  SizedBox(
+                                                                    width: 5.0,
+                                                                  ),
+                                                                  Center(
+                                                                    child: Text(
+                                                                      "No video available",
+                                                                      style:
+                                                                          KSubPostStyle,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : Stack(
+                                                    children: [
+                                                      Container(
+                                                        child: Image(
+                                                          image: AssetImage(
+                                                              "assets/images/footballplayground.jpg"),
+                                                          fit: BoxFit.cover,
+                                                          width:
+                                                              double.infinity,
+                                                          height:
+                                                              double.infinity,
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: KPrimaryColor
+                                                              .withOpacity(0.5),
+                                                        ),
+                                                        margin:
+                                                            EdgeInsets.all(5.0),
+                                                        child: categoryResults[
+                                                                            index]
+                                                                        ['user']
+                                                                    [
+                                                                    'user_vedio'] !=
+                                                                null
+                                                            ? Column(
+                                                                children: [
+                                                                  SizedBox(
+                                                                    height:
+                                                                        30.0,
+                                                                  ),
+                                                                  Text(
+                                                                    "Play Skills Video",
+                                                                    style:
+                                                                        KPostStyle,
+                                                                  ),
+                                                                  Center(
+                                                                    child:
+                                                                        IconButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.push(
+                                                                            context,
+                                                                            MaterialPageRoute(
+                                                                                builder: (context) => SkillsVideo(
+                                                                                      userName: categoryResults[index]['user']['name'],
+                                                                                      videoUrl: '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
+                                                                                    )));
+                                                                      },
+                                                                      icon:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .play_arrow,
+                                                                      ),
+                                                                      iconSize:
+                                                                          70.0,
+                                                                      color:
+                                                                          KSubPrimaryColor,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : Row(
+                                                                children: [
+                                                                  SizedBox(
+                                                                    width: 5.0,
+                                                                  ),
+                                                                  Center(
+                                                                    child: Text(
+                                                                      "No video available",
+                                                                      style:
+                                                                          KSubPostStyle,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                      ),
+                                                    ],
+                                                  ),
                                             color: KPrimaryColor,
                                           ),
                                         ],
@@ -1884,7 +2016,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? ConstrainedBox(
                         constraints: new BoxConstraints(
                           minHeight: 35.0,
-                          maxHeight: 500.0,
+                          maxHeight: kIsWeb ? 400.0 : 500.0,
                         ),
                         child: LayoutBuilder(
                           builder: (context, size) => Stack(
@@ -1978,81 +2110,175 @@ class _HomeScreenState extends State<HomeScreen> {
                                               Container(
                                                 height: 200.0,
                                                 width: 150.0,
-                                                child: Stack(
-                                                  children: [
-                                                    Container(
-                                                      child: Image(
-                                                        image: AssetImage(
-                                                            "assets/images/basketballplayground.jpg"),
-                                                        fit: BoxFit.cover,
-                                                        width: double.infinity,
-                                                        height: double.infinity,
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        color: KPrimaryColor
-                                                            .withOpacity(0.5),
-                                                      ),
-                                                      margin:
-                                                          EdgeInsets.all(5.0),
-                                                      child: categoryResults[
-                                                                          index]
-                                                                      ['user'][
-                                                                  'user_vedio'] !=
-                                                              null
-                                                          ? Column(
-                                                              children: [
-                                                                SizedBox(
-                                                                  height: 30.0,
-                                                                ),
-                                                                Text(
-                                                                  "Play Skills Video",
-                                                                  style:
-                                                                      KPostStyle,
-                                                                ),
-                                                                Center(
-                                                                  child:
-                                                                      IconButton(
-                                                                    onPressed:
-                                                                        () {
-                                                                      Navigator.push(
-                                                                          context,
-                                                                          MaterialPageRoute(
-                                                                              builder: (context) => SkillsVideo(
-                                                                                    userName: categoryResults[index]['user']['name'],
-                                                                                    videoUrl: '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
-                                                                                  )));
-                                                                    },
-                                                                    icon: Icon(
-                                                                      Icons
-                                                                          .play_arrow,
-                                                                    ),
-                                                                    iconSize:
-                                                                        70.0,
-                                                                    color:
-                                                                        KSubPrimaryColor,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            )
-                                                          : Row(
-                                                              children: [
-                                                                SizedBox(
-                                                                  width: 5.0,
-                                                                ),
-                                                                Center(
-                                                                  child: Text(
-                                                                    "No video available",
-                                                                    style:
-                                                                        KSubPostStyle,
-                                                                  ),
-                                                                ),
-                                                              ],
+                                                child: kIsWeb
+                                                    ? Stack(
+                                                        children: [
+                                                          Container(
+                                                            child: Image(
+                                                              image: AssetImage(
+                                                                  "assets/images/basketballplayground.jpg"),
+                                                              fit: BoxFit.cover,
+                                                              width: double
+                                                                  .infinity,
+                                                              height: double
+                                                                  .infinity,
                                                             ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                          ),
+                                                          Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: KPrimaryColor
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                            ),
+                                                            margin:
+                                                                EdgeInsets.all(
+                                                                    5.0),
+                                                            child: categoryResults[index]
+                                                                            [
+                                                                            'user']
+                                                                        [
+                                                                        'user_vedio'] !=
+                                                                    null
+                                                                ? Column(
+                                                                    children: [
+                                                                      SizedBox(
+                                                                        height:
+                                                                            30.0,
+                                                                      ),
+                                                                      Text(
+                                                                        "Play Skills Video",
+                                                                        style:
+                                                                            KPostStyle,
+                                                                      ),
+                                                                      Center(
+                                                                        child:
+                                                                            IconButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            Navigator.push(
+                                                                                context,
+                                                                                MaterialPageRoute(
+                                                                                    builder: (context) => VideoApp(
+                                                                                          userName: categoryResults[index]['user']['name'],
+                                                                                          videoUrl: '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
+                                                                                        )));
+                                                                          },
+                                                                          icon:
+                                                                              Icon(
+                                                                            Icons.play_arrow,
+                                                                          ),
+                                                                          iconSize:
+                                                                              70.0,
+                                                                          color:
+                                                                              KSubPrimaryColor,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  )
+                                                                : Row(
+                                                                    children: [
+                                                                      SizedBox(
+                                                                        width:
+                                                                            5.0,
+                                                                      ),
+                                                                      Center(
+                                                                        child:
+                                                                            Text(
+                                                                          "No video available",
+                                                                          style:
+                                                                              KSubPostStyle,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : Stack(
+                                                        children: [
+                                                          Container(
+                                                            child: Image(
+                                                              image: AssetImage(
+                                                                  "assets/images/basketballplayground.jpg"),
+                                                              fit: BoxFit.cover,
+                                                              width: double
+                                                                  .infinity,
+                                                              height: double
+                                                                  .infinity,
+                                                            ),
+                                                          ),
+                                                          Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: KPrimaryColor
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                            ),
+                                                            margin:
+                                                                EdgeInsets.all(
+                                                                    5.0),
+                                                            child: categoryResults[index]
+                                                                            [
+                                                                            'user']
+                                                                        [
+                                                                        'user_vedio'] !=
+                                                                    null
+                                                                ? Column(
+                                                                    children: [
+                                                                      SizedBox(
+                                                                        height:
+                                                                            30.0,
+                                                                      ),
+                                                                      Text(
+                                                                        "Play Skills Video",
+                                                                        style:
+                                                                            KPostStyle,
+                                                                      ),
+                                                                      Center(
+                                                                        child:
+                                                                            IconButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            Navigator.push(
+                                                                                context,
+                                                                                MaterialPageRoute(
+                                                                                    builder: (context) => SkillsVideo(
+                                                                                          userName: categoryResults[index]['user']['name'],
+                                                                                          videoUrl: '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
+                                                                                        )));
+                                                                          },
+                                                                          icon:
+                                                                              Icon(
+                                                                            Icons.play_arrow,
+                                                                          ),
+                                                                          iconSize:
+                                                                              70.0,
+                                                                          color:
+                                                                              KSubPrimaryColor,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  )
+                                                                : Row(
+                                                                    children: [
+                                                                      SizedBox(
+                                                                        width:
+                                                                            5.0,
+                                                                      ),
+                                                                      Center(
+                                                                        child:
+                                                                            Text(
+                                                                          "No video available",
+                                                                          style:
+                                                                              KSubPostStyle,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                 color: KPrimaryColor,
                                               ),
                                             ],
@@ -2130,81 +2356,175 @@ class _HomeScreenState extends State<HomeScreen> {
                                               Container(
                                                 height: 200.0,
                                                 width: 150.0,
-                                                child: Stack(
-                                                  children: [
-                                                    Container(
-                                                      child: Image(
-                                                        image: AssetImage(
-                                                            "assets/images/basketballplayground.jpg"),
-                                                        fit: BoxFit.cover,
-                                                        width: double.infinity,
-                                                        height: double.infinity,
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        color: KPrimaryColor
-                                                            .withOpacity(0.5),
-                                                      ),
-                                                      margin:
-                                                          EdgeInsets.all(5.0),
-                                                      child: categoryResults[
-                                                                          index]
-                                                                      ['user'][
-                                                                  'user_vedio'] !=
-                                                              null
-                                                          ? Column(
-                                                              children: [
-                                                                SizedBox(
-                                                                  height: 30.0,
-                                                                ),
-                                                                Text(
-                                                                  "Play Skills Video",
-                                                                  style:
-                                                                      KPostStyle,
-                                                                ),
-                                                                Center(
-                                                                  child:
-                                                                      IconButton(
-                                                                    onPressed:
-                                                                        () {
-                                                                      Navigator.push(
-                                                                          context,
-                                                                          MaterialPageRoute(
-                                                                              builder: (context) => SkillsVideo(
-                                                                                    userName: categoryResults[index]['user']['name'],
-                                                                                    videoUrl: '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
-                                                                                  )));
-                                                                    },
-                                                                    icon: Icon(
-                                                                      Icons
-                                                                          .play_arrow,
-                                                                    ),
-                                                                    iconSize:
-                                                                        70.0,
-                                                                    color:
-                                                                        KSubPrimaryColor,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            )
-                                                          : Row(
-                                                              children: [
-                                                                SizedBox(
-                                                                  width: 5.0,
-                                                                ),
-                                                                Center(
-                                                                  child: Text(
-                                                                    "No video available",
-                                                                    style:
-                                                                        KSubPostStyle,
-                                                                  ),
-                                                                ),
-                                                              ],
+                                                child: kIsWeb
+                                                    ? Stack(
+                                                        children: [
+                                                          Container(
+                                                            child: Image(
+                                                              image: AssetImage(
+                                                                  "assets/images/basketballplayground.jpg"),
+                                                              fit: BoxFit.cover,
+                                                              width: double
+                                                                  .infinity,
+                                                              height: double
+                                                                  .infinity,
                                                             ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                          ),
+                                                          Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: KPrimaryColor
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                            ),
+                                                            margin:
+                                                                EdgeInsets.all(
+                                                                    5.0),
+                                                            child: categoryResults[index]
+                                                                            [
+                                                                            'user']
+                                                                        [
+                                                                        'user_vedio'] !=
+                                                                    null
+                                                                ? Column(
+                                                                    children: [
+                                                                      SizedBox(
+                                                                        height:
+                                                                            30.0,
+                                                                      ),
+                                                                      Text(
+                                                                        "Play Skills Video",
+                                                                        style:
+                                                                            KPostStyle,
+                                                                      ),
+                                                                      Center(
+                                                                        child:
+                                                                            IconButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            Navigator.push(
+                                                                                context,
+                                                                                MaterialPageRoute(
+                                                                                    builder: (context) => VideoApp(
+                                                                                          userName: categoryResults[index]['user']['name'],
+                                                                                          videoUrl: '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
+                                                                                        )));
+                                                                          },
+                                                                          icon:
+                                                                              Icon(
+                                                                            Icons.play_arrow,
+                                                                          ),
+                                                                          iconSize:
+                                                                              70.0,
+                                                                          color:
+                                                                              KSubPrimaryColor,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  )
+                                                                : Row(
+                                                                    children: [
+                                                                      SizedBox(
+                                                                        width:
+                                                                            5.0,
+                                                                      ),
+                                                                      Center(
+                                                                        child:
+                                                                            Text(
+                                                                          "No video available",
+                                                                          style:
+                                                                              KSubPostStyle,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : Stack(
+                                                        children: [
+                                                          Container(
+                                                            child: Image(
+                                                              image: AssetImage(
+                                                                  "assets/images/basketballplayground.jpg"),
+                                                              fit: BoxFit.cover,
+                                                              width: double
+                                                                  .infinity,
+                                                              height: double
+                                                                  .infinity,
+                                                            ),
+                                                          ),
+                                                          Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: KPrimaryColor
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                            ),
+                                                            margin:
+                                                                EdgeInsets.all(
+                                                                    5.0),
+                                                            child: categoryResults[index]
+                                                                            [
+                                                                            'user']
+                                                                        [
+                                                                        'user_vedio'] !=
+                                                                    null
+                                                                ? Column(
+                                                                    children: [
+                                                                      SizedBox(
+                                                                        height:
+                                                                            30.0,
+                                                                      ),
+                                                                      Text(
+                                                                        "Play Skills Video",
+                                                                        style:
+                                                                            KPostStyle,
+                                                                      ),
+                                                                      Center(
+                                                                        child:
+                                                                            IconButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            Navigator.push(
+                                                                                context,
+                                                                                MaterialPageRoute(
+                                                                                    builder: (context) => SkillsVideo(
+                                                                                          userName: categoryResults[index]['user']['name'],
+                                                                                          videoUrl: '$ImageServerPrefix/${categoryResults[index]['user']['user_vedio']}',
+                                                                                        )));
+                                                                          },
+                                                                          icon:
+                                                                              Icon(
+                                                                            Icons.play_arrow,
+                                                                          ),
+                                                                          iconSize:
+                                                                              70.0,
+                                                                          color:
+                                                                              KSubPrimaryColor,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  )
+                                                                : Row(
+                                                                    children: [
+                                                                      SizedBox(
+                                                                        width:
+                                                                            5.0,
+                                                                      ),
+                                                                      Center(
+                                                                        child:
+                                                                            Text(
+                                                                          "No video available",
+                                                                          style:
+                                                                              KSubPostStyle,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                 color: KPrimaryColor,
                                               ),
                                             ],
@@ -2241,538 +2561,1089 @@ class _HomeScreenState extends State<HomeScreen> {
 
   ///***************************************ADD CARD UI*************************************************************/
   addCard() {
-    return Stack(
-      children: [
-        Container(
-          child: Image(
-            image: AssetImage("assets/images/10839772.jpg"),
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
-        ),
-        ListView(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: KPrimaryColor.withOpacity(0.5),
+    return kIsWeb
+        ? Stack(
+            children: [
+              Container(
+                child: Image(
+                  image: AssetImage("assets/images/10839772.jpg"),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
               ),
-              margin: EdgeInsets.all(10.0),
-              padding: EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              Center(
+                child: Container(
+                  width: 435.0,
+                  height: double.infinity,
+                  child: ListView(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: KPrimaryColor.withOpacity(0.5),
+                        ),
+                        margin: EdgeInsets.all(10.0),
+                        padding: EdgeInsets.all(10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              child: Text(
+                                "Add card information",
+                                style: KSubPrimaryFontStyleLarge,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 45.0,
+                              padding: EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                color: KSubPrimaryColor,
+                                border: Border.all(
+                                  width: 1.0,
+                                  color: KSubPrimaryColor,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(40.0)),
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  selectCountry(context);
+                                },
+                                child: DropdownButton<dynamic>(
+                                  icon: Icon(
+                                    Icons.public,
+                                    color: KPrimaryColor,
+                                  ),
+                                  iconSize: 25.0,
+                                  style: KDropdownButtonStyle,
+                                  underline: Container(
+                                    width: 0.0,
+                                  ),
+                                  isExpanded: true,
+                                  hint: Text(selectedCountry),
+                                  onChanged: (newValuex) {},
+                                  items: [],
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5.0,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 45.0,
+                              padding: EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                color: KSubPrimaryColor,
+                                border: Border.all(
+                                  width: 1.0,
+                                  color: KSubPrimaryColor,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(40.0)),
+                              ),
+                              child: DropdownButton(
+                                icon: Icon(
+                                  Icons.arrow_drop_down,
+                                  color: KPrimaryColor,
+                                ),
+                                iconSize: 25.0,
+                                style: KDropdownButtonStyle,
+                                underline: Container(
+                                  width: 0.0,
+                                ),
+                                isExpanded: true,
+                                hint: Text('Type'),
+                                value: _selectedType,
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    _selectedType = newValue.toString();
+                                  });
+                                },
+                                items: _types.map((type) {
+                                  return DropdownMenuItem(
+                                    child: Text(type),
+                                    value: type,
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5.0,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 45.0,
+                              padding: EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                color: KSubPrimaryColor,
+                                border: Border.all(
+                                  width: 1.0,
+                                  color: KSubPrimaryColor,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(40.0)),
+                              ),
+                              child: DropdownButton(
+                                icon: Icon(
+                                  Icons.arrow_drop_down,
+                                  color: KPrimaryColor,
+                                ),
+                                iconSize: 25.0,
+                                style: KDropdownButtonStyle,
+                                underline: Container(
+                                  width: 0.0,
+                                ),
+                                isExpanded: true,
+                                hint: Text('Category'),
+                                value: _selectedCategory,
+                                onChanged: (newValuex) {
+                                  setState(() {
+                                    _selectedCategory = newValuex.toString();
+                                  });
+                                },
+                                items: _category.map((category) {
+                                  return DropdownMenuItem(
+                                    child: Text(category),
+                                    value: category,
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5.0,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 45.0,
+                              padding: EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                color: KSubPrimaryColor,
+                                border: Border.all(
+                                  width: 1.0,
+                                  color: KSubPrimaryColor,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(40.0)),
+                              ),
+                              child: DropdownButton(
+                                icon: Icon(
+                                  Icons.arrow_drop_down,
+                                  color: KPrimaryColor,
+                                ),
+                                iconSize: 25.0,
+                                style: KDropdownButtonStyle,
+                                underline: Container(
+                                  width: 0.0,
+                                ),
+                                isExpanded: true,
+                                hint: Text('Favotite Leg or Hand'),
+                                value: selectedFavotite,
+                                onChanged: (newValuex) {
+                                  setState(() {
+                                    selectedFavotite = newValuex.toString();
+                                  });
+                                },
+                                items: favorites.map((favorite) {
+                                  return DropdownMenuItem(
+                                    child: Text(favorite),
+                                    value: favorite,
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5.0,
+                            ),
+                            _selectedCategory == 'Category'
+                                ? Container()
+                                : _selectedCategory == 'Football'
+                                    ? Column(
+                                        children: [
+                                          Container(
+                                            width: double.infinity,
+                                            height: 45.0,
+                                            padding: EdgeInsets.all(10.0),
+                                            decoration: BoxDecoration(
+                                              color: KSubPrimaryColor,
+                                              border: Border.all(
+                                                width: 1.0,
+                                                color: KSubPrimaryColor,
+                                              ),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(40.0)),
+                                            ),
+                                            child: DropdownButton(
+                                              icon: Icon(
+                                                Icons.arrow_drop_down,
+                                                color: KPrimaryColor,
+                                              ),
+                                              iconSize: 25.0,
+                                              style: KDropdownButtonStyle,
+                                              underline: Container(
+                                                width: 0.0,
+                                              ),
+                                              isExpanded: true,
+                                              hint:
+                                                  Text('Select main position'),
+                                              value:
+                                                  selectedMainFootballPosition,
+                                              onChanged: (newValuex) {
+                                                setState(() {
+                                                  selectedMainFootballPosition =
+                                                      newValuex.toString();
+                                                });
+                                              },
+                                              items: footballPositions
+                                                  .map((position) {
+                                                return DropdownMenuItem(
+                                                  child: Text(position),
+                                                  value: position,
+                                                );
+                                              }).toList(),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 5.0,
+                                          ),
+                                          Container(
+                                            width: double.infinity,
+                                            height: 45.0,
+                                            padding: EdgeInsets.all(10.0),
+                                            decoration: BoxDecoration(
+                                              color: KSubPrimaryColor,
+                                              border: Border.all(
+                                                width: 1.0,
+                                                color: KSubPrimaryColor,
+                                              ),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(40.0)),
+                                            ),
+                                            child: DropdownButton(
+                                              icon: Icon(
+                                                Icons.arrow_drop_down,
+                                                color: KPrimaryColor,
+                                              ),
+                                              iconSize: 25.0,
+                                              style: KDropdownButtonStyle,
+                                              underline: Container(
+                                                width: 0.0,
+                                              ),
+                                              isExpanded: true,
+                                              hint:
+                                                  Text('Select other position'),
+                                              value:
+                                                  selectedOtherFootballPosition,
+                                              onChanged: (newValuex) {
+                                                setState(() {
+                                                  selectedOtherFootballPosition =
+                                                      newValuex.toString();
+                                                });
+                                              },
+                                              items: otherFootballPositions
+                                                  .map((position) {
+                                                return DropdownMenuItem(
+                                                  child: Text(position),
+                                                  value: position,
+                                                );
+                                              }).toList(),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : _selectedCategory == 'Basketball'
+                                        ? Column(
+                                            children: [
+                                              Container(
+                                                width: double.infinity,
+                                                height: 45.0,
+                                                padding: EdgeInsets.all(10.0),
+                                                decoration: BoxDecoration(
+                                                  color: KSubPrimaryColor,
+                                                  border: Border.all(
+                                                    width: 1.0,
+                                                    color: KSubPrimaryColor,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              40.0)),
+                                                ),
+                                                child: DropdownButton(
+                                                  icon: Icon(
+                                                    Icons.arrow_drop_down,
+                                                    color: KPrimaryColor,
+                                                  ),
+                                                  iconSize: 25.0,
+                                                  style: KDropdownButtonStyle,
+                                                  underline: Container(
+                                                    width: 0.0,
+                                                  ),
+                                                  isExpanded: true,
+                                                  hint: Text(
+                                                      'Select main position'),
+                                                  value:
+                                                      selectedMainBasketballPosition,
+                                                  onChanged: (newValuex) {
+                                                    setState(() {
+                                                      selectedMainBasketballPosition =
+                                                          newValuex.toString();
+                                                    });
+                                                  },
+                                                  items: basketballPositions
+                                                      .map((position) {
+                                                    return DropdownMenuItem(
+                                                      child: Text(position),
+                                                      value: position,
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 5.0,
+                                              ),
+                                              Container(
+                                                width: double.infinity,
+                                                height: 45.0,
+                                                padding: EdgeInsets.all(10.0),
+                                                decoration: BoxDecoration(
+                                                  color: KSubPrimaryColor,
+                                                  border: Border.all(
+                                                    width: 1.0,
+                                                    color: KSubPrimaryColor,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              40.0)),
+                                                ),
+                                                child: DropdownButton(
+                                                  icon: Icon(
+                                                    Icons.arrow_drop_down,
+                                                    color: KPrimaryColor,
+                                                  ),
+                                                  iconSize: 25.0,
+                                                  style: KDropdownButtonStyle,
+                                                  underline: Container(
+                                                    width: 0.0,
+                                                  ),
+                                                  isExpanded: true,
+                                                  hint: Text(
+                                                      'Select other position'),
+                                                  value:
+                                                      selectedOtherBasketballPosition,
+                                                  onChanged: (newValuex) {
+                                                    setState(() {
+                                                      selectedOtherBasketballPosition =
+                                                          newValuex.toString();
+                                                    });
+                                                  },
+                                                  items:
+                                                      otherBasketballPositions
+                                                          .map((position) {
+                                                    return DropdownMenuItem(
+                                                      child: Text(position),
+                                                      value: position,
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Container(),
+                            SizedBox(
+                              height: 5.0,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 45.0,
+                              child: heightAndWeightTextField(
+                                  heightTextController,
+                                  "Enter your height in cm"),
+                            ),
+                            SizedBox(
+                              height: 5.0,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 45.0,
+                              child: heightAndWeightTextField(
+                                  weightTextController,
+                                  "Enter your weight in kg"),
+                            ),
+                            SizedBox(
+                              height: 5.0,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 45.0,
+                              padding: EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                color: KSubPrimaryColor,
+                                border: Border.all(
+                                  width: 1.0,
+                                  color: KSubPrimaryColor,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(40.0)),
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  pickVideoForWeb();
+                                },
+                                child: DropdownButton<dynamic>(
+                                  icon: Icon(
+                                    Icons.movie,
+                                    color: KPrimaryColor,
+                                  ),
+                                  iconSize: 25.0,
+                                  style: KDropdownButtonStyle,
+                                  underline: Container(
+                                    width: 0.0,
+                                  ),
+                                  isExpanded: true,
+                                  hint: Text('Add skills video'),
+                                  onChanged: (value) {},
+                                  items: [],
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 50.0,
+                            ),
+                            Container(
+                              width: 150.0,
+                              height: 30.0,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 3.0,
+                                  color: KSubPrimaryColor,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(35.0)),
+                              ),
+                              child: Center(
+                                child: InkWell(
+                                  onTap: () {
+                                    addCardEvent();
+                                  },
+                                  child: Text(
+                                    "Add Card",
+                                    style: KSubSubPrimaryButtonsFontStyle,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 15.0,
+                            ),
+                            indicator,
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          )
+        : Stack(
+            children: [
+              Container(
+                child: Image(
+                  image: AssetImage("assets/images/10839772.jpg"),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+              ),
+              ListView(
                 children: [
                   Container(
-                    child: Text(
-                      "Add card information",
-                      style: KSubPrimaryFontStyleLarge,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 45.0,
-                    padding: EdgeInsets.all(10.0),
                     decoration: BoxDecoration(
-                      color: KSubPrimaryColor,
-                      border: Border.all(
-                        width: 1.0,
-                        color: KSubPrimaryColor,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                      color: KPrimaryColor.withOpacity(0.5),
                     ),
-                    child: InkWell(
-                      onTap: () {
-                        selectCountry(context);
-                      },
-                      child: DropdownButton<dynamic>(
-                        icon: Icon(
-                          Icons.public,
-                          color: KPrimaryColor,
+                    margin: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          child: Text(
+                            "Add card information",
+                            style: KSubPrimaryFontStyleLarge,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        iconSize: 25.0,
-                        style: KDropdownButtonStyle,
-                        underline: Container(
-                          width: 0.0,
+                        Container(
+                          width: double.infinity,
+                          height: 45.0,
+                          padding: EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                            color: KSubPrimaryColor,
+                            border: Border.all(
+                              width: 1.0,
+                              color: KSubPrimaryColor,
+                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(40.0)),
+                          ),
+                          child: InkWell(
+                            onTap: () {
+                              selectCountry(context);
+                            },
+                            child: DropdownButton<dynamic>(
+                              icon: Icon(
+                                Icons.public,
+                                color: KPrimaryColor,
+                              ),
+                              iconSize: 25.0,
+                              style: KDropdownButtonStyle,
+                              underline: Container(
+                                width: 0.0,
+                              ),
+                              isExpanded: true,
+                              hint: Text(selectedCountry),
+                              onChanged: (newValuex) {},
+                              items: [],
+                            ),
+                          ),
                         ),
-                        isExpanded: true,
-                        hint: Text(selectedCountry),
-                        onChanged: (newValuex) {},
-                        items: [],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 45.0,
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      color: KSubPrimaryColor,
-                      border: Border.all(
-                        width: 1.0,
-                        color: KSubPrimaryColor,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                    ),
-                    child: DropdownButton(
-                      icon: Icon(
-                        Icons.arrow_drop_down,
-                        color: KPrimaryColor,
-                      ),
-                      iconSize: 25.0,
-                      style: KDropdownButtonStyle,
-                      underline: Container(
-                        width: 0.0,
-                      ),
-                      isExpanded: true,
-                      hint: Text('Type'),
-                      value: _selectedType,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _selectedType = newValue.toString();
-                        });
-                      },
-                      items: _types.map((type) {
-                        return DropdownMenuItem(
-                          child: Text(type),
-                          value: type,
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 45.0,
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      color: KSubPrimaryColor,
-                      border: Border.all(
-                        width: 1.0,
-                        color: KSubPrimaryColor,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                    ),
-                    child: DropdownButton(
-                      icon: Icon(
-                        Icons.arrow_drop_down,
-                        color: KPrimaryColor,
-                      ),
-                      iconSize: 25.0,
-                      style: KDropdownButtonStyle,
-                      underline: Container(
-                        width: 0.0,
-                      ),
-                      isExpanded: true,
-                      hint: Text('Category'),
-                      value: _selectedCategory,
-                      onChanged: (newValuex) {
-                        setState(() {
-                          _selectedCategory = newValuex.toString();
-                        });
-                      },
-                      items: _category.map((category) {
-                        return DropdownMenuItem(
-                          child: Text(category),
-                          value: category,
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 45.0,
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      color: KSubPrimaryColor,
-                      border: Border.all(
-                        width: 1.0,
-                        color: KSubPrimaryColor,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                    ),
-                    child: DropdownButton(
-                      icon: Icon(
-                        Icons.arrow_drop_down,
-                        color: KPrimaryColor,
-                      ),
-                      iconSize: 25.0,
-                      style: KDropdownButtonStyle,
-                      underline: Container(
-                        width: 0.0,
-                      ),
-                      isExpanded: true,
-                      hint: Text('Favotite Leg or Hand'),
-                      value: selectedFavotite,
-                      onChanged: (newValuex) {
-                        setState(() {
-                          selectedFavotite = newValuex.toString();
-                        });
-                      },
-                      items: favorites.map((favorite) {
-                        return DropdownMenuItem(
-                          child: Text(favorite),
-                          value: favorite,
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  _selectedCategory == 'Category'
-                      ? Container()
-                      : _selectedCategory == 'Football'
-                          ? Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  height: 45.0,
-                                  padding: EdgeInsets.all(10.0),
-                                  decoration: BoxDecoration(
-                                    color: KSubPrimaryColor,
-                                    border: Border.all(
-                                      width: 1.0,
-                                      color: KSubPrimaryColor,
-                                    ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(40.0)),
-                                  ),
-                                  child: DropdownButton(
-                                    icon: Icon(
-                                      Icons.arrow_drop_down,
-                                      color: KPrimaryColor,
-                                    ),
-                                    iconSize: 25.0,
-                                    style: KDropdownButtonStyle,
-                                    underline: Container(
-                                      width: 0.0,
-                                    ),
-                                    isExpanded: true,
-                                    hint: Text('Select main position'),
-                                    value: selectedMainFootballPosition,
-                                    onChanged: (newValuex) {
-                                      setState(() {
-                                        selectedMainFootballPosition =
-                                            newValuex.toString();
-                                      });
-                                    },
-                                    items: footballPositions.map((position) {
-                                      return DropdownMenuItem(
-                                        child: Text(position),
-                                        value: position,
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 5.0,
-                                ),
-                                Container(
-                                  width: double.infinity,
-                                  height: 45.0,
-                                  padding: EdgeInsets.all(10.0),
-                                  decoration: BoxDecoration(
-                                    color: KSubPrimaryColor,
-                                    border: Border.all(
-                                      width: 1.0,
-                                      color: KSubPrimaryColor,
-                                    ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(40.0)),
-                                  ),
-                                  child: DropdownButton(
-                                    icon: Icon(
-                                      Icons.arrow_drop_down,
-                                      color: KPrimaryColor,
-                                    ),
-                                    iconSize: 25.0,
-                                    style: KDropdownButtonStyle,
-                                    underline: Container(
-                                      width: 0.0,
-                                    ),
-                                    isExpanded: true,
-                                    hint: Text('Select other position'),
-                                    value: selectedOtherFootballPosition,
-                                    onChanged: (newValuex) {
-                                      setState(() {
-                                        selectedOtherFootballPosition =
-                                            newValuex.toString();
-                                      });
-                                    },
-                                    items:
-                                        otherFootballPositions.map((position) {
-                                      return DropdownMenuItem(
-                                        child: Text(position),
-                                        value: position,
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              ],
-                            )
-                          : _selectedCategory == 'Basketball'
-                              ? Column(
-                                  children: [
-                                    Container(
-                                      width: double.infinity,
-                                      height: 45.0,
-                                      padding: EdgeInsets.all(10.0),
-                                      decoration: BoxDecoration(
-                                        color: KSubPrimaryColor,
-                                        border: Border.all(
-                                          width: 1.0,
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 45.0,
+                          padding: EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                            color: KSubPrimaryColor,
+                            border: Border.all(
+                              width: 1.0,
+                              color: KSubPrimaryColor,
+                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(40.0)),
+                          ),
+                          child: DropdownButton(
+                            icon: Icon(
+                              Icons.arrow_drop_down,
+                              color: KPrimaryColor,
+                            ),
+                            iconSize: 25.0,
+                            style: KDropdownButtonStyle,
+                            underline: Container(
+                              width: 0.0,
+                            ),
+                            isExpanded: true,
+                            hint: Text('Type'),
+                            value: _selectedType,
+                            onChanged: (newValue) {
+                              setState(() {
+                                _selectedType = newValue.toString();
+                              });
+                            },
+                            items: _types.map((type) {
+                              return DropdownMenuItem(
+                                child: Text(type),
+                                value: type,
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 45.0,
+                          padding: EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                            color: KSubPrimaryColor,
+                            border: Border.all(
+                              width: 1.0,
+                              color: KSubPrimaryColor,
+                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(40.0)),
+                          ),
+                          child: DropdownButton(
+                            icon: Icon(
+                              Icons.arrow_drop_down,
+                              color: KPrimaryColor,
+                            ),
+                            iconSize: 25.0,
+                            style: KDropdownButtonStyle,
+                            underline: Container(
+                              width: 0.0,
+                            ),
+                            isExpanded: true,
+                            hint: Text('Category'),
+                            value: _selectedCategory,
+                            onChanged: (newValuex) {
+                              setState(() {
+                                _selectedCategory = newValuex.toString();
+                              });
+                            },
+                            items: _category.map((category) {
+                              return DropdownMenuItem(
+                                child: Text(category),
+                                value: category,
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 45.0,
+                          padding: EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                            color: KSubPrimaryColor,
+                            border: Border.all(
+                              width: 1.0,
+                              color: KSubPrimaryColor,
+                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(40.0)),
+                          ),
+                          child: DropdownButton(
+                            icon: Icon(
+                              Icons.arrow_drop_down,
+                              color: KPrimaryColor,
+                            ),
+                            iconSize: 25.0,
+                            style: KDropdownButtonStyle,
+                            underline: Container(
+                              width: 0.0,
+                            ),
+                            isExpanded: true,
+                            hint: Text('Favotite Leg or Hand'),
+                            value: selectedFavotite,
+                            onChanged: (newValuex) {
+                              setState(() {
+                                selectedFavotite = newValuex.toString();
+                              });
+                            },
+                            items: favorites.map((favorite) {
+                              return DropdownMenuItem(
+                                child: Text(favorite),
+                                value: favorite,
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        _selectedCategory == 'Category'
+                            ? Container()
+                            : _selectedCategory == 'Football'
+                                ? Column(
+                                    children: [
+                                      Container(
+                                        width: double.infinity,
+                                        height: 45.0,
+                                        padding: EdgeInsets.all(10.0),
+                                        decoration: BoxDecoration(
                                           color: KSubPrimaryColor,
+                                          border: Border.all(
+                                            width: 1.0,
+                                            color: KSubPrimaryColor,
+                                          ),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(40.0)),
                                         ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(40.0)),
+                                        child: DropdownButton(
+                                          icon: Icon(
+                                            Icons.arrow_drop_down,
+                                            color: KPrimaryColor,
+                                          ),
+                                          iconSize: 25.0,
+                                          style: KDropdownButtonStyle,
+                                          underline: Container(
+                                            width: 0.0,
+                                          ),
+                                          isExpanded: true,
+                                          hint: Text('Select main position'),
+                                          value: selectedMainFootballPosition,
+                                          onChanged: (newValuex) {
+                                            setState(() {
+                                              selectedMainFootballPosition =
+                                                  newValuex.toString();
+                                            });
+                                          },
+                                          items:
+                                              footballPositions.map((position) {
+                                            return DropdownMenuItem(
+                                              child: Text(position),
+                                              value: position,
+                                            );
+                                          }).toList(),
+                                        ),
                                       ),
-                                      child: DropdownButton(
-                                        icon: Icon(
-                                          Icons.arrow_drop_down,
-                                          color: KPrimaryColor,
-                                        ),
-                                        iconSize: 25.0,
-                                        style: KDropdownButtonStyle,
-                                        underline: Container(
-                                          width: 0.0,
-                                        ),
-                                        isExpanded: true,
-                                        hint: Text('Select main position'),
-                                        value: selectedMainBasketballPosition,
-                                        onChanged: (newValuex) {
-                                          setState(() {
-                                            selectedMainBasketballPosition =
-                                                newValuex.toString();
-                                          });
-                                        },
-                                        items:
-                                            basketballPositions.map((position) {
-                                          return DropdownMenuItem(
-                                            child: Text(position),
-                                            value: position,
-                                          );
-                                        }).toList(),
+                                      SizedBox(
+                                        height: 5.0,
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 5.0,
-                                    ),
-                                    Container(
-                                      width: double.infinity,
-                                      height: 45.0,
-                                      padding: EdgeInsets.all(10.0),
-                                      decoration: BoxDecoration(
-                                        color: KSubPrimaryColor,
-                                        border: Border.all(
-                                          width: 1.0,
+                                      Container(
+                                        width: double.infinity,
+                                        height: 45.0,
+                                        padding: EdgeInsets.all(10.0),
+                                        decoration: BoxDecoration(
                                           color: KSubPrimaryColor,
+                                          border: Border.all(
+                                            width: 1.0,
+                                            color: KSubPrimaryColor,
+                                          ),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(40.0)),
                                         ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(40.0)),
+                                        child: DropdownButton(
+                                          icon: Icon(
+                                            Icons.arrow_drop_down,
+                                            color: KPrimaryColor,
+                                          ),
+                                          iconSize: 25.0,
+                                          style: KDropdownButtonStyle,
+                                          underline: Container(
+                                            width: 0.0,
+                                          ),
+                                          isExpanded: true,
+                                          hint: Text('Select other position'),
+                                          value: selectedOtherFootballPosition,
+                                          onChanged: (newValuex) {
+                                            setState(() {
+                                              selectedOtherFootballPosition =
+                                                  newValuex.toString();
+                                            });
+                                          },
+                                          items: otherFootballPositions
+                                              .map((position) {
+                                            return DropdownMenuItem(
+                                              child: Text(position),
+                                              value: position,
+                                            );
+                                          }).toList(),
+                                        ),
                                       ),
-                                      child: DropdownButton(
-                                        icon: Icon(
-                                          Icons.arrow_drop_down,
-                                          color: KPrimaryColor,
-                                        ),
-                                        iconSize: 25.0,
-                                        style: KDropdownButtonStyle,
-                                        underline: Container(
-                                          width: 0.0,
-                                        ),
-                                        isExpanded: true,
-                                        hint: Text('Select other position'),
-                                        value: selectedOtherBasketballPosition,
-                                        onChanged: (newValuex) {
-                                          setState(() {
-                                            selectedOtherBasketballPosition =
-                                                newValuex.toString();
-                                          });
-                                        },
-                                        items: otherBasketballPositions
-                                            .map((position) {
-                                          return DropdownMenuItem(
-                                            child: Text(position),
-                                            value: position,
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : Container(),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 45.0,
-                    child: heightAndWeightTextField(
-                        heightTextController, "Enter your height in cm"),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 45.0,
-                    child: heightAndWeightTextField(
-                        weightTextController, "Enter your weight in kg"),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 45.0,
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      color: KSubPrimaryColor,
-                      border: Border.all(
-                        width: 1.0,
-                        color: KSubPrimaryColor,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                    ),
-                    child: DropdownButton(
-                      icon: Icon(
-                        Icons.movie,
-                        color: KPrimaryColor,
-                      ),
-                      iconSize: 25.0,
-                      style: KDropdownButtonStyle,
-                      underline: Container(
-                        width: 0.0,
-                      ),
-                      isExpanded: true,
-                      hint: Text('Add skills video'),
-                      value: selectedSkillsVideo,
-                      onChanged: (newValueOne) {
-                        setState(() {
-                          selectedSkillsVideo = newValueOne.toString();
-                        });
-                        check();
-                      },
-                      items: skillsVideo.map((videoOption) {
-                        return DropdownMenuItem(
-                          child: Text(videoOption),
-                          value: videoOption,
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 50.0,
-                  ),
-                  Container(
-                    width: 150.0,
-                    height: 30.0,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 3.0,
-                        color: KSubPrimaryColor,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(35.0)),
-                    ),
-                    child: Center(
-                      child: InkWell(
-                        onTap: () {
-                          addCardEvent();
-                        },
-                        child: Text(
-                          "Add Card",
-                          style: KSubSubPrimaryButtonsFontStyle,
+                                    ],
+                                  )
+                                : _selectedCategory == 'Basketball'
+                                    ? Column(
+                                        children: [
+                                          Container(
+                                            width: double.infinity,
+                                            height: 45.0,
+                                            padding: EdgeInsets.all(10.0),
+                                            decoration: BoxDecoration(
+                                              color: KSubPrimaryColor,
+                                              border: Border.all(
+                                                width: 1.0,
+                                                color: KSubPrimaryColor,
+                                              ),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(40.0)),
+                                            ),
+                                            child: DropdownButton(
+                                              icon: Icon(
+                                                Icons.arrow_drop_down,
+                                                color: KPrimaryColor,
+                                              ),
+                                              iconSize: 25.0,
+                                              style: KDropdownButtonStyle,
+                                              underline: Container(
+                                                width: 0.0,
+                                              ),
+                                              isExpanded: true,
+                                              hint:
+                                                  Text('Select main position'),
+                                              value:
+                                                  selectedMainBasketballPosition,
+                                              onChanged: (newValuex) {
+                                                setState(() {
+                                                  selectedMainBasketballPosition =
+                                                      newValuex.toString();
+                                                });
+                                              },
+                                              items: basketballPositions
+                                                  .map((position) {
+                                                return DropdownMenuItem(
+                                                  child: Text(position),
+                                                  value: position,
+                                                );
+                                              }).toList(),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 5.0,
+                                          ),
+                                          Container(
+                                            width: double.infinity,
+                                            height: 45.0,
+                                            padding: EdgeInsets.all(10.0),
+                                            decoration: BoxDecoration(
+                                              color: KSubPrimaryColor,
+                                              border: Border.all(
+                                                width: 1.0,
+                                                color: KSubPrimaryColor,
+                                              ),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(40.0)),
+                                            ),
+                                            child: DropdownButton(
+                                              icon: Icon(
+                                                Icons.arrow_drop_down,
+                                                color: KPrimaryColor,
+                                              ),
+                                              iconSize: 25.0,
+                                              style: KDropdownButtonStyle,
+                                              underline: Container(
+                                                width: 0.0,
+                                              ),
+                                              isExpanded: true,
+                                              hint:
+                                                  Text('Select other position'),
+                                              value:
+                                                  selectedOtherBasketballPosition,
+                                              onChanged: (newValuex) {
+                                                setState(() {
+                                                  selectedOtherBasketballPosition =
+                                                      newValuex.toString();
+                                                });
+                                              },
+                                              items: otherBasketballPositions
+                                                  .map((position) {
+                                                return DropdownMenuItem(
+                                                  child: Text(position),
+                                                  value: position,
+                                                );
+                                              }).toList(),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : Container(),
+                        SizedBox(
+                          height: 5.0,
                         ),
-                      ),
+                        Container(
+                          width: double.infinity,
+                          height: 45.0,
+                          child: heightAndWeightTextField(
+                              heightTextController, "Enter your height in cm"),
+                        ),
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 45.0,
+                          child: heightAndWeightTextField(
+                              weightTextController, "Enter your weight in kg"),
+                        ),
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 45.0,
+                          padding: EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                            color: KSubPrimaryColor,
+                            border: Border.all(
+                              width: 1.0,
+                              color: KSubPrimaryColor,
+                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(40.0)),
+                          ),
+                          child: DropdownButton(
+                            icon: Icon(
+                              Icons.movie,
+                              color: KPrimaryColor,
+                            ),
+                            iconSize: 25.0,
+                            style: KDropdownButtonStyle,
+                            underline: Container(
+                              width: 0.0,
+                            ),
+                            isExpanded: true,
+                            hint: Text('Add skills video'),
+                            value: selectedSkillsVideo,
+                            onChanged: (newValueOne) {
+                              setState(() {
+                                selectedSkillsVideo = newValueOne.toString();
+                              });
+                              check();
+                            },
+                            items: skillsVideo.map((videoOption) {
+                              return DropdownMenuItem(
+                                child: Text(videoOption),
+                                value: videoOption,
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 50.0,
+                        ),
+                        Container(
+                          width: 150.0,
+                          height: 30.0,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 3.0,
+                              color: KSubPrimaryColor,
+                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(35.0)),
+                          ),
+                          child: Center(
+                            child: InkWell(
+                              onTap: () {
+                                addCardEvent();
+                              },
+                              child: Text(
+                                "Add Card",
+                                style: KSubSubPrimaryButtonsFontStyle,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15.0,
+                        ),
+                        indicator,
+                      ],
                     ),
                   ),
-                  SizedBox(
-                    height: 15.0,
-                  ),
-                  indicator,
                 ],
               ),
-            ),
-          ],
-        ),
-      ],
-    );
+            ],
+          );
   }
 
-  ///***************************************ADDPOST UI*************************************************************/
+  ///***************************************ADD POST UI*************************************************************/
   addPost() {
     return ListView(
       shrinkWrap: true,
       children: [
-        Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              SizedBox(
-                width: 10.0,
-              ),
-              postTextField(postTextController, "Write a new post..."),
-              SizedBox(
-                height: 40.0,
-              ),
-              postHasImage
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Stack(
-                          children: [
-                            Container(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              width: 350.0,
-                              height: 200.0,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                                image: kIsWeb
-                                    ? DecorationImage(
-                                        image: NetworkImage(postImage!.path),
+        kIsWeb
+            ? Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    postTextField(postTextController, "Write a new post..."),
+                    SizedBox(
+                      height: 40.0,
+                    ),
+                    postHasImageWeb
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Stack(
+                                children: [
+                                  Container(
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    width: 350.0,
+                                    height: 200.0,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0)),
+                                      image: DecorationImage(
+                                        image: MemoryImage(
+                                          postImageWebBytesData,
+                                        ),
                                         fit: BoxFit.cover,
-                                      )
-                                    : DecorationImage(
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 8.0,
+                                    right: 8.0,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          postHasImageWeb = false;
+                                        });
+                                      },
+                                      child: Icon(
+                                        Icons.remove_circle,
+                                        size: 25.0,
+                                        color: KWarningColor,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        : Container(),
+                  ],
+                ),
+              )
+            : Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    postTextField(postTextController, "Write a new post..."),
+                    SizedBox(
+                      height: 40.0,
+                    ),
+                    postHasImage
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Stack(
+                                children: [
+                                  Container(
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    width: 350.0,
+                                    height: 200.0,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0)),
+                                      image: DecorationImage(
                                         image: FileImage(postImage!),
                                         fit: BoxFit.cover,
                                       ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 8.0,
+                                    right: 8.0,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          postHasImage = false;
+                                          postImage = null;
+                                        });
+                                      },
+                                      child: Icon(
+                                        Icons.remove_circle,
+                                        size: 25.0,
+                                        color: KWarningColor,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            Positioned(
-                              top: 8.0,
-                              right: 8.0,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    postHasImage = false;
-                                    postImage = null;
-                                  });
-                                },
-                                child: Icon(
-                                  Icons.remove_circle,
-                                  size: 25.0,
-                                  color: KWarningColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    )
-                  : Container(),
-            ],
-          ),
-        ),
+                            ],
+                          )
+                        : Container(),
+                  ],
+                ),
+              ),
       ],
     );
   }
@@ -3527,6 +4398,21 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void pickVideoForWeb() async {
+    FilePickerResult? videoWeb;
+    videoWeb = await FilePicker.platform.pickFiles(
+      type: FileType.video,
+    );
+    if (videoWeb != null) {
+      setState(() {
+        videoNameWeb = videoWeb!.files.single.name;
+        videoWebBytesData = videoWeb.files.single.bytes!;
+        hasVideoWeb = true;
+        videoWebBytes = videoWebBytesData.cast();
+      });
+    }
+  }
+
   addCardEvent() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
@@ -3565,11 +4451,6 @@ class _HomeScreenState extends State<HomeScreen> {
       Warning().errorMessage(context,
           title: "Weight field can't be empty !",
           message: "Please enter your weight",
-          icons: Icons.warning);
-    } else if (hasVideo == false) {
-      Warning().errorMessage(context,
-          title: "Video field can't be empty !",
-          message: "Please take or choose a video",
           icons: Icons.warning);
     } else {
       if (_selectedType == 'Admin') {
@@ -3648,21 +4529,50 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         }
       }
-      userProfileBloc.add(AddCardButtonPressed(
-        country: selectedCountry,
-        type: typeID,
-        category: categoryID,
-        favorite: selectedFavotite,
-        mainPosition: mainPosition,
-        otherPosition: otherPosition,
-        height: heightTextController.text,
-        weight: weightTextController.text,
-        video: userVideo,
-      ));
+      if (kIsWeb) {
+        if (hasVideoWeb == false) {
+          Warning().errorMessage(context,
+              title: "Video field can't be empty !",
+              message: "Please choose a video",
+              icons: Icons.warning);
+        } else {
+          userProfileBloc.add(AddCardButtonPressedWeb(
+            country: selectedCountry,
+            type: typeID,
+            category: categoryID,
+            favorite: selectedFavotite,
+            mainPosition: mainPosition,
+            otherPosition: otherPosition,
+            height: heightTextController.text,
+            weight: weightTextController.text,
+            video: videoWebBytes,
+            videoName: videoNameWeb,
+          ));
+        }
+      } else {
+        if (hasVideo == false) {
+          Warning().errorMessage(context,
+              title: "Video field can't be empty !",
+              message: "Please take or choose a video",
+              icons: Icons.warning);
+        } else {
+          userProfileBloc.add(AddCardButtonPressed(
+            country: selectedCountry,
+            type: typeID,
+            category: categoryID,
+            favorite: selectedFavotite,
+            mainPosition: mainPosition,
+            otherPosition: otherPosition,
+            height: heightTextController.text,
+            weight: weightTextController.text,
+            video: userVideo,
+          ));
+        }
+      }
     }
   }
 
-  ///***************************************ADDPOST LOGIC*************************************************************/
+  ///***************************************ADD POST LOGIC*************************************************************/
   Future chooseImage() async {
     final source = ImageSource.gallery;
     final pickedFile = await ImagePicker().pickImage(source: source);
@@ -3679,6 +4589,21 @@ class _HomeScreenState extends State<HomeScreen> {
       postImage = File(pickedFile!.path);
       postHasImage = true;
     });
+  }
+
+  void pickPostImageForWeb() async {
+    FilePickerResult? postImageWeb;
+    postImageWeb = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+    if (postImageWeb != null) {
+      setState(() {
+        postImageNameWeb = postImageWeb!.files.single.name;
+        postImageWebBytesData = postImageWeb.files.single.bytes!;
+        postHasImageWeb = true;
+        postImageWebBytes = postImageWebBytesData.cast();
+      });
+    }
   }
 
   addPostButton() async {
@@ -3704,6 +4629,18 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         postHasImage = false;
         postImage = null;
+      });
+    } else if (kIsWeb && postHasImageWeb == true) {
+      userProfileBloc.add(
+        AddNewPostWithImageFiredWeb(
+          post: postTextController.text,
+          image: postImageWebBytes,
+          imageName: postImageNameWeb,
+        ),
+      );
+      post.clear();
+      setState(() {
+        postHasImageWeb = false;
       });
     } else {
       userProfileBloc

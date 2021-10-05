@@ -13,6 +13,7 @@ import 'User_Interface/landing_screen.dart';
 import 'User_Interface/findAccountByPhone_screen.dart';
 import 'User_Interface/signIn_screen.dart';
 import 'User_Interface/signUp_screen.dart';
+// import 'User_Interface/signUp_screen_web.dart';
 
 Future<void> _messageHandler(RemoteMessage message) async {
   print(message.notification!.body);
@@ -52,6 +53,7 @@ class Initial extends StatelessWidget {
           '/': (context) => Landing(),
           '/SignIn': (context) => SignIn(),
           '/SignUp': (context) => SignUp(),
+          // '/SignUpWeb': (context) => SignUpWeb(),
           '/Home': (context) => Home(),
           '/FindAccount': (context) => FindAccountByPhone(),
         },

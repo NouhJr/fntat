@@ -114,6 +114,18 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
         yield UpdatePictureSuccessState(
             message: "Picture updated successfully");
       }
+    } else if (event is EditPictureButtonPressedWeb) {
+      yield UserProfileLoadingState();
+      var editPictureData = await api.updateProfilePictureWeb(
+        event.newPicture,
+        event.newPictureName,
+      );
+      if (editPictureData['success'] == false || editPictureData == 400) {
+        yield UpdatePictureErrorState(message: "Failed to update picture");
+      } else if (editPictureData['success'] == true) {
+        yield UpdatePictureSuccessState(
+            message: "Picture updated successfully");
+      }
     } else if (event is EditBirthDateButtonPressed) {
       yield UserProfileLoadingState();
       var editBDateData = await api.updateBirthDate(event.birthDate);
@@ -137,6 +149,19 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       yield UserProfileLoadingState();
       var addPostWithImageData =
           await api.addPostWithImage(event.post, event.image);
+      if (addPostWithImageData == 400 ||
+          addPostWithImageData['success'] == false) {
+        yield AddPostErrorState();
+      } else if (addPostWithImageData['success'] == true) {
+        yield AddPostSuccessState();
+      }
+    } else if (event is AddNewPostWithImageFiredWeb) {
+      yield UserProfileLoadingState();
+      var addPostWithImageData = await api.addPostWithImageWeb(
+        event.post,
+        event.image,
+        event.imageName,
+      );
       if (addPostWithImageData == 400 ||
           addPostWithImageData['success'] == false) {
         yield AddPostErrorState();
@@ -274,9 +299,40 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
         prefs.setString("VIDEO", cardData['data']['user_vedio']);
         yield AddCardSuccessState();
       }
+    } else if (event is AddCardButtonPressedWeb) {
+      yield UserProfileLoadingState();
+      var cardData = await api.addCardWeb(
+        event.country,
+        event.type,
+        event.category,
+        event.favorite,
+        event.height,
+        event.weight,
+        event.mainPosition,
+        event.otherPosition,
+        event.video,
+        event.videoName,
+      );
+      if (cardData == 400 || cardData['success'] == false) {
+        yield AddCardErrorState();
+      } else if (cardData['success'] == true) {
+        prefs.setString("VIDEO", cardData['data']['user_vedio']);
+        yield AddCardSuccessState();
+      }
     } else if (event is EditCoverPhotoButtonPressed) {
       yield UserProfileLoadingState();
       var updateCoverData = await api.updateCoverPhoto(event.newPhoto);
+      if (updateCoverData == 400 || updateCoverData['success'] == false) {
+        yield UpdateCoverPhotoErrorState();
+      } else if (updateCoverData['success'] == true) {
+        yield UpdateCoverPhotoSuccessState();
+      }
+    } else if (event is EditCoverPhotoButtonPressedWeb) {
+      yield UserProfileLoadingState();
+      var updateCoverData = await api.updateCoverPhotoWeb(
+        event.newPhoto,
+        event.newPhotoName,
+      );
       if (updateCoverData == 400 || updateCoverData['success'] == false) {
         yield UpdateCoverPhotoErrorState();
       } else if (updateCoverData['success'] == true) {

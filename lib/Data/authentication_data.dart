@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-// import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -33,17 +32,40 @@ class AuthApi {
     File coverPhoto,
   ) async {
     String profilePictureFileName = profilePicture.path.split('/').last;
-    // Uint8List profileBytesData =
-    //     Base64Decoder().convert(profilePicture.toString().split(",").last);
-    // List<int> profileBytes = profileBytesData;
-    // print('profile: $profilePictureFileName');
-
     String coverPhotoFileName = coverPhoto.path.split('/').last;
-    // Uint8List coverBytesData =
-    //     Base64Decoder().convert(coverPhoto.toString().split(",").last);
-    // List<int> coverBytes = coverBytesData;
-    // print('cover: $coverPhotoFileName');
+    FormData formData = FormData.fromMap({
+      "name": name,
+      "email": email,
+      "password": password,
+      "password_confirmation": passwordConfirmation,
+      "phone": phone,
+      "birth_date": birthDate,
+      "image": await MultipartFile.fromFile(profilePicture.path,
+          filename: profilePictureFileName),
+      "cover_image": await MultipartFile.fromFile(coverPhoto.path,
+          filename: coverPhotoFileName),
+    });
+    try {
+      var res = await dio.post('$ServerUrl/register', data: formData);
+      final data = res.data;
+      return data;
+    } on Exception catch (_) {
+      return 400;
+    }
+  }
 
+  signUpForWeb(
+    String name,
+    String email,
+    String phone,
+    String password,
+    String passwordConfirmation,
+    String birthDate,
+    List<int> profilePicture,
+    String profilePictureName,
+    List<int> coverPhoto,
+    String coverPhotoName,
+  ) async {
     FormData formData = FormData.fromMap({
       "name": name,
       "email": email,
@@ -52,19 +74,9 @@ class AuthApi {
       "phone": phone,
       "birth_date": birthDate,
       "image":
-          // MultipartFile.fromBytes(
-          //   profileBytes,
-          //   //filename: profilePictureFileName,
-          // ),
-          await MultipartFile.fromFile(profilePicture.path,
-              filename: profilePictureFileName),
+          MultipartFile.fromBytes(profilePicture, filename: profilePictureName),
       "cover_image":
-          // MultipartFile.fromBytes(
-          //   coverBytes,
-          //   //filename: coverPhotoFileName,
-          // ),
-          await MultipartFile.fromFile(coverPhoto.path,
-              filename: coverPhotoFileName),
+          MultipartFile.fromBytes(coverPhoto, filename: coverPhotoName),
     });
     try {
       var res = await dio.post('$ServerUrl/register', data: formData);

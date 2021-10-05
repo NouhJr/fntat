@@ -132,6 +132,32 @@ class UserProfileApi {
     }
   }
 
+  updateProfilePictureWeb(
+    List<int> picture,
+    String pictureName,
+  ) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    FormData formData = FormData.fromMap({
+      "image": MultipartFile.fromBytes(
+        picture,
+        filename: pictureName,
+      ),
+    });
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      var res = await dio.post(
+        '$ServerUrl/update-image-profile?image',
+        data: formData,
+      );
+      final data = res.data;
+      return data;
+    } on Exception catch (e) {
+      print(e.toString());
+      return 400;
+    }
+  }
+
   updateCoverPhoto(File newPhoto) async {
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("TOKEN");
@@ -139,6 +165,32 @@ class UserProfileApi {
     FormData formData = FormData.fromMap({
       "cover_image":
           await MultipartFile.fromFile(newPhoto.path, filename: fileName),
+    });
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      var res = await dio.post(
+        '$ServerUrl/update-cover-image-profile',
+        data: formData,
+      );
+      final data = res.data;
+      return data;
+    } on Exception catch (e) {
+      print(e.toString());
+      return 400;
+    }
+  }
+
+  updateCoverPhotoWeb(
+    List<int> photo,
+    String photoName,
+  ) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    FormData formData = FormData.fromMap({
+      "cover_image": MultipartFile.fromBytes(
+        photo,
+        filename: photoName,
+      ),
     });
     dio.options.headers["authorization"] = "Bearer $token";
     try {
@@ -319,6 +371,34 @@ class UserProfileApi {
     } on TimeoutException catch (err) {
       print(err.toString());
       return 400;
+    } on Exception catch (error) {
+      print(error.toString());
+      return 400;
+    }
+  }
+
+  addPostWithImageWeb(
+    String post,
+    List<int> image,
+    String imageName,
+  ) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    FormData formData = FormData.fromMap({
+      "post": post,
+      "image": MultipartFile.fromBytes(
+        image,
+        filename: imageName,
+      ),
+    });
+    dio.options.headers["authorization"] = "Bearer $token";
+    try {
+      final res = await dio.post(
+        '$ServerUrl/add-post',
+        data: formData,
+      );
+      final data = res.data;
+      return data;
     } on Exception catch (error) {
       print(error.toString());
       return 400;
@@ -594,6 +674,45 @@ class UserProfileApi {
       "other_position": otherPosition,
       "user_vedio":
           await MultipartFile.fromFile(video.path, filename: videoName),
+    });
+    try {
+      var res =
+          await dio.post('$ServerUrl/update-user-card-data', data: formData);
+      return res.data;
+    } on Exception catch (e) {
+      print(e.toString());
+      return 400;
+    }
+  }
+
+  addCardWeb(
+    String country,
+    int type,
+    int category,
+    String favorite,
+    String height,
+    String weight,
+    String mainPosition,
+    String otherPosition,
+    List<int> video,
+    String videoName,
+  ) async {
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("TOKEN");
+    dio.options.headers["authorization"] = "Bearer $token";
+    FormData formData = FormData.fromMap({
+      "country": country,
+      "type": type,
+      "category_id": category,
+      "favorite": favorite,
+      "length": height,
+      "weight": weight,
+      "main_position": mainPosition,
+      "other_position": otherPosition,
+      "user_vedio": MultipartFile.fromBytes(
+        video,
+        filename: videoName,
+      ),
     });
     try {
       var res =

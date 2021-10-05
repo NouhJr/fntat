@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -25,8 +27,6 @@ class _SignUpState extends State<SignUp> {
   bool _obsecureConfirmPassword = true;
   late File profilePicture;
   late File coverPhoto;
-  var profilePictureForWeb;
-  var coverPhotoForWeb;
   bool hasProfilePicture = false;
   bool hasCoverPhoto = false;
   late AuthBloc authBloc;
@@ -44,6 +44,18 @@ class _SignUpState extends State<SignUp> {
   String _selectedCoverPhotoOption = "Cover Photo";
   String birthDate = 'Select your Birth date';
   var age;
+  late List<int> profileBytes;
+  late List<int> coverBytes;
+  late Uint8List profileBytesData;
+  late Uint8List coverBytesData;
+  String profileNameWeb = '';
+  String coverNameWeb = '';
+  bool hasProfileWeb = false;
+  bool hasCoverWeb = false;
+  String signUpStateWeb = '';
+  bool loadingForWebSignUp = false;
+  var userID;
+
   @override
   void dispose() {
     super.dispose();
@@ -263,33 +275,25 @@ class _SignUpState extends State<SignUp> {
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(40.0)),
                                       ),
-                                      child: DropdownButton(
-                                        icon: Icon(
-                                          Icons.add_a_photo,
-                                          color: KPrimaryColor,
-                                        ),
-                                        iconSize: 25.0,
-                                        style: KDropdownButtonStyle,
-                                        underline: Container(
-                                          width: 0.0,
-                                        ),
-                                        isExpanded: true,
-                                        hint: Text('Profile Picture'),
-                                        value: _selectedProfilePictureOption,
-                                        onChanged: (newValueOne) {
-                                          setState(() {
-                                            _selectedProfilePictureOption =
-                                                newValueOne.toString();
-                                          });
-                                          checkForProfile();
+                                      child: InkWell(
+                                        onTap: () {
+                                          pickProfilePictureForWeb();
                                         },
-                                        items: profilePictureOptions
-                                            .map((profileOption) {
-                                          return DropdownMenuItem(
-                                            child: Text(profileOption),
-                                            value: profileOption,
-                                          );
-                                        }).toList(),
+                                        child: DropdownButton<dynamic>(
+                                          icon: Icon(
+                                            Icons.add_a_photo,
+                                            color: KPrimaryColor,
+                                          ),
+                                          iconSize: 25.0,
+                                          style: KDropdownButtonStyle,
+                                          underline: Container(
+                                            width: 0.0,
+                                          ),
+                                          isExpanded: true,
+                                          hint: Text('Profile Picture'),
+                                          onChanged: (newValueOne) {},
+                                          items: [],
+                                        ),
                                       ),
                                     ),
                                     SizedBox(
@@ -308,33 +312,25 @@ class _SignUpState extends State<SignUp> {
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(40.0)),
                                       ),
-                                      child: DropdownButton(
-                                        icon: Icon(
-                                          Icons.add_a_photo,
-                                          color: KPrimaryColor,
-                                        ),
-                                        iconSize: 25.0,
-                                        style: KDropdownButtonStyle,
-                                        underline: Container(
-                                          width: 0.0,
-                                        ),
-                                        isExpanded: true,
-                                        hint: Text('Cover Photo'),
-                                        value: _selectedCoverPhotoOption,
-                                        onChanged: (newValueTwo) {
-                                          setState(() {
-                                            _selectedCoverPhotoOption =
-                                                newValueTwo.toString();
-                                          });
-                                          checkForCover();
+                                      child: InkWell(
+                                        onTap: () {
+                                          pickCoverPhotoForWeb();
                                         },
-                                        items: coverPhotoOptions
-                                            .map((coverOption) {
-                                          return DropdownMenuItem(
-                                            child: Text(coverOption),
-                                            value: coverOption,
-                                          );
-                                        }).toList(),
+                                        child: DropdownButton<dynamic>(
+                                          icon: Icon(
+                                            Icons.add_a_photo,
+                                            color: KPrimaryColor,
+                                          ),
+                                          iconSize: 25.0,
+                                          style: KDropdownButtonStyle,
+                                          underline: Container(
+                                            width: 0.0,
+                                          ),
+                                          isExpanded: true,
+                                          hint: Text('Cover Photo'),
+                                          onChanged: (newValueTwo) {},
+                                          items: [],
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -344,7 +340,7 @@ class _SignUpState extends State<SignUp> {
                                 ),
                                 Row(
                                   children: [
-                                    hasProfilePicture
+                                    hasProfileWeb
                                         ? Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
@@ -361,18 +357,12 @@ class _SignUpState extends State<SignUp> {
                                                           BorderRadius.all(
                                                               Radius.circular(
                                                                   10.0)),
-                                                      image: kIsWeb
-                                                          ? DecorationImage(
-                                                              image: NetworkImage(
-                                                                  profilePicture
-                                                                      .path),
-                                                              fit: BoxFit.cover,
-                                                            )
-                                                          : DecorationImage(
-                                                              image: FileImage(
-                                                                  profilePicture),
-                                                              fit: BoxFit.cover,
-                                                            ),
+                                                      image: DecorationImage(
+                                                        image: MemoryImage(
+                                                          profileBytesData,
+                                                        ),
+                                                        fit: BoxFit.cover,
+                                                      ),
                                                     ),
                                                   ),
                                                   Positioned(
@@ -381,8 +371,7 @@ class _SignUpState extends State<SignUp> {
                                                     child: GestureDetector(
                                                       onTap: () {
                                                         setState(() {
-                                                          hasProfilePicture =
-                                                              false;
+                                                          hasProfileWeb = false;
                                                         });
                                                       },
                                                       child: Icon(
@@ -400,7 +389,7 @@ class _SignUpState extends State<SignUp> {
                                     SizedBox(
                                       width: 20.0,
                                     ),
-                                    hasCoverPhoto
+                                    hasCoverWeb
                                         ? Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,
@@ -417,19 +406,12 @@ class _SignUpState extends State<SignUp> {
                                                           BorderRadius.all(
                                                               Radius.circular(
                                                                   10.0)),
-                                                      image: kIsWeb
-                                                          ? DecorationImage(
-                                                              image:
-                                                                  NetworkImage(
-                                                                      coverPhoto
-                                                                          .path),
-                                                              fit: BoxFit.cover,
-                                                            )
-                                                          : DecorationImage(
-                                                              image: FileImage(
-                                                                  coverPhoto),
-                                                              fit: BoxFit.cover,
-                                                            ),
+                                                      image: DecorationImage(
+                                                        image: MemoryImage(
+                                                          coverBytesData,
+                                                        ),
+                                                        fit: BoxFit.cover,
+                                                      ),
                                                     ),
                                                   ),
                                                   Positioned(
@@ -438,7 +420,7 @@ class _SignUpState extends State<SignUp> {
                                                     child: GestureDetector(
                                                       onTap: () {
                                                         setState(() {
-                                                          hasCoverPhoto = false;
+                                                          hasCoverWeb = false;
                                                         });
                                                       },
                                                       child: Icon(
@@ -759,18 +741,12 @@ class _SignUpState extends State<SignUp> {
                                                         BorderRadius.all(
                                                             Radius.circular(
                                                                 10.0)),
-                                                    image: kIsWeb
-                                                        ? DecorationImage(
-                                                            image: NetworkImage(
-                                                                profilePicture
-                                                                    .path),
-                                                            fit: BoxFit.cover,
-                                                          )
-                                                        : DecorationImage(
-                                                            image: FileImage(
-                                                                profilePicture),
-                                                            fit: BoxFit.cover,
-                                                          ),
+                                                    image: DecorationImage(
+                                                      image: FileImage(
+                                                        profilePicture,
+                                                      ),
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
                                                 ),
                                                 Positioned(
@@ -815,18 +791,12 @@ class _SignUpState extends State<SignUp> {
                                                         BorderRadius.all(
                                                             Radius.circular(
                                                                 10.0)),
-                                                    image: kIsWeb
-                                                        ? DecorationImage(
-                                                            image: NetworkImage(
-                                                                coverPhoto
-                                                                    .path),
-                                                            fit: BoxFit.cover,
-                                                          )
-                                                        : DecorationImage(
-                                                            image: FileImage(
-                                                                coverPhoto),
-                                                            fit: BoxFit.cover,
-                                                          ),
+                                                    image: DecorationImage(
+                                                      image: FileImage(
+                                                        coverPhoto,
+                                                      ),
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
                                                 ),
                                                 Positioned(
@@ -912,17 +882,13 @@ class _SignUpState extends State<SignUp> {
     if (_selectedProfilePictureOption == "Choose existing photo") {
       chooseFileForProfileMobile();
     } else if (_selectedProfilePictureOption == "Take photo") {
-      if (kIsWeb) {
-        chooseFileForProfileMobile();
-      } else {
-        takeImageForProfileMobile();
-      }
+      takeImageForProfileMobile();
     }
   }
 
   Future chooseFileForProfileMobile() async {
-    final sourceProfile = ImageSource.gallery;
-    final pickedFile = await ImagePicker().pickImage(source: sourceProfile);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     setState(() {
       profilePicture = File(pickedFile!.path);
       hasProfilePicture = true;
@@ -930,8 +896,8 @@ class _SignUpState extends State<SignUp> {
   }
 
   Future takeImageForProfileMobile() async {
-    final sourceProfile = ImageSource.camera;
-    final pickedFile = await ImagePicker().pickImage(source: sourceProfile);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.camera);
     setState(() {
       profilePicture = File(pickedFile!.path);
       hasProfilePicture = true;
@@ -942,17 +908,13 @@ class _SignUpState extends State<SignUp> {
     if (_selectedCoverPhotoOption == "Choose existing photo") {
       chooseFileForCoverMobile();
     } else if (_selectedCoverPhotoOption == "Take photo") {
-      if (kIsWeb) {
-        chooseFileForCoverMobile();
-      } else {
-        takeImageForCoverMobile();
-      }
+      takeImageForCoverMobile();
     }
   }
 
   Future chooseFileForCoverMobile() async {
-    final source = ImageSource.gallery;
-    final pickedFile = await ImagePicker().pickImage(source: source);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     setState(() {
       coverPhoto = File(pickedFile!.path);
       hasCoverPhoto = true;
@@ -960,12 +922,42 @@ class _SignUpState extends State<SignUp> {
   }
 
   Future takeImageForCoverMobile() async {
-    final source = ImageSource.camera;
-    final pickedFile = await ImagePicker().pickImage(source: source);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.camera);
     setState(() {
       coverPhoto = File(pickedFile!.path);
       hasCoverPhoto = true;
     });
+  }
+
+  void pickProfilePictureForWeb() async {
+    FilePickerResult? profilePictureWeb;
+    profilePictureWeb = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+    if (profilePictureWeb != null) {
+      setState(() {
+        profileNameWeb = profilePictureWeb!.files.single.name;
+        profileBytesData = profilePictureWeb.files.single.bytes!;
+        hasProfileWeb = true;
+        profileBytes = profileBytesData.cast();
+      });
+    }
+  }
+
+  void pickCoverPhotoForWeb() async {
+    FilePickerResult? coverPhotoWeb;
+    coverPhotoWeb = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+    if (coverPhotoWeb != null) {
+      setState(() {
+        coverNameWeb = coverPhotoWeb!.files.single.name;
+        coverBytesData = coverPhotoWeb.files.single.bytes!;
+        hasCoverWeb = true;
+        coverBytes = coverBytesData.cast();
+      });
+    }
   }
 
   Future signUp() async {
@@ -1026,31 +1018,134 @@ class _SignUpState extends State<SignUp> {
         message: "Please confirm your password.",
         icons: Icons.warning,
       );
-    } else if (hasProfilePicture != true) {
-      Warning().errorMessage(
-        context,
-        title: "Profile picture can't be empty !",
-        message: "Please take or choose profile picture",
-        icons: Icons.warning,
-      );
-    } else if (hasCoverPhoto != true) {
-      Warning().errorMessage(
-        context,
-        title: "Cover photo can't be empty !",
-        message: "Please take or choose cover photo",
-        icons: Icons.warning,
-      );
     } else {
-      authBloc.add(SignUpButtonPressed(
-        name: _name.text,
-        email: _email.text,
-        phone: _phone.text,
-        password: _password.text,
-        passwordConfirmation: _confirmPassword.text,
-        birthDate: birthDate,
-        profilePicture: profilePicture,
-        coverPhoto: coverPhoto,
-      ));
+      if (kIsWeb) {
+        if (hasProfileWeb != true) {
+          Warning().errorMessage(
+            context,
+            title: "Profile picture can't be empty !",
+            message: "Please take or choose profile picture",
+            icons: Icons.warning,
+          );
+        } else if (hasCoverWeb != true) {
+          Warning().errorMessage(
+            context,
+            title: "Cover photo can't be empty !",
+            message: "Please take or choose cover photo",
+            icons: Icons.warning,
+          );
+        } else {
+          authBloc.add(
+            SignUpButtonPressedWeb(
+              name: _name.text,
+              email: _email.text,
+              phone: _phone.text,
+              password: _password.text,
+              passwordConfirmation: _confirmPassword.text,
+              birthDate: birthDate,
+              profilePicture: profileBytes,
+              profilePictureName: profileNameWeb,
+              coverPhoto: coverBytes,
+              coverPhotoName: coverNameWeb,
+            ),
+          );
+        }
+      } else {
+        if (hasProfilePicture != true) {
+          Warning().errorMessage(
+            context,
+            title: "Profile picture can't be empty !",
+            message: "Please take or choose profile picture",
+            icons: Icons.warning,
+          );
+        } else if (hasCoverPhoto != true) {
+          Warning().errorMessage(
+            context,
+            title: "Cover photo can't be empty !",
+            message: "Please take or choose cover photo",
+            icons: Icons.warning,
+          );
+        } else {
+          authBloc.add(SignUpButtonPressed(
+            name: _name.text,
+            email: _email.text,
+            phone: _phone.text,
+            password: _password.text,
+            passwordConfirmation: _confirmPassword.text,
+            birthDate: birthDate,
+            profilePicture: profilePicture,
+            coverPhoto: coverPhoto,
+          ));
+        }
+      }
     }
   }
+
+  // makePostRequest() async {
+  //   var prefs = await SharedPreferences.getInstance();
+  //   Map<String, dynamic> fields = {
+  //     "name": _name.text,
+  //     "email": _email.text,
+  //     "password": _password.text,
+  //     "password_confirmation": _confirmPassword.text,
+  //     "phone": _phone.text,
+  //     "birth_date": birthDate,
+  //   };
+  //   String url = '$ServerUrl/register';
+  //   var request = http.MultipartRequest('POST', Uri.parse(url));
+  //   request.files.add(
+  //     http.MultipartFile.fromBytes(
+  //       'image',
+  //       profileBytes,
+  //       filename: profileNameWeb,
+  //     ),
+  //   );
+  //   request.files.add(
+  //     http.MultipartFile.fromBytes(
+  //       'cover_image',
+  //       coverBytes,
+  //       filename: coverNameWeb,
+  //     ),
+  //   );
+  //   fields.forEach((k, v) => request.fields[k] = v);
+  //   var response = await request.send();
+  //   setState(() {
+  //     loadingForWebSignUp = true;
+  //   });
+  //   response.stream.bytesToString().asStream().listen((event) {
+  //     var parsedJson = json.decode(event);
+  //     if (parsedJson['response_code'] == 400 &&
+  //         parsedJson['message']['email']?[0] ==
+  //             "The email has already been taken.") {
+  //       Future.delayed(Duration(seconds: 3)).then(
+  //         (value) => setState(() {
+  //           signUpStateWeb = "The email has already been taken.";
+  //           loadingForWebSignUp = false;
+  //         }),
+  //       );
+  //     } else if (parsedJson['response_code'] == 400 &&
+  //         parsedJson['message']['phone']?[0] ==
+  //             "The phone has already been taken.") {
+  //       Future.delayed(Duration(seconds: 3)).then(
+  //         (value) => setState(() {
+  //           signUpStateWeb = "The phone has already been taken.";
+  //           loadingForWebSignUp = false;
+  //         }),
+  //       );
+  //     } else {
+  //       setState(() {
+  //         userID = parsedJson['data']['user']['id'];
+  //       });
+  //       prefs.setString("TOKEN", parsedJson['data']['token']);
+  //       prefs.setInt("USERID", parsedJson['data']['user']['id']);
+  //       Future.delayed(Duration(seconds: 3)).then((value) {
+  //         setState(() {
+  //           loadingForWebSignUp = false;
+  //         });
+  //         Navigator.pushNamedAndRemoveUntil(context, '/Home', (route) => false);
+  //       });
+  //     }
+  //   });
+  //   await AuthApi().getFirebaseToken(userID);
+  // }
 }

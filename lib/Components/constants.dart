@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 ///*************************COLORS**************************/
-const KPrimaryColor = Color(0xFF2c9448); //Color(0xFF4379e6);
+const KPrimaryColor = Color(0xFF2c9448);
 const KSubPrimaryColor = Color(0xFFffffff);
 const KPrimaryFontsColor = Color(0xFFffffff);
 const KSubPrimaryFontsColor = Color(0xFF000000);
@@ -420,6 +420,7 @@ TextField basicTextField(
             LengthLimitingTextInputFormatter(31),
           ]
         : null,
+    enableSuggestions: false,
   );
 }
 
@@ -531,6 +532,8 @@ TextField passwordTextField(TextEditingController controller, String hint,
       hintStyle: KWriteCommentAndSendMessageStyle,
       suffixIcon: showPassword,
     ),
+    enableSuggestions: false,
+    autocorrect: false,
     obscureText: obscure,
     cursorColor: KPrimaryColor,
   );
@@ -797,7 +800,7 @@ class HomeProfileCard extends StatelessWidget {
           child: Container(
             width: 40.0,
             height: 40.0,
-            child: countryName == ""
+            child: countryName == null
                 ? Container()
                 : Image.asset('icons/flags/png/$countryName.png',
                     package: 'country_icons'),

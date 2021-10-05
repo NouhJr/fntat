@@ -1,15 +1,18 @@
 import 'dart:io';
 import 'dart:async';
+import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fntat/Blocs/userProfile_bloc.dart';
 import 'package:fntat/Blocs/Events/userProfile_events.dart';
 import 'package:fntat/Blocs/States/userProfile_states.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fntat/User_Interface/otherUsersProfile_screen.dart';
 import 'package:fntat/User_Interface/account_screen.dart';
 import 'package:fntat/User_Interface/settings_screen.dart';
@@ -45,6 +48,9 @@ class _ChatScreenState extends State<ChatScreen> {
   var userId;
   var token;
   late UserProfileBloc userProfileBloc;
+  late List<int> imageBytes;
+  late Uint8List imageBytesData;
+  String imageNameWeb = '';
 
   gettingReceiverData() async {
     var prefs = await SharedPreferences.getInstance();
@@ -278,10 +284,17 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                     );
                   },
-                  child: Text(
-                    receiverName,
-                    style: KUserNameStyle,
-                  ),
+                  child: kIsWeb
+                      ? Center(
+                          child: Text(
+                            receiverName,
+                            style: KUserNameStyle,
+                          ),
+                        )
+                      : Text(
+                          receiverName,
+                          style: KUserNameStyle,
+                        ),
                 ),
               ),
             ),
@@ -300,90 +313,161 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   );
                 },
-                child: Row(
-                  children: [
-                    useAssetForOtherUser
-                        ? CircleAvatar(
-                            backgroundImage: AssetImage(receiverImage),
-                            radius: 55.0,
-                          )
-                        : CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                '$ImageServerPrefix/$receiverImage'),
-                            radius: 55.0,
-                          ),
-                  ],
-                ),
+                child: kIsWeb
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          useAssetForOtherUser
+                              ? CircleAvatar(
+                                  backgroundImage: AssetImage(receiverImage),
+                                  radius: 55.0,
+                                )
+                              : CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                      '$ImageServerPrefix/$receiverImage'),
+                                  radius: 55.0,
+                                ),
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          useAssetForOtherUser
+                              ? CircleAvatar(
+                                  backgroundImage: AssetImage(receiverImage),
+                                  radius: 55.0,
+                                )
+                              : CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                      '$ImageServerPrefix/$receiverImage'),
+                                  radius: 55.0,
+                                ),
+                        ],
+                      ),
               ),
             ),
           ],
         ),
       ),
-      bottomSheet: Padding(
-        padding: EdgeInsets.only(
-          left: 5.0,
-          right: 5.0,
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 40.0,
-              height: 50.0,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: KPrimaryColor,
+      bottomSheet: kIsWeb
+          ? Padding(
+              padding: EdgeInsets.only(
+                left: 5.0,
+                right: 5.0,
               ),
-              child: PopupMenuButton(
-                icon: Icon(
-                  Icons.add_a_photo,
-                  color: KSubPrimaryColor,
-                ),
-                iconSize: 25.0,
-                onSelected: imageOptions,
-                itemBuilder: (context) {
-                  return options.map((choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(
-                        choice,
-                        style: KPostOptionsStyle,
-                      ),
-                    );
-                  }).toList();
-                },
-              ),
-            ),
-            SizedBox(
-              width: 15.0,
-            ),
-            Container(
-              width: 250.0,
-              height: 70.0,
-              child: messageTextField(_message),
-            ),
-            SizedBox(
-              width: 15.0,
-            ),
-            Expanded(
               child: Row(
                 children: [
-                  IconButton(
-                    onPressed: () {
-                      sendMessage();
-                    },
-                    icon: Icon(Icons.send),
-                    color: KPrimaryColor,
-                    iconSize: 33.0,
+                  Container(
+                    width: 40.0,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: KPrimaryColor,
+                    ),
+                    child: IconButton(
+                      onPressed: pickImageInMessagesWeb,
+                      icon: Icon(
+                        Icons.add_a_photo,
+                        color: KSubPrimaryColor,
+                      ),
+                      iconSize: 25.0,
+                    ),
                   ),
                   SizedBox(
-                    width: 5.0,
+                    width: 15.0,
+                  ),
+                  Container(
+                    width: kIsWeb ? 1100.0 : 250.0,
+                    height: 70.0,
+                    child: messageTextField(_message),
+                  ),
+                  SizedBox(
+                    width: kIsWeb ? 35.0 : 15.0,
+                  ),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            sendMessage();
+                          },
+                          icon: Icon(Icons.send),
+                          color: KPrimaryColor,
+                          iconSize: 33.0,
+                        ),
+                        SizedBox(
+                          width: 5.0,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : Padding(
+              padding: EdgeInsets.only(
+                left: 5.0,
+                right: 5.0,
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40.0,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: KPrimaryColor,
+                    ),
+                    child: PopupMenuButton(
+                      icon: Icon(
+                        Icons.add_a_photo,
+                        color: KSubPrimaryColor,
+                      ),
+                      iconSize: 25.0,
+                      onSelected: imageOptions,
+                      itemBuilder: (context) {
+                        return options.map((choice) {
+                          return PopupMenuItem<String>(
+                            value: choice,
+                            child: Text(
+                              choice,
+                              style: KPostOptionsStyle,
+                            ),
+                          );
+                        }).toList();
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15.0,
+                  ),
+                  Container(
+                    width: kIsWeb ? 1100.0 : 250.0,
+                    height: 70.0,
+                    child: messageTextField(_message),
+                  ),
+                  SizedBox(
+                    width: kIsWeb ? 35.0 : 15.0,
+                  ),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            sendMessage();
+                          },
+                          icon: Icon(Icons.send),
+                          color: KPrimaryColor,
+                          iconSize: 33.0,
+                        ),
+                        SizedBox(
+                          width: 5.0,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -414,6 +498,21 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
+  void pickImageInMessagesWeb() async {
+    FilePickerResult? imageWeb;
+    imageWeb = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+    if (imageWeb != null) {
+      setState(() {
+        imageNameWeb = imageWeb!.files.single.name;
+        imageBytesData = imageWeb.files.single.bytes!;
+        withImage = true;
+        imageBytes = imageBytesData.cast();
+      });
+    }
+  }
+
   sendMessage() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
@@ -432,7 +531,7 @@ class _ChatScreenState extends State<ChatScreen> {
       var prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("TOKEN");
       dio.options.headers["authorization"] = "Bearer $token";
-      if (withImage) {
+      if (withImage && !kIsWeb) {
         String fileName = _imageFile!.path.split('/').last;
         FormData formData = FormData.fromMap({
           "reciver_user_id": id,
@@ -464,6 +563,35 @@ class _ChatScreenState extends State<ChatScreen> {
             icons: Icons.warning,
           );
         }
+      } else if (withImage && kIsWeb) {
+        FormData formData = FormData.fromMap({
+          "reciver_user_id": id,
+          "type": 2,
+          "attachment": MultipartFile.fromBytes(
+            imageBytes,
+            filename: imageNameWeb,
+          ),
+        });
+        final res = await dio.post('$ServerUrl/send-message', data: formData);
+        final data = res.data;
+        if (data['success'] == false) {
+          Warning().errorMessage(
+            context,
+            title: "Not sent",
+            message: "Error sending message",
+            icons: Icons.warning,
+          );
+        }
+        // var request = http.MultipartRequest('POST', Uri.parse(url));
+        // request.files.add(
+        //   http.MultipartFile.fromBytes(
+        //     'attachment',
+        //     imageBytes,
+        //     filename: imageNameWeb,
+        //   ),
+        // );
+        // request.headers.addAll({"Authorization": 'Bearer $token'});
+        // var response = await request.send();
       } else {
         FormData formData = FormData.fromMap({
           "reciver_user_id": id,
