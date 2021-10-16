@@ -26,6 +26,7 @@ void main() async {
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_messageHandler);
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     title: "Fntat",
     theme: ThemeData(
       primaryColor: Colors.green,
