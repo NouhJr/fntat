@@ -41,6 +41,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:832867614186:android:54de9c3bbbced32ba28693",
+        "android_client_info": {
+          "package_name": "com.fntat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "832867614186-dg5t3r7mv4gg4s9utckt2fau7a1ufmr3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqMOERroQ4bQsEAnSfR1afPu89YGLL6UI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "832867614186-dg5t3r7mv4gg4s9utckt2fau7a1ufmr3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
